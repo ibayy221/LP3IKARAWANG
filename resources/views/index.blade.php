@@ -1,26 +1,9 @@
-<!-- Carousel Section (Blade) -->
-@if(isset($carousel) && count($carousel) > 0)
-    <div class="carousel-container">
-        @foreach($carousel as $index => $slide)
-            <div class="carousel-slide slide-{{ $index + 1 }} @if($index === 0) active @endif">
-                @if(!empty($slide['image_path']))
-                    <img src="{{ asset($slide['image_path']) }}" alt="{{ $slide['title'] }}" class="d-block w-100">
-                @endif
-                <div class="carousel-content">
-                    <h2>{{ $slide['title'] }}</h2>
-                    <p>{{ $slide['subtitle'] }}</p>
-                    @if(!empty($slide['button_text']))
-                        <a href="#" class="btn btn-primary">{{ $slide['button_text'] }}</a>
-                    @endif
-                </div>
-            </div>
-        @endforeach
-        <button class="carousel-nav prev">‹</button>
-        <button class="carousel-nav next">›</button>
-    </div>
-@else
-    <p>Tidak ada data carousel.</p>
-@endif
+@php
+    // Normalize variables so the template is safe whether controller
+    // provides Blade $carouselData or legacy $carousel.
+    $carouselData = isset($carouselData) ? $carouselData : (isset($carousel) ? $carousel : []);
+    $newsData = isset($newsData) ? $newsData : [];
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -316,30 +299,9 @@
             opacity: 1;
         }
 
-<?php
-        // Generate dynamic CSS for carousel slides
-        foreach ($carouselData as $index => $slide) {
-            $slideNum = $index + 1;
-            $imagePath = !empty($slide['image']) ? $slide['image'] : '';
-            
-            echo ".slide-{$slideNum} {\n";
-            if (!empty($imagePath) && file_exists($imagePath)) {
-                echo "    background: url('{$imagePath}');\n";
-                echo "    background-size: cover;\n";
-                echo "    background-position: center;\n";
-            } else {
-                // Default gradient backgrounds
-                $gradients = [
-                    "linear-gradient(rgba(30, 60, 114, 0.8), rgba(42, 82, 152, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f0f8ff\" width=\"1200\" height=\"600\"/><circle fill=\"%23e6f3ff\" cx=\"200\" cy=\"150\" r=\"80\"/><circle fill=\"%23d9edff\" cx=\"800\" cy=\"400\" r=\"120\"/><circle fill=\"%23cce7ff\" cx=\"1000\" cy=\"200\" r=\"60\"/></svg>')",
-                    "linear-gradient(rgba(42, 82, 152, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23e8f4fd\" width=\"1200\" height=\"600\"/><polygon fill=\"%23d1e7fc\" points=\"0,0 400,200 0,400\"/><polygon fill=\"%23b8d9fb\" points=\"800,0 1200,0 1200,300\"/><circle fill=\"%239fc9f9\" cx=\"600\" cy=\"300\" r=\"100\"/></svg>')",
-                    "linear-gradient(rgba(74, 144, 226, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f5f9ff\" width=\"1200\" height=\"600\"/><rect fill=\"%23e1f0ff\" x=\"100\" y=\"100\" width=\"200\" height=\"150\" rx=\"20\"/><rect fill=\"%23cce7ff\" x=\"900\" y=\"350\" width=\"250\" height=\"180\" rx=\"25\"/><circle fill=\"%23b3ddff\" cx=\"500\" cy=\"400\" r=\"90\"/></svg>')"
-                ];
-                $gradientIndex = $index % count($gradients);
-                echo "    background: {$gradients[$gradientIndex]};\n";
-            }
-            echo "}\n\n";
-        }
-        ?>
+/* Per-slide backgrounds are applied inline on each .carousel-slide element
+   to avoid embedding Blade/PHP directives inside the <style> block, which
+   can confuse CSS parsers and editors. */
 
         .carousel-content {
             position: absolute;
@@ -896,9 +858,6 @@
                 margin-top: 2rem;
             }
 
-            .news-card {
-                /* Grid will handle the sizing */
-            }
 
             .news-content {
                 padding: 1rem; /* Adjusted padding */
@@ -1076,27 +1035,84 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="carousel-container">
-            <?php foreach ($carouselData as $index => $slide): ?>
-                <div class="carousel-slide slide-<?= $index + 1 ?> <?= $index === 0 ? 'active' : '' ?>">
-                </div>
-            <?php endforeach; ?>
+            @foreach($carouselData as $index => $slide)
+                @php
+                    $slideNum = $index + 1;
+                    $imagePath = !empty($slide['image']) ? $slide['image'] : '';
+                @endphp
+
+                @if(!empty($imagePath) && file_exists(public_path($imagePath)))
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: url('{{ asset($imagePath) }}'); background-size: cover; background-position: center;">
+                    </div>
+                @else
+                    @php
+                        $gradients = [
+                            "linear-gradient(rgba(30, 60, 114, 0.8), rgba(42, 82, 152, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f0f8ff\" width=\"1200\" height=\"600\"/><circle fill=\"%23e6f3ff\" cx=\"200\" cy=\"150\" r=\"80\"/><circle fill=\"%23d9edff\" cx=\"800\" cy=\"400\" r=\"120\"/><circle fill=\"%23cce7ff\" cx=\"1000\" cy=\"200\" r=\"60\"/></svg>')",
+                            "linear-gradient(rgba(42, 82, 152, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23e8f4fd\" width=\"1200\" height=\"600\"/><polygon fill=\"%23d1e7fc\" points=\"0,0 400,200 0,400\"/><polygon fill=\"%23b8d9fb\" points=\"800,0 1200,0 1200,300\"/><circle fill=\"%239fc9f9\" cx=\"600\" cy=\"300\" r=\"100\"/></svg>')",
+                            "linear-gradient(rgba(74, 144, 226, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f5f9ff\" width=\"1200\" height=\"600\"/><rect fill=\"%23e1f0ff\" x=\"100\" y=\"100\" width=\"200\" height=\"150\" rx=\"20\"/><rect fill=\"%23cce7ff\" x=\"900\" y=\"350\" width=\"250\" height=\"180\" rx=\"25\"/><circle fill=\"%23b3ddff\" cx=\"500\" cy=\"400\" r=\"90\"/></svg>')"
+                        ];
+                        $gradientIndex = $index % count($gradients);
+                    @endphp
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: {!! $gradients[$gradientIndex] !!}; background-size: cover; background-position: center;">
+                    </div>
+                @endif
+            @endforeach
         </div>
-        
+
         <button class="carousel-nav prev">‹</button>
         <button class="carousel-nav next">›</button>
-        
+
+        @php
+            // Decide what to show in the hero content. We always render the
+            // slide backgrounds, but if the first slide lacks human-friendly
+            // title/subtitle/button, show the default hero copy on top of the
+            // background so the page doesn't display the raw filename.
+            $firstSlide = (!empty($carouselData) && isset($carouselData[0])) ? $carouselData[0] : null;
+            $hasReadableContent = false;
+            if ($firstSlide) {
+                $t = trim((string)($firstSlide['title'] ?? ''));
+                $s = trim((string)($firstSlide['subtitle'] ?? ''));
+                $b = trim((string)($firstSlide['button'] ?? ''));
+
+                $looksLikeFilename = false;
+                if ($t !== '') {
+                    if (stripos($t, 'screenshot') !== false) {
+                        $looksLikeFilename = true;
+                    }
+                    if (preg_match('/\d{4,}/', $t) && strpos($t, ' ') === false) {
+                        $looksLikeFilename = true;
+                    }
+                    if (preg_match('/^[A-Za-z0-9_\-]+$/', $t) && preg_match('/\d/', $t) && strpos($t, ' ') === false) {
+                        $looksLikeFilename = true;
+                    }
+                }
+
+                if (($t !== '' && !$looksLikeFilename) || $s !== '' || $b !== '') {
+                    $hasReadableContent = true;
+                }
+            }
+        @endphp
+
         <div class="carousel-content">
             <div class="hero-content" id="slide-content">
-                <h1><?= htmlspecialchars($carouselData[0]['title']) ?></h1>
-                <p><?= htmlspecialchars($carouselData[0]['subtitle']) ?></p>
-                <a href="#programs" class="cta-button"><?= htmlspecialchars($carouselData[0]['button']) ?></a>
+                @if($hasReadableContent)
+                    <h1>{{ $firstSlide['title'] ?? '' }}</h1>
+                    <p>{{ $firstSlide['subtitle'] ?? '' }}</p>
+                    @if(!empty($firstSlide['button']))
+                        <a href="#programs" class="cta-button">{{ $firstSlide['button'] }}</a>
+                    @endif
+                @else
+                    <h1>Kembangkan Karirmu bersama LP3I Karawang</h1>
+                    <p>Praktik nyata. Kurikulum up-to-date. Lulusan siap kerja.</p>
+                    <a href="#programs" class="cta-button">Daftar Sekarang</a>
+                @endif
             </div>
         </div>
         
         <div class="carousel-indicators">
-            <?php foreach ($carouselData as $index => $slide): ?>
-                <div class="indicator <?= $index === 0 ? 'active' : '' ?>" data-slide="<?= $index ?>"></div>
-            <?php endforeach; ?>
+            @foreach($carouselData as $index => $slide)
+                <div class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
+            @endforeach
         </div>
     </section>
 
@@ -1105,49 +1121,49 @@
         <div class="container">
             <h2 class="section-title">Berita Terbaru</h2>
             
-            <?php if (empty($newsData)): ?>
+            @if(empty($newsData))
                 <div style="text-align: center; padding: 3rem; color: #666;">
                     <i class="fas fa-newspaper" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                     <h3>Belum Ada Berita</h3>
                     <p>Berita terbaru akan ditampilkan di sini.</p>
                 </div>
-            <?php else: ?>
+            @else
                 <div class="news-grid">
-                    <?php foreach ($newsData as $news): ?>
-                        <div class="news-card" onclick="location.href='news.php?id=<?= $news['id'] ?>'" style="cursor: pointer;">
-                            <?php if (!empty($news['image_path']) && file_exists($news['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($news['image_path']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
-                            <?php else: ?>
+                    @foreach($newsData as $news)
+                        <div class="news-card" onclick="location.href='news.php?id={{ $news['id'] }}'" style="cursor: pointer;">
+                            @if(!empty($news['image_path']) && file_exists(public_path($news['image_path'])))
+                                <img src="{{ asset($news['image_path']) }}" alt="{{ $news['title'] }}" class="news-image">
+                            @else
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>
                                 </div>
-                            <?php endif; ?>
+                            @endif
                             
                             <div class="news-content">
-                                <span class="news-category"><?= htmlspecialchars($news['category']) ?></span>
-                                <h3><?= htmlspecialchars($news['title']) ?></h3>
+                                <span class="news-category">{{ $news['category'] }}</span>
+                                <h3>{{ $news['title'] }}</h3>
                                 <p class="news-excerpt">
-                                    <?= htmlspecialchars($news['excerpt'] ?: (strlen($news['content']) > 150 ? substr($news['content'], 0, 150) . '...' : $news['content'])) ?>
+                                    {{ $news['excerpt'] ?: (strlen($news['content']) > 150 ? substr($news['content'], 0, 150) . '...' : $news['content']) }}
                                 </p>
                                 <div class="news-meta">
                                     <div class="news-date">
                                         <i class="fas fa-calendar-alt"></i>
-                                        <?= date('d M Y', strtotime($news['created_at'])) ?>
+                                        {{ date('d M Y', strtotime($news['created_at'])) }}
                                     </div>
                                     <div class="news-author">
                                         <i class="fas fa-user"></i>
-                                        <?= htmlspecialchars($news['author']) ?>
+                                        {{ $news['author'] }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    @endforeach
                 </div>
                 
                 <div class="view-all-news">
                     <a href="news.php" class="btn">Lihat Semua Berita</a>
                 </div>
-            <?php endif; ?>
+            @endif
         </div>
     </section>
 
@@ -1321,18 +1337,31 @@
         let endX = 0;
         let isTouch = false;
         
-        // PHP-generated slide data
-        const slideData = <?= json_encode($carouselData) ?>;
+    // Slide data generated from server-side carouselData
+    const slideData = @json($carouselData);
 
         function updateSlideContent(index) {
             if (slideData.length === 0) return;
-            
+
             const data = slideData[index % slideData.length];
-            slideContent.innerHTML = `
-                <h1>${data.title}</h1>
-                <p>${data.subtitle}</p>
-                <a href="#programs" class="cta-button">${data.button}</a>
-            `;
+
+            // Determine if the slide has human-friendly content. If the
+            // title contains letters (not just numbers) or subtitle/button is
+            // present, we'll replace the hero content. Otherwise leave the
+            // default slogan in place so filenames or numeric titles aren't
+            // shown to users.
+            const hasReadableTitle = typeof data.title === 'string' && /[A-Za-z\p{L}]/u.test(data.title);
+            const hasSubtitle = typeof data.subtitle === 'string' && data.subtitle.trim() !== '';
+            const hasButton = typeof data.button === 'string' && data.button.trim() !== '';
+
+            if (hasReadableTitle || hasSubtitle || hasButton) {
+                slideContent.innerHTML = `
+                    <h1>${data.title}</h1>
+                    <p>${data.subtitle}</p>
+                    <a href="#programs" class="cta-button">${data.button}</a>
+                `;
+            }
+            // otherwise keep the existing hero content (slogan/default)
         }
 
         function showSlide(index) {
