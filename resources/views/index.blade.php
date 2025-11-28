@@ -56,23 +56,17 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #4a90e2, #74b9ff, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
-            animation: logoGlow 2s ease-in-out infinite alternate;
+            height: 50px;
+            display: flex;
+            align-items: center;
         }
 
-        @keyframes logoGlow {
-            from {
-                filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.3));
-            }
-            to {
-                filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8));
-            }
+        .logo img {
+            height: 100%;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
         .nav-links {
@@ -558,6 +552,75 @@
             box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
         }
 
+        /* Registration Button Styling */
+        .register-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.5rem;
+            background: #004269 !important;
+            color: white !important;
+            padding: 0.9rem 1.8rem !important;
+            text-decoration: none !important;
+            border-radius: 30px !important;
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 6px 20px rgba(0, 66, 105, 0.3) !important;
+            border: none !important;
+            cursor: pointer !important;
+            animation: registerPulse 2s ease-in-out infinite;
+        }
+
+        .register-btn:hover {
+            background: #003352 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 66, 105, 0.5) !important;
+            animation: none;
+        }
+
+        @keyframes registerPulse {
+            0%, 100% {
+                box-shadow: 0 6px 20px rgba(0, 66, 105, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(0, 66, 105, 0.6);
+            }
+        }
+
+        /* CTA Registration Banner */
+        .registration-banner {
+            background: linear-gradient(135deg, #004269, #003352);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+            margin: 3rem 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 66, 105, 0.2);
+        }
+
+        .registration-banner h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .registration-banner p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .registration-banner {
+                padding: 2rem 1rem;
+            }
+            .registration-banner h3 {
+                font-size: 1.5rem;
+            }
+            .registration-banner p {
+                font-size: 0.95rem;
+            }
+        }
+
         /* Programs Section */
         .programs {
             padding: 5rem 2rem;
@@ -977,7 +1040,9 @@
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo">LP3I Karawang</div>
+            <div class="logo">
+                <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Karawang Logo" />
+            </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
@@ -1027,7 +1092,7 @@
                 </li>
                 <li><a href="#ormawa">Ormawa</a></li>
                 <li><a href="#kegiatan">Kegiatan</a></li>
-                <li><a href="#pmb">PMB</a></li>
+                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
     </header>
@@ -1114,6 +1179,15 @@
                 <div class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
             @endforeach
         </div>
+    </section>
+
+    <!-- Registration CTA Banner -->
+    <section class="registration-banner" id="pendaftaran">
+        <h3><i class="fas fa-graduation-cap"></i> Bergabunglah dengan LP3I Karawang</h3>
+        <p>Raih masa depan cerah bersama program studi unggulan kami. Daftar sekarang dan dapatkan kesempatan untuk berkembang dengan kurikulum terdepan dan fasilitas modern.</p>
+        <a href="#" onclick="alert('Halaman pendaftaran akan segera diluncurkan. Hubungi kami di (0267) 123-4567 untuk informasi lebih lanjut.'); return false;" class="register-btn">
+            <i class="fas fa-sign-in-alt"></i> Daftar Online Sekarang
+        </a>
     </section>
 
     <!-- News Section -->

@@ -1,414 +1,7 @@
-<?php
-// Admin functions for carousel management
-function getCarouselData() {
-    $csvFile = 'data/carousel.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $slideData = array_combine($header, $row);
-                $data[] = $slideData;
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-// News management functions
-function getNewsData() {
-    $csvFile = 'data/news.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $newsData = array_combine($header, $row);
-                if ($newsData['status'] === 'active') {
-                    $data[] = [
-                        'id' => $newsData['id'],
-                        'title' => $newsData['title'],
-                        'content' => $newsData['content'],
-                        'excerpt' => $newsData['excerpt'],
-                        'category' => $newsData['category'],
-                        'image_path' => $newsData['image_path'],
-                        'gallery_images' => isset($newsData['gallery_images']) ? $newsData['gallery_images'] : '',
-                        'author' => $newsData['author'],
-                        'created_at' => $newsData['created_at'],
-                        'status' => $newsData['status']
-                    ];
-                }
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-function getAllNewsData() {
-    $csvFile = 'data/news.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $newsData = array_combine($header, $row);
-                $data[] = [
-                    'id' => $newsData['id'],
-                    'title' => $newsData['title'],
-                    'content' => $newsData['content'],
-                    'excerpt' => $newsData['excerpt'],
-                    'category' => $newsData['category'],
-                    'image_path' => $newsData['image_path'],
-                    'gallery_images' => isset($newsData['gallery_images']) ? $newsData['gallery_images'] : '',
-                    'author' => $newsData['author'],
-                    'created_at' => $newsData['created_at'],
-                    'status' => $newsData['status']
-                ];
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-function saveNewsData($data) {
-    $csvFile = 'data/news.csv';
-    $handle = fopen($csvFile, 'w');
-    
-    if ($handle) {
-        // Write header
-        $header = ['id', 'title', 'content', 'excerpt', 'category', 'image_path', 'gallery_images', 'author', 'created_at', 'status'];
-        fputcsv($handle, $header);
-        
-        // Write data
-        foreach ($data as $row) {
-            fputcsv($handle, [
-                $row['id'],
-                $row['title'],
-                $row['content'],
-                $row['excerpt'],
-                $row['category'],
-                $row['image_path'],
-                $row['gallery_images'],
-                $row['author'],
-                $row['created_at'],
-                $row['status']
-            ]);
-        }
-        
-        fclose($handle);
-        return true;
-    }
-    
-    return false;
-}
-
-function deleteNews($id) {
-    $data = getAllNewsData();
-    $newData = [];
-    $deletedImage = '';
-    
-    foreach ($data as $news) {
-        if ($news['id'] != $id) {
-            $newData[] = $news;
-        } else {
-            $deletedImage = $news['image_path'];
-        }
-    }
-    
-    // Delete image file if exists
-    if (!empty($deletedImage) && file_exists($deletedImage)) {
-        unlink($deletedImage);
-    }
-    
-    return saveNewsData($newData);
-}
-
-function saveCarouselData($data) {
-    $csvFile = 'data/carousel.csv';
-    $handle = fopen($csvFile, 'w');
-    
-    if ($handle) {
-        // Write header
-        $header = ['id', 'title', 'subtitle', 'button_text', 'image_path', 'created_at', 'status'];
-        fputcsv($handle, $header);
-        
-        // Write data
-        foreach ($data as $row) {
-            fputcsv($handle, $row);
-        }
-        
-        fclose($handle);
-        return true;
-    }
-    
-    return false;
-}
-
-function deleteSlide($id) {
-    $data = getCarouselData();
-    $newData = [];
-    $deletedImage = '';
-    
-    foreach ($data as $slide) {
-        if ($slide['id'] != $id) {
-            $newData[] = $slide;
-        } else {
-            $deletedImage = $slide['image_path'];
-        }
-    }
-    
-    // Delete image file if exists
-    if (!empty($deletedImage) && file_exists($deletedImage)) {
-        unlink($deletedImage);
-    }
-    
-    return saveCarouselData($newData);
-}
-
-// Handle AJAX requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    header('Content-Type: application/json');
-    
-    try {
-        switch ($_POST['action']) {
-            case 'get_slides':
-                echo json_encode(['success' => true, 'data' => getCarouselData()]);
-                exit;
-                
-            case 'delete_slide':
-                $id = $_POST['id'];
-                $success = deleteSlide($id);
-                echo json_encode(['success' => $success]);
-                exit;
-                
-            case 'save_slide':
-                // Validate required fields
-                if (empty($_POST['title']) || empty($_POST['subtitle']) || empty($_POST['button_text'])) {
-                    echo json_encode(['success' => false, 'error' => 'Semua field harus diisi']);
-                    exit;
-                }
-                
-                $data = getCarouselData();
-                $slideId = !empty($_POST['id']) ? $_POST['id'] : (count($data) + 1);
-                
-                $newSlide = [
-                    'id' => $slideId,
-                    'title' => trim($_POST['title']),
-                    'subtitle' => trim($_POST['subtitle']),
-                    'button_text' => trim($_POST['button_text']),
-                    'image_path' => '',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'status' => $_POST['status'] ?: 'active'
-                ];
-                
-                // Handle image upload
-                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = 'upload/carousel/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-                        echo json_encode(['success' => false, 'error' => 'Format gambar tidak didukung. Gunakan JPG, PNG, atau GIF']);
-                        exit;
-                    }
-                    
-                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) { // 5MB limit
-                        echo json_encode(['success' => false, 'error' => 'Ukuran gambar terlalu besar. Maksimal 5MB']);
-                        exit;
-                    }
-                    
-                    $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image']['name']);
-                    $uploadPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        $newSlide['image_path'] = $uploadPath;
-                    } else {
-                        echo json_encode(['success' => false, 'error' => 'Gagal upload gambar']);
-                        exit;
-                    }
-                } else if (!empty($_POST['existing_image'])) {
-                    $newSlide['image_path'] = $_POST['existing_image'];
-                }
-                
-                // Update existing or add new
-                $found = false;
-                foreach ($data as $key => $slide) {
-                    if ($slide['id'] == $newSlide['id']) {
-                        // Keep existing image if no new image uploaded
-                        if (empty($newSlide['image_path']) && !empty($slide['image_path'])) {
-                            $newSlide['image_path'] = $slide['image_path'];
-                        }
-                        $data[$key] = $newSlide;
-                        $found = true;
-                        break;
-                    }
-                }
-                
-                if (!$found) {
-                    $data[] = $newSlide;
-                }
-                
-                $success = saveCarouselData($data);
-                echo json_encode(['success' => $success, 'message' => 'Slide berhasil disimpan']);
-                exit;
-
-            // News management cases
-            case 'get_news':
-                echo json_encode(['success' => true, 'data' => getNewsData()]);
-                exit;
-                
-            case 'delete_news':
-                $id = $_POST['id'];
-                $success = deleteNews($id);
-                echo json_encode(['success' => $success]);
-                exit;
-                
-            case 'save_news':
-                // Validate required fields
-                if (empty($_POST['title']) || empty($_POST['content']) || empty($_POST['category'])) {
-                    echo json_encode(['success' => false, 'error' => 'Title, content, dan category harus diisi']);
-                    exit;
-                }
-                
-                $data = getAllNewsData();
-                
-                // Generate unique ID for new news
-                if (!empty($_POST['id'])) {
-                    $newsId = $_POST['id'];
-                } else {
-                    // Find the highest existing ID and add 1
-                    $maxId = 0;
-                    foreach ($data as $news) {
-                        if (intval($news['id']) > $maxId) {
-                            $maxId = intval($news['id']);
-                        }
-                    }
-                    $newsId = $maxId + 1;
-                }
-                
-                $newNews = [
-                    'id' => $newsId,
-                    'title' => trim($_POST['title']),
-                    'content' => trim($_POST['content']),
-                    'excerpt' => trim($_POST['excerpt']) ?: substr(strip_tags($_POST['content']), 0, 150) . '...',
-                    'category' => trim($_POST['category']),
-                    'image_path' => '',
-                    'gallery_images' => '',
-                    'author' => trim($_POST['author']) ?: 'Admin LP3I',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'status' => $_POST['status'] ?: 'active'
-                ];
-                
-                // Handle image upload
-                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = 'upload/news/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-                        echo json_encode(['success' => false, 'error' => 'Format gambar tidak didukung. Gunakan JPG, PNG, atau GIF']);
-                        exit;
-                    }
-                    
-                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) { // 5MB limit
-                        echo json_encode(['success' => false, 'error' => 'Ukuran gambar terlalu besar. Maksimal 5MB']);
-                        exit;
-                    }
-                    
-                    $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image']['name']);
-                    $uploadPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        $newNews['image_path'] = $uploadPath;
-                    } else {
-                        echo json_encode(['success' => false, 'error' => 'Gagal upload gambar']);
-                        exit;
-                    }
-                } else if (!empty($_POST['existing_image'])) {
-                    $newNews['image_path'] = $_POST['existing_image'];
-                }
-                
-                // Handle gallery images upload
-                $galleryImages = [];
-                if (isset($_FILES['gallery_images'])) {
-                    $uploadDir = 'upload/news/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    
-                    foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
-                        if ($_FILES['gallery_images']['error'][$key] === UPLOAD_ERR_OK) {
-                            if (!in_array($_FILES['gallery_images']['type'][$key], $allowedTypes)) {
-                                continue; // Skip invalid file types
-                            }
-                            
-                            if ($_FILES['gallery_images']['size'][$key] > 5 * 1024 * 1024) {
-                                continue; // Skip files larger than 5MB
-                            }
-                            
-                            $fileName = time() . '_' . $key . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['gallery_images']['name'][$key]);
-                            $uploadPath = $uploadDir . $fileName;
-                            
-                            if (move_uploaded_file($tmpName, $uploadPath)) {
-                                $galleryImages[] = $uploadPath;
-                            }
-                        }
-                    }
-                }
-                
-                // Add existing gallery images if editing
-                if (!empty($_POST['existing_gallery'])) {
-                    $existingGallery = explode(',', $_POST['existing_gallery']);
-                    $galleryImages = array_merge($galleryImages, array_filter($existingGallery));
-                }
-                
-                $newNews['gallery_images'] = implode(',', $galleryImages);
-                
-                // Update existing or add new
-                $found = false;
-                foreach ($data as $key => $news) {
-                    if ($news['id'] == $newNews['id']) {
-                        // Keep existing image if no new image uploaded
-                        if (empty($newNews['image_path']) && !empty($news['image_path'])) {
-                            $newNews['image_path'] = $news['image_path'];
-                        }
-                        $data[$key] = $newNews;
-                        $found = true;
-                        break;
-                    }
-                }
-                
-                if (!$found) {
-                    $data[] = $newNews;
-                }
-                
-                $success = saveNewsData($data);
-                echo json_encode(['success' => $success, 'message' => 'Berita berhasil disimpan']);
-                exit;
-        }
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
-        exit;
-    }
-}
-
-$carouselData = getCarouselData();
-?>
+@php
+    // Carousel data is provided by AdminController@index
+    $carouselData = $carouselData ?? [];
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1021,44 +614,88 @@ $carouselData = getCarouselData();
         let newsData = [];
         let editingId = null;
 
+        // Helper function for safe AJAX calls
+        async function safeJsonFetch(endpoint, formData) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Check if response is OK
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Response is not JSON:', text.substring(0, 200));
+                    throw new Error('Server returned non-JSON response. Check server logs.');
+                }
+                
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
+        }
+
         // Carousel management functions
         async function fetchCarouselData() {
             try {
                 const formData = new FormData();
                 formData.append('action', 'get_slides');
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const responseText = await response.text();
-                const result = JSON.parse(responseText);
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     carouselData = result.data;
                     loadCarouselList();
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('Error loading carousel data: ' + error.message);
             }
+        }
+
+        function loadCarouselList() {
+            const list = document.getElementById('carousel-list');
+            list.innerHTML = '';
+
+            if (!carouselData || carouselData.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Belum ada slide.</p>';
+                return;
+            }
+
+            carouselData.forEach(slide => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.setAttribute('data-id', slide.id);
+                item.innerHTML = `
+                    <div class="carousel-info">
+                        <h3>${slide.title}</h3>
+                        <p>${slide.subtitle}</p>
+                        <span class="status ${slide.status}">${(slide.status || '').charAt(0).toUpperCase() + (slide.status || '').slice(1)}</span>
+                        ${slide.image_path ? `<div class="image-preview"><img src="${slide.image_path}" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
+                    </div>
+                    <div class="carousel-actions">
+                        <button class="btn-edit" onclick="editSlide(${slide.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteSlide(${slide.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
         }
 
         async function saveCarouselSlide(formData) {
             try {
                 formData.append('action', 'save_slide');
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const responseText = await response.text();
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    alert('Server error: Invalid response format');
-                    return false;
-                }
+                const result = await safeJsonFetch('/admin/action', formData);
                 
                 if (result.success) {
                     alert(result.message || 'Slide berhasil disimpan');
@@ -1081,11 +718,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_slide');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     location.reload();
                     return true;
@@ -1095,7 +728,7 @@ $carouselData = getCarouselData();
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error deleting slide');
+                alert('Error deleting slide: ' + error.message);
                 return false;
             }
         }
@@ -1106,17 +739,14 @@ $carouselData = getCarouselData();
                 const formData = new FormData();
                 formData.append('action', 'get_news');
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     newsData = result.data;
                     loadNewsList();
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error fetching news:', error);
+                alert('Error loading news: ' + error.message);
             }
         }
 
@@ -1159,12 +789,7 @@ $carouselData = getCarouselData();
         async function saveNews(formData) {
             try {
                 formData.append('action', 'save_news');
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     alert(result.message || 'Berita berhasil disimpan');
                     closeNewsModal();
@@ -1187,11 +812,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_news');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     fetchNewsData();
                     return true;
@@ -1201,7 +822,7 @@ $carouselData = getCarouselData();
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error deleting news');
+                alert('Error deleting news: ' + error.message);
                 return false;
             }
         }
@@ -1410,7 +1031,7 @@ $carouselData = getCarouselData();
                 const formData = new FormData();
                 formData.append('action', 'get_news');
                 
-                const response = await fetch('admin.php', {
+                const response = await fetch('/admin/action', {
                     method: 'POST',
                     body: formData
                 });
@@ -1466,7 +1087,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_news');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
+                const response = await fetch('/admin/action', {
                     method: 'POST',
                     body: formData
                 });

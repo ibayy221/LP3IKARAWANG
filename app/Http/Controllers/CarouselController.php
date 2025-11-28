@@ -71,9 +71,56 @@ class CarouselController extends Controller
     public function showCarousel()
     {
         $carousel = $this->readCarouselData();
-        // Render the main index view and provide carousel data under a
-        // single consistent variable name `carouselData` used by the Blade.
-        return view('index', ['carouselData' => $carousel]);
+        // Also read news CSV so the public index can render latest news
+        $news = $this->readNewsData();
+        return view('index', ['carouselData' => $carousel, 'newsData' => $news]);
+    }
+
+    private function readNewsData()
+    {
+        $data = [];
+        $csvPath = public_path('data/news.csv');
+        if (!file_exists($csvPath)) {
+            return $data;
+        }
+
+        if (($handle = fopen($csvPath, 'r')) !== false) {
+            $header = fgetcsv($handle);
+            while (($row = fgetcsv($handle)) !== false) {
+                // normalize row length
+                $headerCount = count($header);
+                $rowCount = count($row);
+                if ($rowCount < $headerCount) $row = array_pad($row, $headerCount, '');
+                if ($rowCount > $headerCount) $row = array_slice($row, 0, $headerCount);
+
+                $raw = array_combine($header, $row);
+                // skip inactive
+                if (isset($raw['status']) && $raw['status'] !== 'active') continue;
+
+                $data[] = [
+                    'id' => $raw['id'] ?? null,
+                    'title' => $raw['title'] ?? '',
+                    'content' => $raw['content'] ?? '',
+                    'excerpt' => $raw['excerpt'] ?? '',
+                    'category' => $raw['category'] ?? '',
+                    'image_path' => $raw['image_path'] ?? '',
+                    'gallery_images' => $raw['gallery_images'] ?? '',
+                    'author' => $raw['author'] ?? '',
+                    'created_at' => $raw['created_at'] ?? null,
+                    'status' => $raw['status'] ?? 'active',
+                ];
+            }
+            fclose($handle);
+        }
+
+        // Order by created_at desc if available
+        usort($data, function ($a, $b) {
+            $ta = strtotime($a['created_at'] ?? '0');
+            $tb = strtotime($b['created_at'] ?? '0');
+            return $tb <=> $ta;
+        });
+
+        return $data;
     }
 
     private function readCarouselData()
@@ -109,9 +156,9 @@ class CarouselController extends Controller
                 $raw = array_combine($header, $row);
                 // Normalize keys so views/JS can rely on consistent names
                 $imgRaw = $raw['image_path'] ?? $raw['image'] ?? '';
-                // If image is stored under storage/app/public, expose it under /storage
+                // Images are stored in public/upload/carousel/, so we can access them directly
                 if (!empty($imgRaw)) {
-                    $imgForBrowser = 'storage/' . ltrim($imgRaw, '/');
+                    $imgForBrowser = $imgRaw;
                 } else {
                     $imgForBrowser = '';
                 }
