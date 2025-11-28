@@ -559,23 +559,32 @@
             gap: 0.5rem;
             background: #004269 !important;
             color: white !important;
-            padding: 0.9rem 1.8rem !important;
+            padding: 0.6rem 1.2rem !important;
             text-decoration: none !important;
-            border-radius: 30px !important;
-            font-weight: 700 !important;
-            font-size: 1.05rem !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 6px 20px rgba(0, 66, 105, 0.3) !important;
+            box-shadow: 0 4px 15px rgba(0, 66, 105, 0.3) !important;
             border: none !important;
             cursor: pointer !important;
             animation: registerPulse 2s ease-in-out infinite;
+            white-space: nowrap;
         }
 
         .register-btn:hover {
             background: #003352 !important;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 66, 105, 0.5) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 66, 105, 0.5) !important;
             animation: none;
+        }
+
+        @media (max-width: 768px) {
+            .register-btn {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+            }
         }
 
         @keyframes registerPulse {
@@ -1103,7 +1112,6 @@
                         <a href="#kerjasama-industri">Kerjasama Industri</a>
                     </div>
                 </li>
-                <li><a href="#ormawa">Ormawa</a></li>
                 <li><a href="#kegiatan">Kegiatan</a></li>
                 <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
@@ -1132,7 +1140,7 @@
                     }
                 @endphp
                 @if(!empty($slideImageUrl))
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: url('{{ $slideImageUrl }}'); background-size: cover; background-position: center;">
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="url('{{ $slideImageUrl }}')">
                     </div>
                 @else
                     @php
@@ -1143,7 +1151,7 @@
                         ];
                         $gradientIndex = $index % count($gradients);
                     @endphp
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: {!! $gradients[$gradientIndex] !!}; background-size: cover; background-position: center;">
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="{{ $gradients[$gradientIndex] }}">
                     </div>
                 @endif
             @endforeach
@@ -1208,7 +1216,7 @@
     <section class="registration-banner" id="pendaftaran">
         <h3><i class="fas fa-graduation-cap"></i> Bergabunglah dengan LP3I Karawang</h3>
         <p>Raih masa depan cerah bersama program studi unggulan kami. Daftar sekarang dan dapatkan kesempatan untuk berkembang dengan kurikulum terdepan dan fasilitas modern.</p>
-        <a href="#" onclick="alert('Halaman pendaftaran akan segera diluncurkan. Hubungi kami di (0267) 123-4567 untuk informasi lebih lanjut.'); return false;" class="register-btn">
+        <a href="{{ route('mahasiswa.create') }}" class="register-btn">
             <i class="fas fa-sign-in-alt"></i> Daftar Online Sekarang
         </a>
     </section>
@@ -1227,7 +1235,7 @@
             @else
                 <div class="news-grid">
                     @foreach($newsData as $news)
-                        <div class="news-card" onclick="location.href='news.php?id={{ $news['id'] }}'" style="cursor: pointer;">
+                        <div class="news-card" data-url="{{ route('news.show', $news['id']) }}" style="cursor: pointer;">
                                             @php
                                                 $newsImage = null;
                                                 if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
@@ -1378,6 +1386,8 @@
         </div>
     </footer>
 
+    <script id="slide-data" type="application/json">{!! json_encode($carouselData, JSON_UNESCAPED_UNICODE) !!}</script>
+
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1436,6 +1446,17 @@
         // Carousel functionality
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-slide');
+        // Apply `data-bg` attributes to inline style to avoid editor/linters
+        slides.forEach(s => {
+            const bg = s.getAttribute('data-bg');
+            if (bg) s.style.background = bg;
+        });
+        // Apply consistent background sizing to all slides
+        slides.forEach(s => {
+            s.style.backgroundSize = 'cover';
+            s.style.backgroundPosition = 'center';
+            s.style.backgroundRepeat = 'no-repeat';
+        });
         const indicators = document.querySelectorAll('.indicator');
         const slideContent = document.getElementById('slide-content');
         
@@ -1444,8 +1465,8 @@
         let endX = 0;
         let isTouch = false;
         
-    // Slide data generated from server-side carouselData
-    const slideData = @json($carouselData);
+    // Slide data generated from server-side carouselData (read from JSON script tag)
+    const slideData = JSON.parse(document.getElementById('slide-data').textContent || '[]');
     // URL to redirect when CTA is clicked (Mahasiswa create)
     const MAHASISWA_CREATE_URL = "{{ route('mahasiswa.create') }}";
 
@@ -1576,6 +1597,13 @@
             const newsCards = document.querySelectorAll('.news-card');
             newsCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.2}s`;
+                // Add click handler for news card navigation
+                card.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
             });
         }
 
