@@ -96,6 +96,18 @@ php artisan serve
 - Jika Anda commit perubahan dengan gambar baru, gambar akan ter-include di repository
 - Setelah clone, jalankan `setup.bat` atau `setup.sh` untuk memastikan folder struktur siap
 
+## 🎓 Mahasiswa Registration
+
+You can now access a Mahasiswa registration form in the app at:
+
+- GET /mahasiswa/create — shows the registration form
+- POST /mahasiswa — submits the registration (fields are validated server-side)
+
+To try locally:
+
+1. Run migrations: `php artisan migrate`
+2. Start dev server: `php artisan serve`
+3. Visit http://127.0.0.1:8000/mahasiswa/create
 
 6. Buka `http://127.0.0.1:8000` di browser.
 
@@ -161,3 +173,5 @@ Halaman admin tersedia di: `http://localhost:8000/admin` (saat development)
 
 --
 Dokumentasi ini adalah ringkasan teknis untuk pengembangan lokal dan pemahaman struktur proyek. Jika Anda ingin, saya dapat menambahkan halaman dokumentasi terpisah di folder `docs/` (deploy, API endpoints, contoh CSV import), atau memperluas dokumentasi untuk fitur tertentu—sebutkan bagian mana yang ingin diperinci.
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

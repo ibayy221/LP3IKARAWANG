@@ -1055,6 +1055,7 @@
                         <a href="#fasilitas">Fasilitas</a>
                     </div>
                 </li>
+
                 <li class="dropdown">
                     <a href="#programs">Program Studi</a>
                     <div class="dropdown-content">
@@ -1064,6 +1065,18 @@
                         <a href="#marketing-digital">Marketing Digital</a>
                     </div>
                 </li>
+
+                <li class="dropdown">
+                    <!-- Link langsung ke form pendaftaran mahasiswa -->
+                    <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
+                    <div class="dropdown-content">
+                        <!-- Form pendaftaran (mahasiswa.create) -->
+                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
+                        <!-- Jika diperlukan, tambahkan tautan lain yang relevan di sini -->
+                    </div>
+                </li>
+
+
                 <li class="dropdown">
                     <a href="#akademik">Akademik</a>
                     <div class="dropdown-content">
@@ -1106,8 +1119,20 @@
                     $imagePath = !empty($slide['image']) ? $slide['image'] : '';
                 @endphp
 
-                @if(!empty($imagePath) && file_exists(public_path($imagePath)))
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: url('{{ asset($imagePath) }}'); background-size: cover; background-position: center;">
+                @php
+                    // Normalize slide image path: try public path first, then storage (public disk)
+                    $slideImageUrl = null;
+                    if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+                        $slideImageUrl = asset($imagePath);
+                    } elseif (!empty($imagePath) && file_exists(public_path('storage/' . ltrim($imagePath, '/')))) {
+                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
+                    } elseif (!empty($imagePath) && file_exists(storage_path('app/public/' . ltrim($imagePath, '/')))) {
+                        // If the file exists in storage/app/public, ensure it will be served from public/storage
+                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
+                    }
+                @endphp
+                @if(!empty($slideImageUrl))
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: url('{{ $slideImageUrl }}'); background-size: cover; background-position: center;">
                     </div>
                 @else
                     @php
@@ -1163,13 +1188,11 @@
                 @if($hasReadableContent)
                     <h1>{{ $firstSlide['title'] ?? '' }}</h1>
                     <p>{{ $firstSlide['subtitle'] ?? '' }}</p>
-                    @if(!empty($firstSlide['button']))
-                        <a href="#programs" class="cta-button">{{ $firstSlide['button'] }}</a>
-                    @endif
+                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">{{ !empty($firstSlide['button']) ? $firstSlide['button'] : 'DAFTAR' }}</a>
                 @else
                     <h1>Kembangkan Karirmu bersama LP3I Karawang</h1>
                     <p>Praktik nyata. Kurikulum up-to-date. Lulusan siap kerja.</p>
-                    <a href="#programs" class="cta-button">Daftar Sekarang</a>
+                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">Daftar Sekarang</a>
                 @endif
             </div>
         </div>
@@ -1205,8 +1228,18 @@
                 <div class="news-grid">
                     @foreach($newsData as $news)
                         <div class="news-card" onclick="location.href='news.php?id={{ $news['id'] }}'" style="cursor: pointer;">
-                            @if(!empty($news['image_path']) && file_exists(public_path($news['image_path'])))
-                                <img src="{{ asset($news['image_path']) }}" alt="{{ $news['title'] }}" class="news-image">
+                                            @php
+                                                $newsImage = null;
+                                                if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
+                                                    $newsImage = asset($news['image_path']);
+                                                } elseif (!empty($news['image_path']) && file_exists(public_path('storage/' . ltrim($news['image_path'], '/')))) {
+                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                                } elseif (!empty($news['image_path']) && file_exists(storage_path('app/public/' . ltrim($news['image_path'], '/')))) {
+                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                                }
+                                            @endphp
+                                            @if($newsImage)
+                                                <img src="{{ $newsImage }}" alt="{{ $news['title'] }}" class="news-image">
                             @else
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>
@@ -1413,6 +1446,8 @@
         
     // Slide data generated from server-side carouselData
     const slideData = @json($carouselData);
+    // URL to redirect when CTA is clicked (Mahasiswa create)
+    const MAHASISWA_CREATE_URL = "{{ route('mahasiswa.create') }}";
 
         function updateSlideContent(index) {
             if (slideData.length === 0) return;
@@ -1432,7 +1467,7 @@
                 slideContent.innerHTML = `
                     <h1>${data.title}</h1>
                     <p>${data.subtitle}</p>
-                    <a href="#programs" class="cta-button">${data.button}</a>
+                    <a href="${MAHASISWA_CREATE_URL}" class="cta-button">${data.button || 'DAFTAR'}</a>
                 `;
             }
             // otherwise keep the existing hero content (slogan/default)
@@ -1465,8 +1500,8 @@
             showSlide(currentSlide);
         }
 
-        // Auto-slide every 6 seconds
-        setInterval(nextSlide, 6000);
+        // Auto-slide every 5 seconds
+        setInterval(nextSlide, 5000);
 
         // Navigation controls
         document.querySelector('.carousel-nav.next').addEventListener('click', nextSlide);

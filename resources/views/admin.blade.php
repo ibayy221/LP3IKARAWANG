@@ -117,7 +117,8 @@
 
         .carousel-list {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
@@ -127,8 +128,9 @@
             padding: 1.5rem;
             border-left: 4px solid #4a90e2;
             display: flex;
-            justify-content: space-between;
+            gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .carousel-item-info h4 {
@@ -148,7 +150,8 @@
 
         .news-list {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
@@ -159,8 +162,9 @@
             margin-bottom: 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
+            gap: 1rem;
+            align-items: flex-start;
             justify-content: space-between;
-            align-items: center;
         }
 
         .news-item-info h4 {
@@ -439,11 +443,22 @@
                                 <h3><?= htmlspecialchars($slide['title']) ?></h3>
                                 <p><?= htmlspecialchars($slide['subtitle']) ?></p>
                                 <span class="status <?= $slide['status'] ?>"><?= ucfirst($slide['status']) ?></span>
-                                <?php if (!empty($slide['image_path'])): ?>
+                                <?php if (!empty($slide['image_path'])):
+                                    // normalize slide image URL (public path -> storage link)
+                                    $imgUrl = '';
+                                    $p = $slide['image_path'];
+                                    if (file_exists(public_path($p))) {
+                                        $imgUrl = asset($p);
+                                    } elseif (file_exists(public_path('storage/' . ltrim($p, '/')))) {
+                                        $imgUrl = asset('storage/' . ltrim($p, '/'));
+                                    } elseif (file_exists(storage_path('app/public/' . ltrim($p, '/')))) {
+                                        $imgUrl = asset('storage/' . ltrim($p, '/'));
+                                    }
+                                    if ($imgUrl): ?>
                                     <div class="image-preview">
-                                        <img src="<?= $slide['image_path'] ?>" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                        <img src="<?= $imgUrl ?>" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                                     </div>
-                                <?php endif; ?>
+                                <?php endif; endif; ?>
                             </div>
                             <div class="carousel-actions">
                                 <button class="btn-edit" onclick="editSlide(<?= $slide['id'] ?>)">
@@ -760,6 +775,15 @@
             }
             
             newsData.forEach(news => {
+                // normalize image path for news items (if it's a relative path saved in storage/app/public)
+                let imgSrc = '';
+                if (news.image_path) {
+                    imgSrc = news.image_path.trim();
+                    // if path is not absolute (no leading / or protocol), assume it's stored in public storage
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                }
                 const newsItem = document.createElement('div');
                 newsItem.className = 'news-item';
                 newsItem.innerHTML = `
@@ -771,7 +795,7 @@
                             <i class="fas fa-user"></i> ${news.author} | 
                             <i class="fas fa-calendar"></i> ${new Date(news.created_at).toLocaleDateString('id-ID')}
                         </span>
-                        ${news.image_path ? `<div class="image-preview"><img src="${news.image_path}" alt="News Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
+                        ${imgSrc ? `<div class="image-preview"><img src="${imgSrc}" alt="News Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
                     </div>
                     <div class="news-actions">
                         <button class="btn-edit" onclick="editNews(${news.id})">
@@ -859,10 +883,14 @@
             if (galleryImages) {
                 const images = galleryImages.split(',').filter(img => img.trim());
                 images.forEach((imagePath, index) => {
+                    let imgSrc = imagePath.trim();
+                    if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
                     galleryItem.innerHTML = `
-                        <img src="${imagePath.trim()}" alt="Gallery Image">
+                        <img src="${imgSrc}" alt="Gallery Image">
                         <button type="button" class="remove-btn" onclick="removeExistingGalleryItem(this, '${imagePath.trim()}')" data-path="${imagePath.trim()}">×</button>
                     `;
                     galleryGrid.appendChild(galleryItem);
@@ -909,7 +937,11 @@
                 
                 const preview = document.getElementById('image-preview');
                 if (slide.image_path) {
-                    preview.innerHTML = `<img src="${slide.image_path}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
+                    let imgSrc = slide.image_path.trim();
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                    preview.innerHTML = `<img src="${imgSrc}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
                 } else {
                     preview.innerHTML = '';
                 }
@@ -973,7 +1005,11 @@
                 
                 const preview = document.getElementById('news-image-preview');
                 if (news.image_path) {
-                    preview.innerHTML = `<img src="${news.image_path}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
+                    let imgSrc = news.image_path.trim();
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                    preview.innerHTML = `<img src="${imgSrc}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
                 } else {
                     preview.innerHTML = '';
                 }
