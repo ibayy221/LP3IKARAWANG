@@ -109,9 +109,23 @@ class CarouselController extends Controller
                 $raw = array_combine($header, $row);
                 // Normalize keys so views/JS can rely on consistent names
                 $imgRaw = $raw['image_path'] ?? $raw['image'] ?? '';
-                // If image is stored under storage/app/public, expose it under /storage
+                // Normalize the stored image path for browser consumption.
+                // prefer already-correct values, otherwise try public/ or storage/app/public
                 if (!empty($imgRaw)) {
-                    $imgForBrowser = 'storage/' . ltrim($imgRaw, '/');
+                    $candidate = ltrim($imgRaw, '/');
+                    if (stripos($candidate, 'storage/') === 0) {
+                        // path already points under storage/
+                        $imgForBrowser = $candidate;
+                    } elseif (file_exists(public_path($candidate))) {
+                        // image present directly in public/ -> serve as-is
+                        $imgForBrowser = $candidate;
+                    } elseif (file_exists(storage_path('app/public/' . $candidate))) {
+                        // file is under storage/app/public -> expose via /storage/
+                        $imgForBrowser = 'storage/' . $candidate;
+                    } else {
+                        // last resort: try exposing under storage/
+                        $imgForBrowser = 'storage/' . $candidate;
+                    }
                 } else {
                     $imgForBrowser = '';
                 }
@@ -142,8 +156,17 @@ class CarouselController extends Controller
         // the site still shows carousel backgrounds when images exist but
         // CSV is empty.
         if (empty($data)) {
-            $storageDir = storage_path('app/public/' . $this->uploadDir);
-            if (is_dir($storageDir)) {
+            // Search a set of common storage directories so the carousel will
+            // display when images are placed into storage/app/public.
+            $candidateDirs = [
+                trim($this->uploadDir, '/'), // upload/carousel
+                'image' // storage/app/public/image
+            ];
+
+            foreach ($candidateDirs as $dir) {
+                $storageDir = storage_path('app/public/' . $dir);
+                if (!is_dir($storageDir)) continue;
+
                 $files = scandir($storageDir);
                 foreach ($files as $file) {
                     if (in_array($file, ['.', '..'])) continue;
@@ -157,7 +180,7 @@ class CarouselController extends Controller
                         'subtitle' => '',
                         'button' => '',
                         // expose under /storage so public/storage symlink serves it
-                        'image' => 'storage/' . trim($this->uploadDir, '/') . '/' . $file,
+                        'image' => 'storage/' . trim($dir, '/') . '/' . $file,
                         'created_date' => null,
                         'status' => 'active',
                     ];
