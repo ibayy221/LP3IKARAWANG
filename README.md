@@ -56,7 +56,7 @@ Saat Anda clone project di device lain, folder `public/upload/` mungkin kosong a
 
 **Windows:**
 ```powershell
-.\setup.bat
+pasang setup.bat setelah itu > storage:link
 ```
 
 **Linux/Mac:**
