@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\AdminController;
 Route::get('/', [CarouselController::class, 'showCarousel']);
 Route::get('/carousel-view', [CarouselController::class, 'showCarousel']);
 
@@ -24,3 +25,8 @@ Route::get('/news/{id?}', function ($id = null) {
 	}
 	return view('news');
 })->name('news.show');
+
+// Admin panel routes (legacy link to admin.php still supported)
+Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::get('/admin.php', [AdminController::class, 'index']);
+Route::post('/admin/action', [AdminController::class, 'handleAction'])->name('admin.action');

@@ -424,9 +424,20 @@
 
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            /* Default desktop: 3 columns */
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             margin-top: 3rem;
+        }
+
+        /* Medium screens: 2 columns */
+        @media (max-width: 992px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Small screens: 1 column */
+        @media (max-width: 576px) {
+            .news-grid { grid-template-columns: 1fr; }
         }
 
         .news-card {
@@ -438,6 +449,8 @@
             opacity: 0;
             transform: translateY(50px);
             animation-fill-mode: both;
+            display: flex;
+            flex-direction: column;
         }
 
         .news-card.animate {
@@ -474,13 +487,17 @@
 
         .news-image {
             width: 100%;
-            height: 200px;
+            height: 160px;
             object-fit: cover;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
         }
 
         .news-content {
             padding: 1.5rem;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .news-category {
@@ -1075,15 +1092,11 @@
                     </div>
                 </li>
 
-                <li class="dropdown">
-                    <!-- Link langsung ke form pendaftaran mahasiswa -->
-                    <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
+                    <!-- <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
                     <div class="dropdown-content">
-                        <!-- Form pendaftaran (mahasiswa.create) -->
                         <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
-                        <!-- Jika diperlukan, tambahkan tautan lain yang relevan di sini -->
                     </div>
-                </li>
+                </li> -->
 
 
                 <li class="dropdown">
@@ -1291,24 +1304,24 @@
                     <div class="program-icon">
                         <i class="fas fa-laptop-code"></i>
                     </div>
-                    <h3>Teknik Informatika</h3>
+                    <h3>Application Software Engineering</h3>
                     <p>Program studi yang mempersiapkan mahasiswa menjadi programmer dan developer handal dengan kurikulum yang selalu update mengikuti perkembangan teknologi.</p>
                 </div>
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>Manajemen Bisnis</h3>
+                    <h3>Office Administration automatization</h3>
                     <p>Membekali mahasiswa dengan kemampuan manajemen modern dan kewirausahaan untuk menghadapi tantangan dunia bisnis yang dinamis.</p>
                 </div>
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-calculator"></i>
                     </div>
-                    <h3>Akuntansi</h3>
+                    <h3>Accounting Information System</h3>
                     <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
                 </div>
-                <div class="program-card">
+                <!-- <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-bullhorn"></i>
                     </div>
@@ -1316,7 +1329,7 @@
                     <p>Menyiapkan mahasiswa menjadi ahli pemasaran digital yang mampu memanfaatkan teknologi untuk strategi pemasaran modern.</p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </section>
 
     <!-- About Section -->
@@ -1457,6 +1470,17 @@
             s.style.backgroundPosition = 'center';
             s.style.backgroundRepeat = 'no-repeat';
         });
+        // On small screens, nudge the background position vertically so focal areas stay visible
+        function adjustSlideForMobile() {
+            if (window.innerWidth <= 768) {
+                slides.forEach(s => { s.style.backgroundPosition = 'center 35%'; });
+            } else {
+                slides.forEach(s => { s.style.backgroundPosition = 'center center'; });
+            }
+        }
+        // Run on load and resize
+        adjustSlideForMobile();
+        window.addEventListener('resize', adjustSlideForMobile);
         const indicators = document.querySelectorAll('.indicator');
         const slideContent = document.getElementById('slide-content');
         

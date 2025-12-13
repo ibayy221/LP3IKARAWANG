@@ -9,3 +9,37 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Elegant form theme for all forms */
+.elegant-form .form-control,
+.elegant-form .form-select,
+.elegant-form textarea.form-control {
+    border-radius: 12px;
+    padding: .75rem .9rem;
+    border: 1px solid rgba(30,60,114,0.12);
+    background: linear-gradient(180deg, #ffffff, #fbfbff);
+    box-shadow: 0 6px 18px rgba(30, 60, 114, 0.06);
+    transition: all .18s ease-in-out;
+}
+.elegant-form .form-control:focus,
+.elegant-form .form-select:focus,
+.elegant-form textarea.form-control:focus {
+    border-color: rgba(30,60,114,0.35);
+    box-shadow: 0 10px 26px rgba(30,60,114,0.12), 0 0 0 4px rgba(116,185,255,0.06);
+    outline: none;
+}
+.elegant-form .form-label { color: #1e3c72; font-weight:600; }
+.elegant-form .card { border-radius: 14px; border: none; box-shadow: 0 8px 40px rgba(16,24,40,0.08); }
+.elegant-form .btn { border-radius: 999px; padding: .68rem 1.2rem; transition: transform .08s ease, box-shadow .08s ease; }
+.elegant-form .btn-primary { background: linear-gradient(90deg,#1e3c72,#2a5298); border:none; color:#fff; }
+.elegant-form .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,60,114,0.14); }
+.elegant-form .form-help { color: rgba(30,60,114,0.7); }
+
+/* Dropdown container max-height to avoid layout overflow */
+.ts-dropdown, .ts-control .dropdown-content { max-height: 240px; overflow: auto; }
+
+/* Small responsive tweaks for mobile */
+@media (max-width: 768px) {
+    .elegant-form .form-control, .elegant-form .form-select, .elegant-form textarea.form-control { padding: .6rem .7rem; }
+}
+

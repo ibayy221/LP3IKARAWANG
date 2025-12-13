@@ -12,8 +12,8 @@ class Mahasiswa extends Model
     protected $table = 'mahasiswas';
 
     protected $fillable = [
-        'nama_mhs', 'NIK_mahasiswa', 'email', 'no_hp', 'jurusan', 'tahun_lulus', 'alamat',
+        'nama_mhs', 'email', 'no_hp', 'jurusan', 'tahun_lulus', 'alamat', 'kecamatan',
         'tempat_lahir', 'tgl_lahir', 'jenis_kelamin', 'jenis_sekolah', 'kategori_sekolah',
-        'status_verifikasi', 'asal_sekolah', 'file_path'
+        'status_verifikasi', 'asal_sekolah', 'file_path', 'desa', 'kode_pos'
     ];
 }

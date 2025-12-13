@@ -109,6 +109,16 @@ To try locally:
 2. Start dev server: `php artisan serve`
 3. Visit http://127.0.0.1:8000/mahasiswa/create
 
+If you need the Karawang kecamatan list for the registration form, seed the database:
+
+```powershell
+php artisan migrate --database=akademik_kampus --force
+php artisan db:seed --class=KecamatanSeeder --database=akademik_kampus
+php artisan db:seed --class=DesaSeeder --database=akademik_kampus
+```
+
+This will populate the kecamatan dropdown used by the Mahasiswa registration form.
+
 6. Buka `http://127.0.0.1:8000` di browser.
 
 **Data khusus proyek**

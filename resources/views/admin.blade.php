@@ -400,6 +400,32 @@
             }
         }
     </style>
+        <style>
+                /* Inline elegant-form fallback for admin (when global CSS not loaded) */
+                .elegant-form .form-control,
+                .elegant-form .form-select,
+                .elegant-form textarea.form-control {
+                    border-radius: 12px;
+                    padding: .75rem .9rem;
+                    border: 1px solid rgba(30,60,114,0.12);
+                    background: linear-gradient(180deg, #ffffff, #fbfbff);
+                    box-shadow: 0 6px 18px rgba(30, 60, 114, 0.06);
+                    transition: all .18s ease-in-out;
+                }
+                .elegant-form .form-control:focus,
+                .elegant-form .form-select:focus,
+                .elegant-form textarea.form-control:focus {
+                    border-color: rgba(30,60,114,0.35);
+                    box-shadow: 0 10px 26px rgba(30,60,114,0.12), 0 0 0 4px rgba(116,185,255,0.06);
+                    outline: none;
+                }
+                .elegant-form .form-label, .elegant-form label { color: #1e3c72; font-weight:600; }
+                .elegant-form .btn { border-radius: 999px; padding: .68rem 1.2rem; transition: transform .08s ease, box-shadow .08s ease; }
+                .elegant-form .btn-primary { background: linear-gradient(90deg,#1e3c72,#2a5298); border:none; color:#fff; }
+                .elegant-form .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,60,114,0.14); }
+                .elegant-form .form-help { color: rgba(30,60,114,0.7); }
+                .ts-dropdown, .ts-control .dropdown-content { max-height: 240px; overflow: auto; }
+        </style>
 </head>
 <body>
     <div class="admin-container">
@@ -489,7 +515,23 @@
                 <!-- Settings Section -->
                 <div class="content-section" id="settings-section">
                     <h2 class="section-title">Pengaturan</h2>
-                    <p>Fitur pengaturan akan ditambahkan di sini.</p>
+                    <p>Atur aset dan preferensi website seperti gambar registrasi.</p>
+                    <div style="display:flex; gap:1rem; flex-direction:column; max-width:600px;">
+                        <div class="form-group">
+                            <label for="registration-image-input">Gambar Registrasi (tampil di halaman pendaftaran)</label>
+                            <div class="image-upload" onclick="document.getElementById('registration-image-input').click();">
+                                <i class="fas fa-upload"></i>
+                                <div id="registration-image-preview" class="image-preview"></div>
+                            </div>
+                            <small id="registration-image-path" style="display:block;margin-top:0.5rem;color:#666;font-size:0.85rem;"></small>
+                            <input type="file" id="registration-image-input" name="image" style="display:none;" accept="image/*" onchange="previewRegistrationImage(this)">
+                            <span class="form-help">Pilih file gambar (jpg, png) untuk ditampilkan pada halaman pendaftaran.</span>
+                        </div>
+                        <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                            <button type="button" class="btn btn-danger" onclick="resetRegistrationImage()">Reset</button>
+                            <button type="button" class="btn btn-success" onclick="saveRegistrationImage()">Simpan</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -503,7 +545,7 @@
                 <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             
-            <form id="slide-form" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
+            <form id="slide-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="slide-id" name="id">
                 <input type="hidden" id="existing-image" name="existing_image">
                 
@@ -552,7 +594,7 @@
                 <button class="close-modal" onclick="closeNewsModal()">&times;</button>
             </div>
             
-            <form id="news-form" enctype="multipart/form-data" onsubmit="handleNewsFormSubmit(event)">
+            <form id="news-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handleNewsFormSubmit(event)">
                 <input type="hidden" id="news-id" name="id">
                 <input type="hidden" id="news-existing-image" name="existing_image">
                 
@@ -762,6 +804,91 @@
             } catch (error) {
                 console.error('Error fetching news:', error);
                 alert('Error loading news: ' + error.message);
+            }
+        }
+
+        // Registration illustration (settings)
+        let registrationImageFile = null;
+        let existingRegPath = '';
+        function previewRegistrationImage(input) {
+            const preview = document.getElementById('registration-image-preview');
+            if (input.files && input.files[0]) {
+                registrationImageFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function resetRegistrationImage() {
+            if (!confirm('Yakin ingin menghapus gambar registrasi?')) return;
+            registrationImageFile = null;
+            document.getElementById('registration-image-input').value = '';
+            document.getElementById('registration-image-preview').innerHTML = '';
+            // Also clear server-side setting
+            try {
+                const formData = new FormData();
+                formData.append('action', 'save_registration_image');
+                // No file => clear setting
+                const result = await safeJsonFetch('/admin/action', formData);
+                if (!result.success) alert('Failed to clear registration image');
+            } catch (e) {
+                console.error('Error clearing registration image:', e);
+            }
+        }
+
+        async function fetchRegistrationImage() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_registration_image');
+                const result = await safeJsonFetch('/admin/action', formData);
+                    if (result.success && result.data) {
+                    let p = result.data.registration_image_url || result.data.registration_image || '';
+                    existingRegPath = result.data.registration_image || '';
+                    if (p && !p.startsWith('/') && !p.startsWith('http')) p = '/' + p;
+                    document.getElementById('registration-image-preview').innerHTML = `<img src="${p}" alt="Registration Image" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                    document.getElementById('registration-image-path').innerText = existingRegPath ? existingRegPath : '';
+                }
+            } catch (error) {
+                console.error('Error fetching registration image:', error);
+            }
+        }
+
+        async function saveRegistrationImage() {
+            const btn = document.querySelector('#settings-section .btn-success');
+            if (btn) btn.disabled = true;
+            try {
+                const formData = new FormData();
+                formData.append('action', 'save_registration_image');
+                if (registrationImageFile) { formData.append('image', registrationImageFile); }
+                else if (!registrationImageFile && existingRegPath) { formData.append('existing_image', existingRegPath); }
+                else { alert('Pilih gambar terlebih dahulu.'); if (btn) btn.disabled = false; return false; }
+                const result = await safeJsonFetch('/admin/action', formData);
+                if (result.success) {
+                    alert('Gambar registrasi berhasil disimpan');
+                    if (result.data) {
+                        let p = result.data.registration_image_url || result.data.registration_image || '';
+                        if (p && !p.startsWith('/') && !p.startsWith('http')) p = '/' + p;
+                        document.getElementById('registration-image-preview').innerHTML = `<img src="${p}" alt="Registration Image" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                        document.getElementById('registration-image-path').innerText = result.data.registration_image || '';
+                    }
+                    registrationImageFile = null;
+                    existingRegPath = result.data && result.data.registration_image ? result.data.registration_image : '';
+                    document.getElementById('registration-image-input').value = '';
+                    if (btn) btn.disabled = false;
+                    return true;
+                } else {
+                    alert('Error: ' + (result.error || 'Unknown error'));
+                    if (btn) btn.disabled = false;
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error saving registration image:', error);
+                alert('Error: ' + error.message);
+                if (btn) btn.disabled = false;
+                return false;
             }
         }
 
@@ -1144,6 +1271,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             fetchCarouselData();
             fetchNewsData();
+            fetchRegistrationImage();
             
             // Menu switching
             document.querySelectorAll('.menu-link').forEach(link => {
@@ -1165,6 +1293,8 @@
                         // Load data for the section
                         if (section === 'news') {
                             fetchNewsData();
+                        } else if (section === 'settings') {
+                            fetchRegistrationImage();
                         }
                     }
                 });

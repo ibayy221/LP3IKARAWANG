@@ -624,7 +624,7 @@ $showDetail = $currentNews !== null;
                 </li>
                 <li><a href="news.php">Berita</a></li>
                 <li><a href="index.php#contact">Kontak</a></li>
-                <li><a href="admin.php">Admin</a></li>
+                <li><a href="/admin">Admin</a></li>
             </ul>
         </nav>
     </header>
@@ -641,8 +641,20 @@ $showDetail = $currentNews !== null;
             </a>
 
             <article class="news-detail">
-                <?php if (!empty($currentNews['image_path']) && file_exists($currentNews['image_path'])): ?>
-                    <img src="<?= htmlspecialchars($currentNews['image_path']) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
+                <?php
+                    $newsImagePath = null;
+                    if (!empty($currentNews['image_path'])) {
+                        if (file_exists(public_path($currentNews['image_path']))) {
+                            $newsImagePath = asset($currentNews['image_path']);
+                        } elseif (file_exists(public_path('storage/' . ltrim($currentNews['image_path'], '/')))) {
+                            $newsImagePath = asset('storage/' . ltrim($currentNews['image_path'], '/'));
+                        } elseif (file_exists(storage_path('app/public/' . ltrim($currentNews['image_path'], '/')))) {
+                            $newsImagePath = asset('storage/' . ltrim($currentNews['image_path'], '/'));
+                        }
+                    }
+                ?>
+                <?php if (!empty($newsImagePath)): ?>
+                        <img src="<?= htmlspecialchars($newsImagePath) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
                 <?php else: ?>
                     <div class="news-hero-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
                         <i class="fas fa-newspaper"></i>
@@ -705,8 +717,20 @@ $showDetail = $currentNews !== null;
                 <div class="news-grid">
                     <?php foreach ($allNews as $news): ?>
                         <div class="news-card" onclick="location.href='news.php?id=<?= $news['id'] ?>'">
-                            <?php if (!empty($news['image_path']) && file_exists($news['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($news['image_path']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
+                                <?php
+                                    $newsImage = null;
+                                    if (!empty($news['image_path'])) {
+                                        if (file_exists(public_path($news['image_path']))) {
+                                            $newsImage = asset($news['image_path']);
+                                        } elseif (file_exists(public_path('storage/' . ltrim($news['image_path'], '/')))) {
+                                            $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                        } elseif (file_exists(storage_path('app/public/' . ltrim($news['image_path'], '/')))) {
+                                            $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                        }
+                                    }
+                                ?>
+                                <?php if (!empty($newsImage)): ?>
+                                <img src="<?= htmlspecialchars($newsImage) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
                             <?php else: ?>
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>
