@@ -1067,7 +1067,7 @@
     <header>
         <nav>
             <div class="logo">
-                <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Karawang Logo" />
+                <img src="{{ asset('storage/logo/logo white.png') }}" alt="LP3I Karawang Logo" />
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
@@ -1289,7 +1289,7 @@
                 </div>
                 
                 <div class="view-all-news">
-                    <a href="news.php" class="btn">Lihat Semua Berita</a>
+                    <a href="/news" class="btn">Lihat Semua Berita</a>
                 </div>
             @endif
         </div>

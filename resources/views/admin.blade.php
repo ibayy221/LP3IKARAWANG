@@ -447,7 +447,7 @@
                     <li><a href="#" class="menu-link" data-section="settings">
                         <i class="fas fa-cog"></i> Pengaturan
                     </a></li>
-                    <li><a href="index.php" class="menu-link">
+                    <li><a href="/" class="menu-link">
                         <i class="fas fa-home"></i> Kembali ke Website
                     </a></li>
                 </ul>
