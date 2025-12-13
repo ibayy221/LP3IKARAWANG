@@ -147,7 +147,7 @@
       .form-actions .btn { min-width: 150px; border-radius: 28px; padding: 0.6rem 1.25rem; font-weight:600; }
       .form-actions .btn-cancel { background: transparent; color: var(--brand-pink); border: 1.5px solid var(--brand-pink); box-shadow:none; }
       .form-actions .btn-cancel:hover { background: rgba(241,91,103,0.04); }
-      .form-actions .btn-submit { /* reuse btn-primary gradient */ }
+      .form-actions .btn-submit { background: linear-gradient(90deg,var(--brand-dark),var(--brand-accent)); color: white; border: none; box-shadow: 0 8px 24px rgba(0,66,105,0.12); }
 
       @media (max-width: 576px) {
         .form-actions { flex-direction: column; gap: 0.75rem; align-items: stretch; }
@@ -395,11 +395,11 @@
       // duplicates removed - Tom Select already initialized above
 
       // desas grouped passed by controller as a JSON object
-      const desasGrouped = @json($desas ?? []);
-      const kecamatanList = @json($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name]));
-      const oldKecamatan = @json(old('kecamatan'));
-      const oldDesa = @json(old('desa'));
-      const oldKodePos = @json(old('kode_pos'));
+      const desasGrouped = {!! json_encode($desas ?? []) !!};
+      const kecamatanList = {!! json_encode($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name])) !!};
+      const oldKecamatan = {!! json_encode(old('kecamatan')) !!};
+      const oldDesa = {!! json_encode(old('desa')) !!};
+      const oldKodePos = {!! json_encode(old('kode_pos')) !!};
 
       // On kecamatan change, populate desa
       kecamatanSelect.on('change', function(value) {
