@@ -25,5 +25,8 @@ class DatabaseSeeder extends Seeder
         // Seed kecamatans for the Mahasiswa registration form
         $this->call([KecamatanSeeder::class]);
         $this->call([DesaSeeder::class]);
+
+        // Create a default admin user for marketing/admin tasks
+        $this->call([\Database\Seeders\AdminUserSeeder::class]);
     }
 }

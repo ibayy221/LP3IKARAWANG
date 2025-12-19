@@ -25,19 +25,19 @@
             color: #333;
         }
 
-        /* Header */
+        /* Header (glass effect) */
         header {
-            background: rgba(30, 60, 114, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(30, 60, 114, 0.12); /* semi-transparent brand blue */
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             color: white;
-            padding: 0.5rem 0;
+            padding: 0.44rem 0; /* slightly reduced for mobile space */
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: all 0.28s ease;
         }
 
         header.scrolled {
@@ -56,17 +56,17 @@
         }
 
         .logo {
-            height: 50px;
             display: flex;
             align-items: center;
         }
 
         .logo img {
-            height: 100%;
+            height: auto;
+            max-height: 48px; /* keep logo visible and not cropped */
             width: auto;
-            max-width: 200px;
+            max-width: 220px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
         }
 
         .nav-links {
@@ -132,52 +132,67 @@
         /* Dropdown Styles */
         .dropdown {
             position: relative;
+            display: inline-block; /* allow dropdown to size to its trigger */
         }
 
+        /* Desktop-style absolute submenu but hidden by default via opacity/max-height
+           so it won't push layout when toggled. Hover behavior applied only on desktop below. */
         .dropdown-content {
-            display: none; /* Hidden by default */
             position: absolute;
-            top: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            min-width: 220px;
-            border-radius: 12px;
+            top: calc(100% + 8px);
+            left: 0;
+            transform: none;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            min-width: 100%; /* match parent width */
+            max-width: 320px;
+            width: max-content;
+            border-radius: 10px;
             z-index: 1000;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
             opacity: 0;
-            transform: translateX(-50%) translateY(-10px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            visibility: hidden;
+            max-height: 0;
+            transition: opacity .22s ease, max-height .28s ease, visibility .22s;
         }
 
-        .dropdown:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
+        /* Hover-to-open is only for desktop; mobile uses click toggle (JS adds .active) */
+        @media (min-width: 769px) {
+            .dropdown:hover .dropdown-content {
+                opacity: 1;
+                visibility: visible;
+                max-height: 480px; /* allow smooth reveal without changing layout */
+            }
         }
 
-        /* Mobile specific adjustments */
+        /* Mobile specific adjustments: keep submenu out of flow but allow vertical expand
+           using .active class toggled by JS. Hover states are ignored on small screens. */
         @media (max-width: 768px) {
             .dropdown-content {
+                position: static; /* place inside flow for mobile accordion */
                 width: 100%;
-                position: static; /* Override absolute positioning for mobile */
-                transform: none; /* Remove transform for mobile */
-                opacity: 1; /* Always visible when active on mobile */
-                border-radius: 0; /* No border-radius for flush look */
-                box-shadow: none; /* No shadow for mobile */
-                margin-left: 0; /* Remove left margin */
-                min-width: auto; /* Remove min-width constraint */
-                background: rgba(255,255,255,0.05); /* Slightly different background for sub-items */
-                border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separator for dropdowns */
-                display: none; /* Hide by default on mobile, will be toggled by JS */
+                left: 0;
+                transform: none;
+                background: rgba(255,255,255,0.03);
+                border-radius: 0;
+                box-shadow: none;
+                margin-left: 0;
+                border: none;
+                max-width: 100%;
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                overflow: hidden;
+                transition: opacity .22s ease, max-height .28s ease, visibility .22s;
             }
 
             .dropdown-content.active {
-                display: block; /* Show when active on mobile */
+                opacity: 1;
+                visibility: visible;
+                max-height: 800px; /* generous for all items */
             }
         }
 
@@ -242,8 +257,11 @@
             transition: transform 0.3s;
         }
 
-        .dropdown:hover > a::after {
-            transform: rotate(180deg);
+        /* Only rotate the caret on desktop hover; mobile uses click/toggle */
+        @media (min-width: 769px) {
+            .dropdown:hover > a::after {
+                transform: rotate(180deg);
+            }
         }
 
         /* Mobile Menu */
@@ -256,9 +274,11 @@
             cursor: pointer;
         }
 
-        /* Hero Section */
+
+        /* Hero Section — mobile-first improvements */
         .hero {
-            height: 100vh;
+            min-height: 65vh; /* mobile-first: compact hero */
+            height: auto;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -266,6 +286,30 @@
             justify-content: center;
             text-align: center;
             color: white;
+            padding: 2.5rem 1rem;
+        }
+
+        /* subtle top-wide overlay (keeps faces in photo visible), add a stronger bottom band via ::after */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            /* very subtle darkening so the image stays visible */
+            background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.03) 40%, rgba(0,0,0,0.00) 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 40%; /* gentle band at the bottom for better text contrast */
+            background: linear-gradient(180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.45) 100%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         .carousel-container {
@@ -275,6 +319,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 0;
         }
 
         .carousel-slide {
@@ -289,23 +334,32 @@
             background-position: center;
         }
 
-        .carousel-slide.active {
-            opacity: 1;
-        }
+        .carousel-slide.active { opacity: 1; }
 
 /* Per-slide backgrounds are applied inline on each .carousel-slide element
    to avoid embedding Blade/PHP directives inside the <style> block, which
    can confuse CSS parsers and editors. */
 
+        /* Center hero content but slightly lower to avoid covering faces */
         .carousel-content {
             position: absolute;
-            bottom: 80px;
+            top: 60%; /* move content lower than center */
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             z-index: 2;
-            max-width: 800px;
-            padding: 2rem;
+            width: 100%;
+            max-width: 920px;
+            padding: 1.25rem; /* tighter on mobile */
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 576px) {
+            .carousel-content { top: 66%; }
         }
 
         .carousel-indicators {
@@ -377,42 +431,68 @@
             right: 30px;
         }
 
+
         .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: white;
-            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
-            animation: slideInUp 1s ease-out;
+            font-size: 1.6rem; /* mobile-first headline */
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+            color: #ffffff;
+            text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            line-height: 1.05;
+            letter-spacing: 0.6px;
+            z-index: 3;
+            animation: slideInUp 0.9s ease-out;
         }
 
         .hero-content p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-            line-height: 1.6;
-            animation: slideInUp 1s ease-out 0.2s both;
+            font-size: 0.98rem; /* subtle subheadline */
+            margin-bottom: 0.9rem;
+            color: rgba(255,255,255,0.92);
+            text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            line-height: 1.5;
+            font-weight: 400;
+            z-index: 3;
+            max-width: 720px;
+            animation: slideInUp 0.9s ease-out 0.12s both;
         }
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #1e3c72, #2a5298); /* brand blue gradient */
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem 1.6rem;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            animation: slideInUp 1s ease-out 0.4s both;
-            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            animation: slideInUp 0.9s ease-out 0.18s both;
+            box-shadow: 0 8px 26px rgba(30,60,114,0.18);
+            z-index: 3;
         }
 
         .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(30,60,114,0.22);
             background: linear-gradient(135deg, #2a5298, #1e3c72);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        /* Header: reduce vertical padding on small screens */
+        @media (max-width: 576px) {
+            header { padding: 0.28rem 0; }
+            .logo img { max-width: 140px; }
+            .hero { min-height: 58vh; padding: 1.5rem .75rem; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .hero-content p { font-size: 0.98rem; }
+            .cta-button { padding: 0.9rem 1.2rem; font-size: 1rem; }
+        }
+
+        /* Larger screens: restore expansive hero */
+        @media (min-width: 992px) {
+            .hero { min-height: 100vh; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .hero-content p { font-size: 1.15rem; }
+            .cta-button { padding: 0.8rem 2rem; font-size: 0.95rem; background: linear-gradient(135deg, #1e3c72, #2a5298); box-shadow: 0 6px 28px rgba(30,60,114,0.15); }
         }
 
 
@@ -1067,7 +1147,9 @@
     <header>
         <nav>
             <div class="logo">
-                <img src="{{ asset('storage/logo/logo white.png') }}" alt="LP3I Karawang Logo" />
+                <a href="/">
+                    <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Karawang Logo" />
+                </a>
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
@@ -1473,7 +1555,8 @@
         // On small screens, nudge the background position vertically so focal areas stay visible
         function adjustSlideForMobile() {
             if (window.innerWidth <= 768) {
-                slides.forEach(s => { s.style.backgroundPosition = 'center 35%'; });
+                // nudge backgrounds so faces/focal points are higher on small screens
+                slides.forEach(s => { s.style.backgroundPosition = 'center 30%'; });
             } else {
                 slides.forEach(s => { s.style.backgroundPosition = 'center center'; });
             }

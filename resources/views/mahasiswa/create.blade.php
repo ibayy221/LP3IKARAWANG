@@ -105,14 +105,14 @@
       /* Keep single-column layout that fits the container */
       .registration-layout { display:block; }
 
-      /* New layout: left illustration column + right form */
-      .registration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-      .registration-illustration { background: linear-gradient(180deg, rgba(0,157,165,0.04), #f8fafc); border-radius: 12px; padding: 2rem; display:flex; align-items:center; justify-content:center; flex-direction: column; }
+      /* New layout: left illustration column + right form (responsive) */
+      .registration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
+      .registration-illustration { background: linear-gradient(180deg, rgba(0,157,165,0.03), #f8fafc); border-radius: 12px; padding: 1rem; display:flex; align-items:center; justify-content:center; flex-direction: column; }
       .registration-illustration img { max-width: 100%; height: auto; display:block; }
-      /* illustration wrapper: static image on left column */
-      .illustration-wrapper { width:100%; height:340px; aspect-ratio: 16/9; border-radius:10px; background: linear-gradient(180deg,#fff,#f8fafc); border:1px solid rgba(0,157,165,0.06); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; background-size:cover; background-position:center center; }
-      .illustration-wrapper::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.6) 70%); pointer-events: none; }
-      .illustration-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display:block; }
+      /* illustration wrapper: controlled height and light overlay to reduce dominance */
+      .illustration-wrapper { width:100%; height:300px; max-height:300px; border-radius:10px; background: linear-gradient(180deg,#fff,#f8fafc); border:1px solid rgba(0,157,165,0.06); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; background-size:cover; background-position:center center; }
+      .illustration-wrapper::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(255,255,255,0.45)); pointer-events: none; }
+      .illustration-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display:block; opacity:0.98; }
       /* Make object-position slightly higher on smaller screens to keep focal points visible */
       @media (max-width: 576px) {
         .illustration-wrapper { height: 180px; aspect-ratio: auto; }
@@ -124,7 +124,7 @@
       }
 
       /* Mobile-friendly layout: stack illustration and form */
-      @media (max-width: 768px) {
+      @media (max-width: 992px) {
         .registration-grid { grid-template-columns: 1fr; gap: 1rem; }
         .registration-illustration { order: -1; padding: 0; background: transparent; }
         .illustration-wrapper { height: 220px; margin: 0; border:none; background: transparent; width: calc(100% + 2.5rem); margin-left: -1.25rem; margin-right: -1.25rem; }
@@ -142,7 +142,7 @@
         .illustration-wrapper img { object-position: center 35%; }
       }
 
-      /* Action buttons (cancel/submit) */
+      /* Form actions and spacing */
       .form-actions { display:flex; gap: 1rem; align-items:center; justify-content:center; margin-top: 1.25rem; }
       .form-actions .btn { min-width: 150px; border-radius: 28px; padding: 0.6rem 1.25rem; font-weight:600; }
       .form-actions .btn-cancel { background: transparent; color: var(--brand-pink); border: 1.5px solid var(--brand-pink); box-shadow:none; }
@@ -152,6 +152,64 @@
       @media (max-width: 576px) {
         .form-actions { flex-direction: column; gap: 0.75rem; align-items: stretch; }
         .form-actions .btn { width: 100%; min-width: 0; }
+      }
+    </style>
+    <style>
+      /* Form field sizing, labels and consistent spacing */
+      .registration-card h2 { font-size: 1.9rem; font-weight:700; color: var(--brand-dark); text-shadow: none; margin-bottom: 0.25rem; }
+      .registration-subtext { color: #6b7280; font-size: 0.95rem; margin-bottom: 0.6rem; }
+      .registration-subtext .required { color: var(--brand-pink); font-weight:600; opacity:0.9; font-size:0.95rem; }
+
+      /* Normalize spacing between fields */
+      .mb-3 { margin-bottom: 16px !important; }
+
+      /* Labels: consistent alignment and size */
+      .elegant-form .form-label { display:block; margin-bottom:6px; font-size:0.95rem; color:var(--brand-dark); font-weight:600; }
+
+      /* Inputs and selects: uniform height, padding and border */
+      .elegant-form .form-control,
+      .elegant-form .form-select {
+        height:44px; padding: .56rem .75rem; border-radius:10px; border:1px solid rgba(30,60,114,0.10); box-shadow:none; background: #fff; transition: box-shadow .12s ease, border-color .12s ease; font-size:0.95rem;
+      }
+      .elegant-form textarea.form-control { min-height:110px; height:auto; padding:.75rem .9rem; }
+      .elegant-form .form-control:focus, .elegant-form .form-select:focus { border-color: var(--brand-accent); box-shadow: 0 6px 18px rgba(0,157,165,0.06); }
+
+      /* Polished select appearance (match input height, smaller font, balanced padding, modern radius) */
+      .elegant-form select.form-control,
+      .elegant-form .form-select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 2rem; /* make room for custom caret */
+        font-size: 0.92rem;
+        line-height: 1.25;
+        display: inline-block;
+        vertical-align: middle;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath fill='%236B7280' d='M7 10L0 0h14z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 8px;
+      }
+
+      /* Option readability */
+      .elegant-form select.form-control option {
+        font-size: 0.93rem;
+        padding: 6px 8px;
+      }
+
+      /* Tom Select adjustments so placeholder and options aren't truncated */
+      .ts-control { min-height:44px; border-radius:10px; }
+      .ts-control .ts-input, .ts-control .item { line-height:1.2; height:44px; padding: .35rem .4rem; }
+      .ts-control .ts-placeholder { white-space: normal; color: #6b7280; }
+      .ts-dropdown, .ts-control .dropdown-content { max-height: 260px; overflow:auto; }
+
+      /* Make dropdowns fill their column and not appear cramped */
+      .form-select, .ts-control { width:100% !important; }
+
+      /* Responsive: reduce gaps slightly on small screens */
+      @media (max-width: 576px) {
+        .registration-card .card-body { padding: 1rem; }
+        .elegant-form .form-control, .elegant-form .form-select { height:44px; }
       }
     </style>
     <style>
@@ -232,7 +290,7 @@
                     <!-- logo removed — keeping layout minimal and colorful -->
                     <div>
                       <h2 class="mb-0">Form Pendaftaran Mahasiswa</h2>
-                      <p class="registration-subtext small mb-0">Isi data diri sesuai dokumen resmi. Semua field yang diberi tanda <span class="required">* wajib diisi</span>.</p>
+                      <p class="registration-subtext small mb-0">Isi data diri sesuai dokumen resmi</p>
                     </div>
                   </div>
 
@@ -260,8 +318,8 @@
                   </div>
 
                   <div class="mb-3 col-md-6">
-                    <label class="form-label">Email *</label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="form-control" required>
+                    <label class="form-label">Email (Kontak)</label>
+                    <input type="email" name="email" value="{{ old('email') }}" class="form-control">
                   </div>
                 </div>
 
@@ -272,7 +330,12 @@
                   </div>
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Jurusan / Program Studi</label>
-                    <input type="text" name="jurusan" value="{{ old('jurusan') }}" class="form-control">
+                    <select name="jurusan" class="form-control">
+                      <option value="">Pilih Jurusan</option>
+                      <option value="ASE" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
+                      <option value="OAA" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
+                      <option value="AIS" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>AAccounting Information System</option>
+                    </select>
                   </div>
                 </div>
 
@@ -284,7 +347,7 @@
                   <div class="mb-3 col-md-4">
                     <label class="form-label">Kecamatan</label>
                     <select id="kecamatan" name="kecamatan" class="form-select">
-                      <option value="">-- Pilih Kecamatan --</option>
+                      <option value=""> Pilih Kecamatan </option>
                       @foreach($kecamatans as $k)
                         <option value="{{ $k->id }}" {{ (old('kecamatan') == $k->id || old('kecamatan') == $k->name) ? 'selected' : '' }}>{{ $k->name }}</option>
                       @endforeach
@@ -359,7 +422,30 @@
                     <label class="form-label">Alamat Lengkap</label>
                     <textarea name="alamat" rows="4" class="form-control">{{ old('alamat') }}</textarea>
                   </div>
-                  <div class="form-actions w-100">
+                </div>
+
+                <hr />
+                <div class="row mt-3">
+                  <div class="col-12">
+                  </div>
+
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Email Akun</label>
+                    <input type="email" name="account_email" value="{{ old('account_email') }}" class="form-control">
+                  </div>
+
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Password Akun</label>
+                    <input type="password" name="password" class="form-control" autocomplete="new-password">
+                  </div>
+
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Konfirmasi Password</label>
+                    <input type="password" name="password_confirmation" class="form-control" autocomplete="new-password">
+                  </div>
+                </div>
+
+                <div class="form-actions w-100">
                     <a href="/" class="btn btn-cancel btn-lg">Batal</a>
                     <button type="submit" class="btn btn-primary btn-lg btn-submit">Daftar Sekarang</button>
                   </div>

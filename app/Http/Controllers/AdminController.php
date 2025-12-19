@@ -55,7 +55,10 @@ class AdminController extends Controller
         // Read carousel data to prefill the view
         $carouselFile = $this->csvPath('carousel');
         $carouselData = $this->readCsv($carouselFile);
-        return view('admin', compact('carouselData'));
+
+        // allow opening 'pendaftar' section directly
+        $active = request()->is('admin/pendaftar') ? 'pendaftar' : 'carousel';
+        return view('admin', compact('carouselData', 'active'));
     }
 
     public function handleAction(Request $request)
@@ -160,6 +163,7 @@ class AdminController extends Controller
                     // filter active for get_news
                     $active = array_filter($news, function($n){ return ($n['status'] ?? '') === 'active'; });
                     return response()->json(['success' => true, 'data' => array_values($active)]);
+
 
                 case 'get_registration_image':
                     $settingsFile = $this->csvPath('settings');

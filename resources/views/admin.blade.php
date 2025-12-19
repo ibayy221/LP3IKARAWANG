@@ -438,24 +438,31 @@
             <div class="sidebar">
                 <h3>Menu Admin</h3>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="menu-link active" data-section="carousel">
+                    <li><a href="#" class="{{ (isset($active) && $active === 'carousel') ? 'menu-link active' : 'menu-link' }}" data-section="carousel">
                         <i class="fas fa-images"></i> Kelola Carousel
                     </a></li>
-                    <li><a href="#" class="menu-link" data-section="news">
+                    <li><a href="#" class="{{ (isset($active) && $active === 'news') ? 'menu-link active' : 'menu-link' }}" data-section="news">
                         <i class="fas fa-newspaper"></i> Kelola Berita
                     </a></li>
+
                     <li><a href="#" class="menu-link" data-section="settings">
                         <i class="fas fa-cog"></i> Pengaturan
                     </a></li>
                     <li><a href="/" class="menu-link">
                         <i class="fas fa-home"></i> Kembali ke Website
                     </a></li>
+                    <li style="margin-top:1rem">
+                        <form method="POST" action="/admin/logout">
+                            @csrf
+                            <button type="submit" class="btn btn-danger" style="width:100%">Logout Admin</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
 
             <div class="main-content">
                 <!-- Carousel Management Section -->
-                <div class="content-section active" id="carousel-section">
+                <div class="content-section {{ (isset($active) && $active === 'carousel') ? 'active' : '' }}" id="carousel-section">
                     <h2 class="section-title">Kelola Carousel</h2>
                     
                     <button class="btn btn-success" onclick="openAddModal()">
@@ -1272,6 +1279,7 @@
             fetchCarouselData();
             fetchNewsData();
             fetchRegistrationImage();
+
             
             // Menu switching
             document.querySelectorAll('.menu-link').forEach(link => {

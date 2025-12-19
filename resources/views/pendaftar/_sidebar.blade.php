@@ -1,0 +1,51 @@
+@php $user = Auth::user(); $name = $user->name ?? ($user->nama ?? ($user->nama_mhs ?? 'Calon Mahasiswa')); $avatar = $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=0D4C6B&color=fff&rounded=true'; @endphp
+
+<aside class="pendaftar-sidebar">
+  <div class="sidebar-inner">
+    <div class="profile">
+      <img class="avatar" src="{{ $avatar }}" alt="avatar">
+      <div class="profile-name">{{ $name }}</div>
+      <div class="profile-sub">LP3I College<br>Kampus Karawang</div>
+    </div>
+
+    <nav class="side-nav">
+      <a href="{{ route('pendaftar.dashboard') }}" class="nav-item">🏠 Beranda</a>
+      <a href="{{ route('mahasiswa.create') }}" class="nav-item">📝 Registrasi Pendaftaran</a>
+      <a href="#" class="nav-item">🧾 Isi Biodata</a>
+      <a href="#" class="nav-item">👤 Akun Saya</a>
+      <form method="POST" action="{{ route('pendaftar.logout') }}" style="margin:0;padding:0">
+        @csrf
+        <button type="submit" class="nav-item btn-link">🚪 Keluar</button>
+      </form>
+    </nav>
+
+    <div class="contact">
+      <div class="contact-note">Bila ada yang ingin diketahui lebih lanjut dapat menghubungi kami langsung di:</div>
+      <div class="contact-item">📞 0267 411286</div>
+      <div class="contact-item">📍 Jl. Tarumanegara, Komplek Karawang Hijau Blok B.4-6</div>
+      <div class="contact-item">💬 +62 812 9078 0050</div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .pendaftar-sidebar{background:linear-gradient(180deg,#042435,#07374a);color:#e6f7fb;padding:1.4rem;border-radius:12px}
+  .pendaftar-sidebar .sidebar-inner{display:flex;flex-direction:column;gap:1rem}
+  .pendaftar-sidebar .profile{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .pendaftar-sidebar .avatar{width:84px;height:84px;border-radius:999px;border:3px solid rgba(255,255,255,0.08)}
+  @media (min-width:801px){ .pendaftar-sidebar{position:sticky;top:84px} }
+  .pendaftar-sidebar .profile-name{font-weight:700;margin-top:.5rem}
+  .pendaftar-sidebar .profile-sub{font-size:.85rem;color:rgba(255,255,255,0.8);margin-top:.2rem}
+  .side-nav{display:flex;flex-direction:column;gap:.45rem;margin-top:6px}
+  .nav-item{display:block;padding:.5rem .6rem;border-radius:8px;color:#dff6f9;text-decoration:none}
+  .nav-item:hover{background:rgba(255,255,255,0.03)}
+  .btn-link{background:transparent;border:none;color:inherit;padding:.5rem .6rem;text-align:left;width:100%}
+  .contact{margin-top:auto;font-size:.9rem;color:rgba(255,255,255,0.85)}
+  .contact-note{font-size:.85rem;margin-bottom:.5rem}
+  .contact-item{margin-top:.35rem}
+
+  @media (max-width:800px){
+    .pendaftar-sidebar{padding:.9rem;border-radius:10px}
+    .pendaftar-sidebar .avatar{width:72px;height:72px}
+  }
+</style>

@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            // Unique composite to reduce accidental duplicates: email + jurusan + no_hp
+            // This will prevent identical submissions that contain the same values.
+            $table->unique(['email','jurusan','no_hp'], 'mahasiswas_unique_email_jurusan_nohp');
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->dropUnique('mahasiswas_unique_email_jurusan_nohp');
+        });
+    }
+};

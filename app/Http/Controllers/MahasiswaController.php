@@ -49,7 +49,8 @@ class MahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // If account fields are present, require them
+        $rules = [
             'nama_mhs' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'no_hp' => 'nullable|string|max:50',
@@ -68,7 +69,15 @@ class MahasiswaController extends Controller
             'status_verifikasi' => 'nullable|string|max:50',
             'asal_sekolah' => 'nullable|string|max:255',
             'file' => 'nullable|file|max:5120'
-        ]);
+        ];
+
+        // If the pendaftar created an account (password provided), validate account fields (use account_email to avoid colliding with contact email)
+        if ($request->filled('password') || $request->filled('password_confirmation')) {
+            $rules['account_email'] = 'required|email|unique:users,email';
+            $rules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        $validated = $request->validate($rules);
 
         // handle file if present
         if ($request->hasFile('file')) {
@@ -84,7 +93,96 @@ class MahasiswaController extends Controller
             }
         }
 
-        Mahasiswa::create($validated);
+        // If account is created, make a user and link
+        $userId = null;
+        if (!empty($validated['password'])) {
+            // Prefer explicit account_email (from the 'Buat Akun' section); fall back to contact email if provided
+            $email = $validated['account_email'] ?? $validated['email'] ?? null;
+            $password = $validated['password'];
+
+            // Create User
+            $u = new \App\Models\User();
+            $u->name = $validated['nama_mhs'];
+            $u->email = $email;
+            $u->password = \Illuminate\Support\Facades\Hash::make($password);
+            $u->is_applicant = true;
+            $u->save();
+            $userId = $u->id;
+        }
+
+        $validated['user_id'] = $userId;
+        // set default payment fields if not present
+        $validated['payment_status'] = $validated['payment_status'] ?? 'unpaid';
+        $validated['payment_amount'] = $validated['payment_amount'] ?? 350000;
+
+        // Remove account-related fields so they are not persisted into mahasiswas table
+        unset($validated['account_email'], $validated['password'], $validated['password_confirmation']);
+
+        // Prevent accidental duplicate submissions: if a recent record exists with same email or phone and same jurusan, skip creating a new one.
+        $duplicate = null;
+        try {
+            // look for any existing record with same email/phone & jurusan
+            \Illuminate\Support\Facades\Log::info('Running duplicate check', ['email' => $validated['email'] ?? null, 'no_hp' => $validated['no_hp'] ?? null, 'jurusan' => $validated['jurusan'] ?? null]);
+            $duplicate = Mahasiswa::findRecentDuplicate($validated, null);
+            \Illuminate\Support\Facades\Log::info('Duplicate check result', ['found' => (bool)$duplicate, 'duplicate_id' => $duplicate ? $duplicate->id : null]);
+        } catch (\Exception $e) {
+            // If anything goes wrong, we fall back to creating a record rather than blocking signups
+            \Illuminate\Support\Facades\Log::warning('Duplicate check failed: '.$e->getMessage());
+        }
+
+        if ($duplicate) {
+            // Redirect to a friendly page (or back) indicating the record already exists
+            return redirect()->back()->with('success', 'Pendaftaran sudah diterima sebelumnya. Nomor pendaftaran: ' . ($duplicate->nipd ?? $duplicate->id));
+        }
+
+        // Generate NIPD if not set (format: branch(6) + program(3) + sequence(4))
+        if (empty($validated['nipd'])) {
+            $branch = config('nipd.branch_code', '240781');
+            $programCodes = config('nipd.program_codes', []);
+            $seqDigits = (int) config('nipd.sequence_digits', 4);
+            $programKey = strtoupper($validated['jurusan'] ?? '');
+            $deptCode = $programCodes[$programKey] ?? '000';
+            $prefix = $branch . $deptCode;
+
+            // Count existing entries with same prefix and generate next sequence
+            // NOTE: This is a simple approach using a count; in high-concurrency scenarios
+            // there is a small race condition (two concurrent requests may get the same
+            // next value). For production-critical correctness you can either:
+            //  - Use a DB sequence or table-level atomic counter per prefix, or
+            //  - Wrap creation in a transaction and retry on unique constraint violation.
+            $count = \App\Models\Mahasiswa::where('nipd', 'like', $prefix . '%')->count();
+            $next = $count + 1;
+            $sequence = str_pad((string) $next, $seqDigits, '0', STR_PAD_LEFT);
+
+            $validated['nipd'] = $prefix . $sequence;
+        }
+
+        // create the mahasiswa record inside a try/catch to handle unique-constraint races
+        try {
+            $mahasiswa = Mahasiswa::createWithUniqueNipd($validated);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // duplicate entry (unique index on email/jurusan/no_hp) -> find existing and redirect gracefully
+            if (strpos(strtolower($e->getMessage()), 'duplicate') !== false || $e->getCode() === '23000') {
+                $existing = Mahasiswa::findRecentDuplicate($validated, null);
+                if ($existing) {
+                    return redirect()->back()->with('success', 'Pendaftaran sudah diterima sebelumnya. Nomor pendaftaran: ' . ($existing->nipd ?? $existing->id));
+                }
+            }
+
+            // rethrow for unexpected DB errors
+            throw $e;
+        }
+
+        // If account created, redirect to pendaftar login
+        if (!empty($userId)) {
+            return redirect()->route('pendaftar.login')->with('success','Akun dibuat. Silakan login untuk melihat status pendaftaran.');
+        }
+
+        return redirect()->back()->with('success', 'Pendaftaran mahasiswa berhasil dikirimkan.');
+        // If account created, redirect to pendaftar login
+        if (!empty($userId)) {
+            return redirect()->route('pendaftar.login')->with('success','Akun dibuat. Silakan login untuk melihat status pendaftaran.');
+        }
 
         return redirect()->back()->with('success', 'Pendaftaran mahasiswa berhasil dikirimkan.');
     }
