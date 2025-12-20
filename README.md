@@ -109,6 +109,16 @@ To try locally:
 2. Start dev server: `php artisan serve`
 3. Visit http://127.0.0.1:8000/mahasiswa/create
 
+If you need the Karawang kecamatan list for the registration form, seed the database:
+
+```powershell
+php artisan migrate --database=akademik_kampus --force
+php artisan db:seed --class=KecamatanSeeder --database=akademik_kampus
+php artisan db:seed --class=DesaSeeder --database=akademik_kampus
+```
+
+This will populate the kecamatan dropdown used by the Mahasiswa registration form.
+
 6. Buka `http://127.0.0.1:8000` di browser.
 
 **Data khusus proyek**
@@ -158,6 +168,33 @@ Jika Anda menambahkan file upload baru, pastikan folder `public/upload/carousel`
 Halaman admin tersedia di: `http://localhost:8000/admin` (saat development)
 - Kelola Carousel: tambah/edit/hapus slide carousel dengan gambar.
 - Kelola Berita: tambah/edit/hapus artikel berita dengan galeri foto.
+
+**Admin (Marketing) setup**
+- Jalankan migrasi baru: `php artisan migrate` (migration menambah kolom `is_admin` pada tabel `users`).
+- Buat admin: menggunakan Tinker, contoh:
+
+  ```bash
+  php artisan tinker
+  \App\Models\User::where('email','admin@example.com')->first()->update(['is_admin' => true]);
+  ```
+
+- URL login admin: `http://localhost:8000/admin/login` — login hanya untuk akun yang memiliki `is_admin = true`.
+- Direkt link ke pendaftar: `http://localhost:8000/admin/pendaftar` (harus login sebagai admin).
+
+**Default admin credentials (development only)**
+- **Admin CMS** (for site admins):
+  - Username: `admin` — Password: `password` (has admin rights)
+
+- **Marketing (Smart Presenter)** (separate role & login):
+  - Username: `lp3ikarawang` — Password: `2025jaya` (marketing)
+  - Username: `marketing` — Password: `cuan2025` (marketing)
+
+- **Pendaftar (applicants)** — registration + account
+  - Pendaftar dapat membuat akun saat mengisi formulir pendaftaran (field email + password).
+  - Setelah mendaftar, pendaftar login di: `/pendaftar/login` dan melihat dashboard di `/pendaftar/dashboard`.
+  - Pembayaran pendaftaran: Rp 350.000 (status dan jumlah disimpan di tabel `mahasiswas`).
+
+> Setelah clone, jalankan: `php artisan migrate && php artisan db:seed` untuk membuat akun-akun ini secara otomatis.
 
 **Panduan Debug & Troubleshooting**
 - Periksa log aplikasi di `storage/logs/laravel.log` untuk error runtime.

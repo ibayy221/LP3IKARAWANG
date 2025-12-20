@@ -636,8 +636,11 @@ $showDetail = $currentNews !== null;
                         <a href="#kerjasama-industri">Kerjasama Industri</a>
                     </div>
                 </li>
+                <li><a href="/news">Berita</a></li>
+                <li><a href="/index.php#contact">Kontak</a></li>
+                <li><a href="/admin">Admin</a></li>
                 <li><a href="#kegiatan">Kegiatan</a></li>
-                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
+                <li><a href="/mahasiswa/create" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
     </header>
@@ -654,8 +657,24 @@ $showDetail = $currentNews !== null;
             </a>
 
             <article class="news-detail">
-                <?php if (!empty($currentNews['image_path']) && file_exists(public_path($currentNews['image_path']))): ?>
-                    <img src="<?= htmlspecialchars(asset($currentNews['image_path'])) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
+                <?php
+                    $newsImagePath = null;
+                    if (!empty($currentNews['image_path'])) {
+                        $candidates = [
+                            $currentNews['image_path'],
+                            'storage/' . ltrim($currentNews['image_path'], '/'),
+                            'storage/' . ltrim($currentNews['image_path'], '/'),
+                        ];
+                        foreach ($candidates as $p) {
+                            if (!empty($p) && file_exists(public_path($p))) {
+                                $newsImagePath = asset($p);
+                                break;
+                            }
+                        }
+                    }
+                ?>
+                <?php if (!empty($newsImagePath)): ?>
+                    <img src="<?= htmlspecialchars($newsImagePath) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
                 <?php else: ?>
                     <div class="news-hero-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
                         <i class="fas fa-newspaper"></i>
@@ -718,8 +737,24 @@ $showDetail = $currentNews !== null;
                 <div class="news-grid">
                     <?php foreach ($allNews as $news): ?>
                         <div class="news-card" onclick="location.href='/news/<?= $news['id'] ?>'">
-                            <?php if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))): ?>
-                                <img src="<?= htmlspecialchars(asset($news['image_path'])) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
+                            <?php
+                                $newsImage = null;
+                                if (!empty($news['image_path'])) {
+                                    $candidates = [
+                                        $news['image_path'],
+                                        'storage/' . ltrim($news['image_path'], '/'),
+                                        'storage/' . ltrim($news['image_path'], '/'),
+                                    ];
+                                    foreach ($candidates as $p) {
+                                        if (!empty($p) && file_exists(public_path($p))) {
+                                            $newsImage = asset($p);
+                                            break;
+                                        }
+                                    }
+                                }
+                            ?>
+                            <?php if (!empty($newsImage)): ?>
+                                <img src="<?= htmlspecialchars($newsImage) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
                             <?php else: ?>
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>

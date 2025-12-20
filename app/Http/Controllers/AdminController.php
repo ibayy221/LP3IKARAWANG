@@ -55,7 +55,10 @@ class AdminController extends Controller
         // Read carousel data to prefill the view
         $carouselFile = $this->csvPath('carousel');
         $carouselData = $this->readCsv($carouselFile);
-        return view('admin', compact('carouselData'));
+
+        // allow opening 'pendaftar' section directly
+        $active = request()->is('admin/pendaftar') ? 'pendaftar' : 'carousel';
+        return view('admin', compact('carouselData', 'active'));
     }
 
     public function handleAction(Request $request)
@@ -97,7 +100,12 @@ class AdminController extends Controller
                         return response()->json(['success' => false, 'error' => 'Semua field harus diisi']);
                     }
                     $data = $this->readCsv($this->csvPath('carousel'));
-                    $id = $request->input('id') ?: (count($data) + 1);
+                    // generate id using highest existing id + 1 to avoid collisions
+                    $id = $request->input('id');
+                    if (!$id) {
+                        $max = 0; foreach ($data as $r) { $max = max($max, intval($r['id'] ?? 0)); }
+                        $id = $max + 1;
+                    }
                     $newSlide = [
                         'id' => $id,
                         'title' => trim($title),
@@ -112,6 +120,13 @@ class AdminController extends Controller
                     if ($request->hasFile('image')) {
                         $file = $request->file('image');
                         if ($file->isValid()) {
+                            $allowed = ['image/jpeg','image/jpg','image/png','image/gif','image/svg+xml'];
+                            if (!in_array($file->getMimeType(), $allowed)) {
+                                return response()->json(['success' => false, 'error' => 'Format gambar tidak didukung.']);
+                            }
+                            if ($file->getSize() > 5 * 1024 * 1024) {
+                                return response()->json(['success' => false, 'error' => 'Ukuran gambar terlalu besar. Maks 5MB']);
+                            }
                             $allowed = ['image/jpeg','image/jpg','image/png','image/gif'];
                             if (!in_array($file->getMimeType(), $allowed)) {
                                 return response()->json(['success' => false, 'error' => 'Format gambar tidak didukung.']);
@@ -148,6 +163,63 @@ class AdminController extends Controller
                     // filter active for get_news
                     $active = array_filter($news, function($n){ return ($n['status'] ?? '') === 'active'; });
                     return response()->json(['success' => true, 'data' => array_values($active)]);
+
+
+                case 'get_registration_image':
+                    $settingsFile = $this->csvPath('settings');
+                    $settings = $this->readCsv($settingsFile);
+                    $reg = '';
+                    foreach ($settings as $s) {
+                        if (($s['key'] ?? '') === 'registration_image') { $reg = $s['value'] ?? ''; break; }
+                    }
+                    $regUrl = '';
+                    if (!empty($reg)) {
+                        // normalize
+                        $regUrl = preg_match('#^https?://#i', $reg) ? $reg : asset(ltrim($reg, '/'));
+                    }
+                    \Illuminate\Support\Facades\Log::info('Fetched registration_image setting', ['registration_image' => $reg, 'registration_image_url' => $regUrl]);
+                    return response()->json(['success' => true, 'data' => ['registration_image' => $reg, 'registration_image_url' => $regUrl]]);
+
+                case 'save_registration_image':
+                    $settingsFile = $this->csvPath('settings');
+                    $settings = $this->readCsv($settingsFile);
+                    $newSettings = $settings;
+                    $regValue = '';
+                    // handle upload
+                    if ($request->hasFile('image')) {
+                        $file = $request->file('image');
+                        if ($file->isValid()) {
+                            $uploadDir = $this->uploadDir('illustrations');
+                            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                            $name = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+                            $file->move($uploadDir, $name);
+                            $regValue = 'upload/illustrations/' . $name;
+                        }
+                    } else if ($request->filled('existing_image')) {
+                        $regValue = $request->input('existing_image');
+                    }
+
+                    // update settings array
+                    $found = false;
+                    foreach ($newSettings as $k => $row) {
+                        if (($row['key'] ?? '') === 'registration_image') { $newSettings[$k]['value'] = $regValue; $found = true; break; }
+                    }
+                    if (!$found) $newSettings[] = ['key' => 'registration_image', 'value' => $regValue];
+                    $success = $this->writeCsv($settingsFile, ['key','value'], $newSettings);
+                    // log what we saved for debugging
+                    
+                    try {
+                        
+                        
+                        $regUrlLog = '';
+                        if (!empty($regValue)) $regUrlLog = preg_match('#^https?://#i', $regValue) ? $regValue : asset(ltrim($regValue, '/'));
+                        \Illuminate\Support\Facades\Log::info('Saved registration_image setting', ['registration_image' => $regValue, 'registration_image_url' => $regUrlLog, 'success' => $success]);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to log registration_image save: ' . $e->getMessage());
+                    }
+                    $regUrl = '';
+                    if (!empty($regValue)) $regUrl = preg_match('#^https?://#i', $regValue) ? $regValue : asset(ltrim($regValue, '/'));
+                    return response()->json(['success' => $success, 'data' => ['registration_image' => $regValue, 'registration_image_url' => $regUrl]]);
 
                 case 'delete_news':
                     $id = $request->input('id');
