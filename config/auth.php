@@ -40,6 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Guard khusus untuk role Marketing (Smart Presenter)
+        'marketing' => [
+            'driver' => 'session',
+            'provider' => 'marketing_users',
+        ],
     ],
 
     /*
@@ -63,6 +69,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        // Provider untuk guard marketing (mengacu ke tabel users yang sama)
+        'marketing_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [

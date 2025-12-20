@@ -1,61 +1,214 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">LP3IKARAWANG</h1>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sebuah aplikasi web berbasis Laravel untuk menampilkan dan mengelola carousel (konten gambar), dengan halaman admin sederhana dan beberapa view publik.
 
-## About Laravel
+**Ringkasan singkat**: proyek ini berisi fitur utama berupa pengelolaan carousel (data CSV di `public/data/carousel.csv` dan folder upload di `public/upload/carousel`), routing pada `routes/web.php`, model `app/Models/User.php`, serta beberapa view di `resources/views/` seperti `carousel.blade.php`, `admin.blade.php`, dan `index.blade.php`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Status:** Development
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Bahasa / Teknologi:** PHP, Laravel, Blade, Composer, Vite/Node
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Prasyarat**
+- **PHP** >= 8.x (sesuaikan dengan `composer.json`)
+- **Composer**
+- **Node.js & npm** (untuk assets / Vite)
+- **Database**: MySQL / MariaDB / SQLite (konfigurasi `.env`)
 
-## Learning Laravel
+**Instalasi & Konfigurasi Lokal**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Clone repository dan masuk ke folder proyek:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+	```powershell
+	cd 'c:\Users\PC BILLGATES 14\Documents\Laravel\LP3IKARAWANG\LP3IKARAWANG'
+	```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Install dependensi PHP dan Node:
 
-## Laravel Sponsors
+	```powershell
+	composer install
+	npm install
+	```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. Salin file environment dan atur variabel lingkungan:
 
-### Premium Partners
+	```powershell
+	copy .env.example .env
+	# lalu edit .env sesuai konfigurasi database dan APP_URL
+	```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+4. Buat key aplikasi dan migrasi database:
 
-## Contributing
+	```powershell
+	php artisan key:generate; php artisan migrate
+	# jika ada seeder: php artisan db:seed
+	```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. Jalankan Vite (development assets) dan server lokal:
 
-## Code of Conduct
+	```powershell
+	npm run dev
+	php artisan serve --host=127.0.0.1 --port=8000
+	```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Setup Setelah Clone (Important!)
 
-## Security Vulnerabilities
+Saat Anda clone project di device lain, folder `public/upload/` mungkin kosong atau tidak ada file gambar. Jalankan script setup berikut:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Windows:**
+```powershell
+pasang setup.bat setelah itu > storage:link
+```
 
-## License
+**Linux/Mac:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+Script ini akan:
+- ✓ Membuat folder struktur (`public/upload/carousel`, `public/upload/news`, dll)
+- ✓ Membuat file CSV template jika belum ada
+- ✓ Membuat logo placeholder SVG
+- ✓ Menyiapkan project untuk dijalankan
+
+Setelah setup, jalankan:
+```powershell
+php artisan serve
+```
+
+## 📁 Struktur File Penting
+
+| Path | Keterangan |
+|------|-----------|
+| `public/data/carousel.csv` | Database carousel (CSV format) |
+| `public/data/news.csv` | Database berita (CSV format) |
+| `public/upload/carousel/` | Folder upload gambar carousel |
+| `public/upload/news/` | Folder upload gambar berita |
+| `storage/app/public/logo/` | Folder logo (symlink ke `public/storage/`) |
+| `resources/views/index.blade.php` | Landing page |
+| `resources/views/admin.blade.php` | Admin panel |
+| `app/Http/Controllers/AdminController.php` | Controller CRUD admin |
+
+## 🔒 Git & Upload Files
+
+**Catatan penting:**
+- File gambar di `public/upload/` **AKAN di-track oleh git** (tidak di-exclude)
+- Jika Anda commit perubahan dengan gambar baru, gambar akan ter-include di repository
+- Setelah clone, jalankan `setup.bat` atau `setup.sh` untuk memastikan folder struktur siap
+
+## 🎓 Mahasiswa Registration
+
+You can now access a Mahasiswa registration form in the app at:
+
+- GET /mahasiswa/create — shows the registration form
+- POST /mahasiswa — submits the registration (fields are validated server-side)
+
+To try locally:
+
+1. Run migrations: `php artisan migrate`
+2. Start dev server: `php artisan serve`
+3. Visit http://127.0.0.1:8000/mahasiswa/create
+
+If you need the Karawang kecamatan list for the registration form, seed the database:
+
+```powershell
+php artisan migrate --database=akademik_kampus --force
+php artisan db:seed --class=KecamatanSeeder --database=akademik_kampus
+php artisan db:seed --class=DesaSeeder --database=akademik_kampus
+```
+
+This will populate the kecamatan dropdown used by the Mahasiswa registration form.
+
+6. Buka `http://127.0.0.1:8000` di browser.
+
+**Data khusus proyek**
+- File CSV untuk carousel: `public/data/carousel.csv`.
+- Folder upload carousel: `public/upload/carousel/`.
+
+Jika ingin mengimpor data dari CSV, periksa controller yang menangani carousel (cari di `app/Http/Controllers/`) dan sesuaikan jika diperlukan.
+
+**Menjalankan Test**
+
+```powershell
+./vendor/bin/phpunit
+```
+
+atau (Windows)
+
+```powershell
+vendor\bin\phpunit.bat
+```
+
+**Membangun untuk Produksi**
+
+```powershell
+npm run build
+```
+
+Kemudian konfigurasi server (Nginx/Apache) untuk menunjuk ke folder `public/`.
+
+**Struktur Proyek (ringkasan file penting)**
+- `routes/web.php`: definisi rute web publik dan admin.
+- `app/Models/User.php`: model User default (sesuaikan jika menambah field).
+- `app/Http/Controllers/`: tempat controller; cari controller carousel/admin di folder ini.
+- `resources/views/`: view Blade. File penting: `admin.blade.php`, `carousel.blade.php`, `index.blade.php`, `get_carousel.blade.php`.
+- `public/data/carousel.csv`: sumber data carousel.
+- `public/upload/carousel/`: tempat file gambar carousel diupload.
+- `database/migrations/`: migration untuk tabel users, jobs, cache, dll.
+- `database/factories/` dan `database/seeders/`: untuk pembuatan data uji.
+
+**Fitur Utama & Catatan Implementasi**
+- Carousel: tampilan carousel menggunakan data CSV dan gambar di `public/upload/carousel`.
+- Admin Panel: akses di `http://localhost:8000/admin` untuk mengelola carousel dan berita.
+- Admin view: `resources/views/admin.blade.php` menyediakan UI pengelolaan (upload/CRUD—powered oleh `AdminController`).
+
+Jika Anda menambahkan file upload baru, pastikan folder `public/upload/carousel` dan `public/upload/news` memiliki permission yang sesuai agar webserver dapat menulis.
+
+**Akses Admin Panel**
+Halaman admin tersedia di: `http://localhost:8000/admin` (saat development)
+- Kelola Carousel: tambah/edit/hapus slide carousel dengan gambar.
+- Kelola Berita: tambah/edit/hapus artikel berita dengan galeri foto.
+
+**Admin (Marketing) setup**
+- Jalankan migrasi baru: `php artisan migrate` (migration menambah kolom `is_admin` pada tabel `users`).
+- Buat admin: menggunakan Tinker, contoh:
+
+  ```bash
+  php artisan tinker
+  \App\Models\User::where('email','admin@example.com')->first()->update(['is_admin' => true]);
+  ```
+
+- URL login admin: `http://localhost:8000/admin/login` — login hanya untuk akun yang memiliki `is_admin = true`.
+- Direkt link ke pendaftar: `http://localhost:8000/admin/pendaftar` (harus login sebagai admin).
+
+**Default admin credentials (development only)**
+- **Admin CMS** (for site admins):
+  - Username: `admin` — Password: `password` (has admin rights)
+
+- **Marketing (Smart Presenter)** (separate role & login):
+  - Username: `lp3ikarawang` — Password: `2025jaya` (marketing)
+  - Username: `marketing` — Password: `cuan2025` (marketing)
+
+- **Pendaftar (applicants)** — registration + account
+  - Pendaftar dapat membuat akun saat mengisi formulir pendaftaran (field email + password).
+  - Setelah mendaftar, pendaftar login di: `/pendaftar/login` dan melihat dashboard di `/pendaftar/dashboard`.
+  - Pembayaran pendaftaran: Rp 350.000 (status dan jumlah disimpan di tabel `mahasiswas`).
+
+> Setelah clone, jalankan: `php artisan migrate && php artisan db:seed` untuk membuat akun-akun ini secara otomatis.
+
+**Panduan Debug & Troubleshooting**
+- Periksa log aplikasi di `storage/logs/laravel.log` untuk error runtime.
+- Pastikan variabel DB di `.env` benar dan database sudah dimigrasi.
+- Jika assets tidak muncul, jalankan `npm run dev` untuk mode development atau `npm run build` untuk produksi.
+
+**Kontribusi**
+- Fork repo dan buat branch fitur: `git checkout -b feature/nama-fitur`.
+- Buat PR dengan deskripsi perubahan dan langkah reproduksi jika perlu.
+
+**Kontak / Maintainer**
+- Pemilik repo: `ibayy221` (lihat informasi repo untuk kontak lebih lanjut).
+
+--
+Dokumentasi ini adalah ringkasan teknis untuk pengembangan lokal dan pemahaman struktur proyek. Jika Anda ingin, saya dapat menambahkan halaman dokumentasi terpisah di folder `docs/` (deploy, API endpoints, contoh CSV import), atau memperluas dokumentasi untuk fitur tertentu—sebutkan bagian mana yang ingin diperinci.
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -113,6 +113,30 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        // Additional named connection used by the app for 'akademik' data.
+        // This uses explicit AKADEMIK_ prefixed env vars when provided,
+        // otherwise it falls back to the default DB_* values so it works
+        // with a single database connection setup.
+        'akademik_kampus' => [
+            'driver' => env('AKADEMIK_DB_CONNECTION') ?: (in_array(env('DB_CONNECTION', 'sqlite'), ['mysql', 'mariadb', 'sqlite', 'pgsql', 'sqlsrv']) ? env('DB_CONNECTION', 'sqlite') : 'sqlite'),
+            'url' => env('AKADEMIK_DB_URL', env('DB_URL')),
+            'host' => env('AKADEMIK_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('AKADEMIK_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('AKADEMIK_DB_DATABASE', env('DB_DATABASE', database_path('database.sqlite'))),
+            'username' => env('AKADEMIK_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('AKADEMIK_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'unix_socket' => env('AKADEMIK_DB_SOCKET', env('DB_SOCKET', '')),
+            'charset' => env('AKADEMIK_DB_CHARSET', env('DB_CHARSET', 'utf8mb4')),
+            'collation' => env('AKADEMIK_DB_COLLATION', env('DB_COLLATION', 'utf8mb4_unicode_ci')),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => env('AKADEMIK_DB_STRICT', true),
+            'engine' => env('AKADEMIK_DB_ENGINE', null),
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*

@@ -25,19 +25,19 @@
             color: #333;
         }
 
-        /* Header */
+        /* Header (glass effect) */
         header {
-            background: rgba(30, 60, 114, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(30, 60, 114, 0.12); /* semi-transparent brand blue */
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             color: white;
-            padding: 0.5rem 0;
+            padding: 0.44rem 0; /* slightly reduced for mobile space */
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: all 0.28s ease;
         }
 
         header.scrolled {
@@ -56,23 +56,17 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #4a90e2, #74b9ff, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
-            animation: logoGlow 2s ease-in-out infinite alternate;
+            display: flex;
+            align-items: center;
         }
 
-        @keyframes logoGlow {
-            from {
-                filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.3));
-            }
-            to {
-                filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8));
-            }
+        .logo img {
+            height: auto;
+            max-height: 48px; /* keep logo visible and not cropped */
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
         }
 
         .nav-links {
@@ -138,52 +132,67 @@
         /* Dropdown Styles */
         .dropdown {
             position: relative;
+            display: inline-block; /* allow dropdown to size to its trigger */
         }
 
+        /* Desktop-style absolute submenu but hidden by default via opacity/max-height
+           so it won't push layout when toggled. Hover behavior applied only on desktop below. */
         .dropdown-content {
-            display: none; /* Hidden by default */
             position: absolute;
-            top: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            min-width: 220px;
-            border-radius: 12px;
+            top: calc(100% + 8px);
+            left: 0;
+            transform: none;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            min-width: 100%; /* match parent width */
+            max-width: 320px;
+            width: max-content;
+            border-radius: 10px;
             z-index: 1000;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
             opacity: 0;
-            transform: translateX(-50%) translateY(-10px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            visibility: hidden;
+            max-height: 0;
+            transition: opacity .22s ease, max-height .28s ease, visibility .22s;
         }
 
-        .dropdown:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
+        /* Hover-to-open is only for desktop; mobile uses click toggle (JS adds .active) */
+        @media (min-width: 769px) {
+            .dropdown:hover .dropdown-content {
+                opacity: 1;
+                visibility: visible;
+                max-height: 480px; /* allow smooth reveal without changing layout */
+            }
         }
 
-        /* Mobile specific adjustments */
+        /* Mobile specific adjustments: keep submenu out of flow but allow vertical expand
+           using .active class toggled by JS. Hover states are ignored on small screens. */
         @media (max-width: 768px) {
             .dropdown-content {
+                position: static; /* place inside flow for mobile accordion */
                 width: 100%;
-                position: static; /* Override absolute positioning for mobile */
-                transform: none; /* Remove transform for mobile */
-                opacity: 1; /* Always visible when active on mobile */
-                border-radius: 0; /* No border-radius for flush look */
-                box-shadow: none; /* No shadow for mobile */
-                margin-left: 0; /* Remove left margin */
-                min-width: auto; /* Remove min-width constraint */
-                background: rgba(255,255,255,0.05); /* Slightly different background for sub-items */
-                border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separator for dropdowns */
-                display: none; /* Hide by default on mobile, will be toggled by JS */
+                left: 0;
+                transform: none;
+                background: rgba(255,255,255,0.03);
+                border-radius: 0;
+                box-shadow: none;
+                margin-left: 0;
+                border: none;
+                max-width: 100%;
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                overflow: hidden;
+                transition: opacity .22s ease, max-height .28s ease, visibility .22s;
             }
 
             .dropdown-content.active {
-                display: block; /* Show when active on mobile */
+                opacity: 1;
+                visibility: visible;
+                max-height: 800px; /* generous for all items */
             }
         }
 
@@ -248,8 +257,11 @@
             transition: transform 0.3s;
         }
 
-        .dropdown:hover > a::after {
-            transform: rotate(180deg);
+        /* Only rotate the caret on desktop hover; mobile uses click/toggle */
+        @media (min-width: 769px) {
+            .dropdown:hover > a::after {
+                transform: rotate(180deg);
+            }
         }
 
         /* Mobile Menu */
@@ -262,9 +274,11 @@
             cursor: pointer;
         }
 
-        /* Hero Section */
+
+        /* Hero Section — mobile-first improvements */
         .hero {
-            height: 100vh;
+            min-height: 65vh; /* mobile-first: compact hero */
+            height: auto;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -272,6 +286,30 @@
             justify-content: center;
             text-align: center;
             color: white;
+            padding: 2.5rem 1rem;
+        }
+
+        /* subtle top-wide overlay (keeps faces in photo visible), add a stronger bottom band via ::after */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            /* very subtle darkening so the image stays visible */
+            background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.03) 40%, rgba(0,0,0,0.00) 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 40%; /* gentle band at the bottom for better text contrast */
+            background: linear-gradient(180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.45) 100%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         .carousel-container {
@@ -281,6 +319,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 0;
         }
 
         .carousel-slide {
@@ -295,23 +334,32 @@
             background-position: center;
         }
 
-        .carousel-slide.active {
-            opacity: 1;
-        }
+        .carousel-slide.active { opacity: 1; }
 
 /* Per-slide backgrounds are applied inline on each .carousel-slide element
    to avoid embedding Blade/PHP directives inside the <style> block, which
    can confuse CSS parsers and editors. */
 
+        /* Center hero content but slightly lower to avoid covering faces */
         .carousel-content {
             position: absolute;
-            bottom: 80px;
+            top: 60%; /* move content lower than center */
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             z-index: 2;
-            max-width: 800px;
-            padding: 2rem;
+            width: 100%;
+            max-width: 920px;
+            padding: 1.25rem; /* tighter on mobile */
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 576px) {
+            .carousel-content { top: 66%; }
         }
 
         .carousel-indicators {
@@ -383,42 +431,68 @@
             right: 30px;
         }
 
+
         .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: white;
-            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
-            animation: slideInUp 1s ease-out;
+            font-size: 1.6rem; /* mobile-first headline */
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+            color: #ffffff;
+            text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            line-height: 1.05;
+            letter-spacing: 0.6px;
+            z-index: 3;
+            animation: slideInUp 0.9s ease-out;
         }
 
         .hero-content p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-            line-height: 1.6;
-            animation: slideInUp 1s ease-out 0.2s both;
+            font-size: 0.98rem; /* subtle subheadline */
+            margin-bottom: 0.9rem;
+            color: rgba(255,255,255,0.92);
+            text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            line-height: 1.5;
+            font-weight: 400;
+            z-index: 3;
+            max-width: 720px;
+            animation: slideInUp 0.9s ease-out 0.12s both;
         }
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #1e3c72, #2a5298); /* brand blue gradient */
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem 1.6rem;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            animation: slideInUp 1s ease-out 0.4s both;
-            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            animation: slideInUp 0.9s ease-out 0.18s both;
+            box-shadow: 0 8px 26px rgba(30,60,114,0.18);
+            z-index: 3;
         }
 
         .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(30,60,114,0.22);
             background: linear-gradient(135deg, #2a5298, #1e3c72);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        /* Header: reduce vertical padding on small screens */
+        @media (max-width: 576px) {
+            header { padding: 0.28rem 0; }
+            .logo img { max-width: 140px; }
+            .hero { min-height: 58vh; padding: 1.5rem .75rem; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .hero-content p { font-size: 0.98rem; }
+            .cta-button { padding: 0.9rem 1.2rem; font-size: 1rem; }
+        }
+
+        /* Larger screens: restore expansive hero */
+        @media (min-width: 992px) {
+            .hero { min-height: 100vh; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .hero-content p { font-size: 1.15rem; }
+            .cta-button { padding: 0.8rem 2rem; font-size: 0.95rem; background: linear-gradient(135deg, #1e3c72, #2a5298); box-shadow: 0 6px 28px rgba(30,60,114,0.15); }
         }
 
 
@@ -430,9 +504,20 @@
 
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            /* Default desktop: 3 columns */
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             margin-top: 3rem;
+        }
+
+        /* Medium screens: 2 columns */
+        @media (max-width: 992px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Small screens: 1 column */
+        @media (max-width: 576px) {
+            .news-grid { grid-template-columns: 1fr; }
         }
 
         .news-card {
@@ -444,6 +529,8 @@
             opacity: 0;
             transform: translateY(50px);
             animation-fill-mode: both;
+            display: flex;
+            flex-direction: column;
         }
 
         .news-card.animate {
@@ -480,13 +567,17 @@
 
         .news-image {
             width: 100%;
-            height: 200px;
+            height: 160px;
             object-fit: cover;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
         }
 
         .news-content {
             padding: 1.5rem;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .news-category {
@@ -556,6 +647,84 @@
             background: linear-gradient(135deg, #2a5298, #1e3c72);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        /* Registration Button Styling */
+        .register-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.5rem;
+            background: #004269 !important;
+            color: white !important;
+            padding: 0.6rem 1.2rem !important;
+            text-decoration: none !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 15px rgba(0, 66, 105, 0.3) !important;
+            border: none !important;
+            cursor: pointer !important;
+            animation: registerPulse 2s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        .register-btn:hover {
+            background: #003352 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 66, 105, 0.5) !important;
+            animation: none;
+        }
+
+        @media (max-width: 768px) {
+            .register-btn {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+            }
+        }
+
+        @keyframes registerPulse {
+            0%, 100% {
+                box-shadow: 0 6px 20px rgba(0, 66, 105, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(0, 66, 105, 0.6);
+            }
+        }
+
+        /* CTA Registration Banner */
+        .registration-banner {
+            background: linear-gradient(135deg, #004269, #003352);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+            margin: 3rem 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 66, 105, 0.2);
+        }
+
+        .registration-banner h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .registration-banner p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .registration-banner {
+                padding: 2rem 1rem;
+            }
+            .registration-banner h3 {
+                font-size: 1.5rem;
+            }
+            .registration-banner p {
+                font-size: 0.95rem;
+            }
         }
 
         /* Programs Section */
@@ -977,7 +1146,11 @@
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo">LP3I Karawang</div>
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Karawang Logo" />
+                </a>
+            </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
@@ -990,6 +1163,7 @@
                         <a href="#fasilitas">Fasilitas</a>
                     </div>
                 </li>
+
                 <li class="dropdown">
                     <a href="#programs">Program Studi</a>
                     <div class="dropdown-content">
@@ -999,6 +1173,14 @@
                         <a href="#marketing-digital">Marketing Digital</a>
                     </div>
                 </li>
+
+                    <!-- <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
+                    </div>
+                </li> -->
+
+
                 <li class="dropdown">
                     <a href="#akademik">Akademik</a>
                     <div class="dropdown-content">
@@ -1025,9 +1207,8 @@
                         <a href="#kerjasama-industri">Kerjasama Industri</a>
                     </div>
                 </li>
-                <li><a href="#ormawa">Ormawa</a></li>
                 <li><a href="#kegiatan">Kegiatan</a></li>
-                <li><a href="#pmb">PMB</a></li>
+                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
     </header>
@@ -1041,8 +1222,20 @@
                     $imagePath = !empty($slide['image']) ? $slide['image'] : '';
                 @endphp
 
-                @if(!empty($imagePath) && file_exists(public_path($imagePath)))
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: url('{{ asset($imagePath) }}'); background-size: cover; background-position: center;">
+                @php
+                    // Normalize slide image path: try public path first, then storage (public disk)
+                    $slideImageUrl = null;
+                    if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+                        $slideImageUrl = asset($imagePath);
+                    } elseif (!empty($imagePath) && file_exists(public_path('storage/' . ltrim($imagePath, '/')))) {
+                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
+                    } elseif (!empty($imagePath) && file_exists(storage_path('app/public/' . ltrim($imagePath, '/')))) {
+                        // If the file exists in storage/app/public, ensure it will be served from public/storage
+                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
+                    }
+                @endphp
+                @if(!empty($slideImageUrl))
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="url('{{ $slideImageUrl }}')">
                     </div>
                 @else
                     @php
@@ -1053,7 +1246,7 @@
                         ];
                         $gradientIndex = $index % count($gradients);
                     @endphp
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" style="background: {!! $gradients[$gradientIndex] !!}; background-size: cover; background-position: center;">
+                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="{{ $gradients[$gradientIndex] }}">
                     </div>
                 @endif
             @endforeach
@@ -1098,13 +1291,11 @@
                 @if($hasReadableContent)
                     <h1>{{ $firstSlide['title'] ?? '' }}</h1>
                     <p>{{ $firstSlide['subtitle'] ?? '' }}</p>
-                    @if(!empty($firstSlide['button']))
-                        <a href="#programs" class="cta-button">{{ $firstSlide['button'] }}</a>
-                    @endif
+                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">{{ !empty($firstSlide['button']) ? $firstSlide['button'] : 'DAFTAR' }}</a>
                 @else
                     <h1>Kembangkan Karirmu bersama LP3I Karawang</h1>
                     <p>Praktik nyata. Kurikulum up-to-date. Lulusan siap kerja.</p>
-                    <a href="#programs" class="cta-button">Daftar Sekarang</a>
+                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">Daftar Sekarang</a>
                 @endif
             </div>
         </div>
@@ -1114,6 +1305,15 @@
                 <div class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
             @endforeach
         </div>
+    </section>
+
+    <!-- Registration CTA Banner -->
+    <section class="registration-banner" id="pendaftaran">
+        <h3><i class="fas fa-graduation-cap"></i> Bergabunglah dengan LP3I Karawang</h3>
+        <p>Raih masa depan cerah bersama program studi unggulan kami. Daftar sekarang dan dapatkan kesempatan untuk berkembang dengan kurikulum terdepan dan fasilitas modern.</p>
+        <a href="{{ route('mahasiswa.create') }}" class="register-btn">
+            <i class="fas fa-sign-in-alt"></i> Daftar Online Sekarang
+        </a>
     </section>
 
     <!-- News Section -->
@@ -1130,9 +1330,19 @@
             @else
                 <div class="news-grid">
                     @foreach($newsData as $news)
-                        <div class="news-card" onclick="location.href='news.php?id={{ $news['id'] }}'" style="cursor: pointer;">
-                            @if(!empty($news['image_path']) && file_exists(public_path($news['image_path'])))
-                                <img src="{{ asset($news['image_path']) }}" alt="{{ $news['title'] }}" class="news-image">
+                        <div class="news-card" data-url="{{ route('news.show', $news['id']) }}" style="cursor: pointer;">
+                                            @php
+                                                $newsImage = null;
+                                                if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
+                                                    $newsImage = asset($news['image_path']);
+                                                } elseif (!empty($news['image_path']) && file_exists(public_path('storage/' . ltrim($news['image_path'], '/')))) {
+                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                                } elseif (!empty($news['image_path']) && file_exists(storage_path('app/public/' . ltrim($news['image_path'], '/')))) {
+                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                                                }
+                                            @endphp
+                                            @if($newsImage)
+                                                <img src="{{ $newsImage }}" alt="{{ $news['title'] }}" class="news-image">
                             @else
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>
@@ -1161,7 +1371,7 @@
                 </div>
                 
                 <div class="view-all-news">
-                    <a href="news.php" class="btn">Lihat Semua Berita</a>
+                    <a href="/news" class="btn">Lihat Semua Berita</a>
                 </div>
             @endif
         </div>
@@ -1176,24 +1386,24 @@
                     <div class="program-icon">
                         <i class="fas fa-laptop-code"></i>
                     </div>
-                    <h3>Teknik Informatika</h3>
+                    <h3>Application Software Engineering</h3>
                     <p>Program studi yang mempersiapkan mahasiswa menjadi programmer dan developer handal dengan kurikulum yang selalu update mengikuti perkembangan teknologi.</p>
                 </div>
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>Manajemen Bisnis</h3>
+                    <h3>Office Administration automatization</h3>
                     <p>Membekali mahasiswa dengan kemampuan manajemen modern dan kewirausahaan untuk menghadapi tantangan dunia bisnis yang dinamis.</p>
                 </div>
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-calculator"></i>
                     </div>
-                    <h3>Akuntansi</h3>
+                    <h3>Accounting Information System</h3>
                     <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
                 </div>
-                <div class="program-card">
+                <!-- <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-bullhorn"></i>
                     </div>
@@ -1201,7 +1411,7 @@
                     <p>Menyiapkan mahasiswa menjadi ahli pemasaran digital yang mampu memanfaatkan teknologi untuk strategi pemasaran modern.</p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </section>
 
     <!-- About Section -->
@@ -1271,6 +1481,8 @@
         </div>
     </footer>
 
+    <script id="slide-data" type="application/json">{!! json_encode($carouselData, JSON_UNESCAPED_UNICODE) !!}</script>
+
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1329,6 +1541,29 @@
         // Carousel functionality
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-slide');
+        // Apply `data-bg` attributes to inline style to avoid editor/linters
+        slides.forEach(s => {
+            const bg = s.getAttribute('data-bg');
+            if (bg) s.style.background = bg;
+        });
+        // Apply consistent background sizing to all slides
+        slides.forEach(s => {
+            s.style.backgroundSize = 'cover';
+            s.style.backgroundPosition = 'center';
+            s.style.backgroundRepeat = 'no-repeat';
+        });
+        // On small screens, nudge the background position vertically so focal areas stay visible
+        function adjustSlideForMobile() {
+            if (window.innerWidth <= 768) {
+                // nudge backgrounds so faces/focal points are higher on small screens
+                slides.forEach(s => { s.style.backgroundPosition = 'center 30%'; });
+            } else {
+                slides.forEach(s => { s.style.backgroundPosition = 'center center'; });
+            }
+        }
+        // Run on load and resize
+        adjustSlideForMobile();
+        window.addEventListener('resize', adjustSlideForMobile);
         const indicators = document.querySelectorAll('.indicator');
         const slideContent = document.getElementById('slide-content');
         
@@ -1337,8 +1572,10 @@
         let endX = 0;
         let isTouch = false;
         
-    // Slide data generated from server-side carouselData
-    const slideData = @json($carouselData);
+    // Slide data generated from server-side carouselData (read from JSON script tag)
+    const slideData = JSON.parse(document.getElementById('slide-data').textContent || '[]');
+    // URL to redirect when CTA is clicked (Mahasiswa create)
+    const MAHASISWA_CREATE_URL = "{{ route('mahasiswa.create') }}";
 
         function updateSlideContent(index) {
             if (slideData.length === 0) return;
@@ -1358,7 +1595,7 @@
                 slideContent.innerHTML = `
                     <h1>${data.title}</h1>
                     <p>${data.subtitle}</p>
-                    <a href="#programs" class="cta-button">${data.button}</a>
+                    <a href="${MAHASISWA_CREATE_URL}" class="cta-button">${data.button || 'DAFTAR'}</a>
                 `;
             }
             // otherwise keep the existing hero content (slogan/default)
@@ -1391,8 +1628,8 @@
             showSlide(currentSlide);
         }
 
-        // Auto-slide every 6 seconds
-        setInterval(nextSlide, 6000);
+        // Auto-slide every 5 seconds
+        setInterval(nextSlide, 5000);
 
         // Navigation controls
         document.querySelector('.carousel-nav.next').addEventListener('click', nextSlide);
@@ -1467,6 +1704,13 @@
             const newsCards = document.querySelectorAll('.news-card');
             newsCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.2}s`;
+                // Add click handler for news card navigation
+                card.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
             });
         }
 

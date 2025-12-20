@@ -80,12 +80,10 @@ $showDetail = $currentNews !== null;
             background: #f8f9fa;
         }
 
+
         /* Header */
         header {
-            background: rgba(30, 60, 114, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: #1e3c72;
             color: white;
             padding: 0.5rem 0;
             position: fixed;
@@ -93,6 +91,10 @@ $showDetail = $currentNews !== null;
             top: 0;
             z-index: 1000;
             transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: #1e3c72;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
@@ -106,23 +108,17 @@ $showDetail = $currentNews !== null;
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #4a90e2, #74b9ff, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
-            animation: logoGlow 2s ease-in-out infinite alternate;
+            height: 50px;
+            display: flex;
+            align-items: center;
         }
 
-        @keyframes logoGlow {
-            from {
-                filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.3));
-            }
-            to {
-                filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8));
-            }
+        .logo img {
+            height: 100%;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
         .nav-links {
@@ -139,7 +135,7 @@ $showDetail = $currentNews !== null;
         .nav-links a {
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            padding: 0.8rem 1.2rem;
+            padding: 0.6rem 1.2rem; /* Adjusted padding */
             display: block;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             border-radius: 0;
@@ -148,31 +144,41 @@ $showDetail = $currentNews !== null;
             white-space: nowrap;
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.05);
+            /* background: rgba(255, 255, 255, 0.05); */ /* Removed for mobile */
             border: none;
-            backdrop-filter: blur(10px);
+            /* backdrop-filter: blur(10px); */ /* Removed for mobile */
         }
 
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
+        /* .nav-links a::before { */ /* Removed for mobile */
+        /*     content: ''; */
+        /*     position: absolute; */
+        /*     top: 0; */
+        /*     left: -100%; */
+        /*     width: 100%; */
+        /*     height: 100%; */
+        /*     background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent); */
+        /*     transition: left 0.5s; */
+        /* } */
 
         .nav-links a:hover::before {
             left: 100%;
         }
 
         .nav-links a:hover {
-            color: #fff;
-            background: rgba(74, 144, 226, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+            /* background: rgba(74, 144, 226, 0.2); */
+            /* color: #74b9ff; */
+            /* transform: none; */
+            box-shadow: none;
+        }
+        /* Mobile specific adjustments for nav-links a */
+        @media (max-width: 768px) {
+            .nav-links a {
+                width: 100%;
+                padding: 0.8rem 2rem; /* Adjusted padding for better mobile touch targets */
+                text-align: left;
+                background: transparent; /* Ensure no background on mobile */
+                backdrop-filter: none; /* Ensure no backdrop-filter on mobile */
+            }
         }
 
         /* Dropdown */
@@ -574,57 +580,67 @@ $showDetail = $currentNews !== null;
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo">LP3I Karawang</div>
+            <div class="logo">
+                <img src="{{ asset('storage/logo/logo white.png') }}" alt="LP3I Karawang Logo" />
+            </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
-                <li><a href="index.php">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li class="dropdown">
                     <a href="#profil">Profil</a>
                     <div class="dropdown-content">
-                        <a href="index.php#sejarah">Sejarah</a>
-                        <a href="index.php#visi-misi">Visi & Misi</a>
-                        <a href="index.php#struktur">Struktur Organisasi</a>
-                        <a href="index.php#fasilitas">Fasilitas</a>
+                        <a href="#sejarah">Sejarah</a>
+                        <a href="#visi-misi">Visi & Misi</a>
+                        <a href="#struktur">Struktur Organisasi</a>
+                        <a href="#fasilitas">Fasilitas</a>
                     </div>
                 </li>
                 <li class="dropdown">
-                    <a href="index.php#programs">Program Studi</a>
+                    <a href="#programs">Program Studi</a>
                     <div class="dropdown-content">
-                        <a href="index.php#teknik-informatika">Teknik Informatika</a>
-                        <a href="index.php#manajemen-bisnis">Manajemen Bisnis</a>
-                        <a href="index.php#akuntansi">Akuntansi</a>
-                        <a href="index.php#marketing-digital">Marketing Digital</a>
+                        <a href="#teknik-informatika">Teknik Informatika</a>
+                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
+                        <a href="#akuntansi">Akuntansi</a>
+                        <a href="#marketing-digital">Marketing Digital</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
                     </div>
                 </li>
                 <li class="dropdown">
                     <a href="#akademik">Akademik</a>
                     <div class="dropdown-content">
-                        <a href="index.php#kalender-akademik">Kalender Akademik</a>
-                        <a href="index.php#kurikulum">Kurikulum</a>
-                        <a href="index.php#sistem-pembelajaran">Sistem Pembelajaran</a>
-                        <a href="index.php#evaluasi">Evaluasi</a>
+                        <a href="#kalender-akademik">Kalender Akademik</a>
+                        <a href="#kurikulum">Kurikulum</a>
+                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
+                        <a href="#evaluasi">Evaluasi</a>
                     </div>
                 </li>
                 <li class="dropdown">
                     <a href="#dosen">Dosen</a>
                     <div class="dropdown-content">
-                        <a href="index.php#profil-dosen">Profil Dosen</a>
-                        <a href="index.php#penelitian">Penelitian</a>
-                        <a href="index.php#publikasi">Publikasi</a>
+                        <a href="#profil-dosen">Profil Dosen</a>
+                        <a href="#penelitian">Penelitian</a>
+                        <a href="#publikasi">Publikasi</a>
                     </div>
                 </li>
                 <li class="dropdown">
                     <a href="#pusat-karir">Pusat Karir</a>
                     <div class="dropdown-content">
-                        <a href="index.php#lowongan-kerja">Lowongan Kerja</a>
-                        <a href="index.php#magang">Program Magang</a>
-                        <a href="index.php#alumni">Alumni</a>
-                        <a href="index.php#pelatihan">Pelatihan</a>
+                        <a href="#lowongan-kerja">Lowongan Kerja</a>
+                        <a href="#magang">Program Magang</a>
+                        <a href="#alumni">Alumni</a>
+                        <a href="#kerjasama-industri">Kerjasama Industri</a>
                     </div>
                 </li>
-                <li><a href="news.php">Berita</a></li>
-                <li><a href="index.php#contact">Kontak</a></li>
-                <li><a href="admin.php">Admin</a></li>
+                <li><a href="/news">Berita</a></li>
+                <li><a href="/index.php#contact">Kontak</a></li>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="#kegiatan">Kegiatan</a></li>
+                <li><a href="/mahasiswa/create" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
     </header>
@@ -633,16 +649,32 @@ $showDetail = $currentNews !== null;
         <?php if ($showDetail): ?>
             <!-- News Detail View -->
             <div class="breadcrumb">
-                <a href="index.php">Home</a> > <a href="news.php">Berita</a> > <?= htmlspecialchars($currentNews['title']) ?>
+                <a href="/">Home</a> > <a href="/news">Berita</a> > <?= htmlspecialchars($currentNews['title']) ?>
             </div>
 
-            <a href="news.php" class="back-button">
+            <a href="/news" class="back-button">
                 <i class="fas fa-arrow-left"></i> Kembali ke Daftar Berita
             </a>
 
             <article class="news-detail">
-                <?php if (!empty($currentNews['image_path']) && file_exists($currentNews['image_path'])): ?>
-                    <img src="<?= htmlspecialchars($currentNews['image_path']) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
+                <?php
+                    $newsImagePath = null;
+                    if (!empty($currentNews['image_path'])) {
+                        $candidates = [
+                            $currentNews['image_path'],
+                            'storage/' . ltrim($currentNews['image_path'], '/'),
+                            'storage/' . ltrim($currentNews['image_path'], '/'),
+                        ];
+                        foreach ($candidates as $p) {
+                            if (!empty($p) && file_exists(public_path($p))) {
+                                $newsImagePath = asset($p);
+                                break;
+                            }
+                        }
+                    }
+                ?>
+                <?php if (!empty($newsImagePath)): ?>
+                    <img src="<?= htmlspecialchars($newsImagePath) ?>" alt="<?= htmlspecialchars($currentNews['title']) ?>" class="news-hero-image">
                 <?php else: ?>
                     <div class="news-hero-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
                         <i class="fas fa-newspaper"></i>
@@ -676,10 +708,10 @@ $showDetail = $currentNews !== null;
                                 $galleryImages = explode(',', $currentNews['gallery_images']);
                                 foreach ($galleryImages as $image): 
                                     $image = trim($image);
-                                    if (!empty($image) && file_exists($image)):
+                                    if (!empty($image) && file_exists(public_path($image))):
                                 ?>
-                                    <div class="gallery-item" onclick="openModal('<?= htmlspecialchars($image) ?>')">
-                                        <img src="<?= htmlspecialchars($image) ?>" alt="Gallery Image">
+                                    <div class="gallery-item" onclick="openModal('<?= htmlspecialchars(asset($image)) ?>')">
+                                        <img src="<?= htmlspecialchars(asset($image)) ?>" alt="Gallery Image">
                                     </div>
                                 <?php endif; endforeach; ?>
                             </div>
@@ -688,7 +720,7 @@ $showDetail = $currentNews !== null;
                 </div>
             </article>
 
-        <?php else: ?>
+                <?php else: ?>
             <!-- News List View -->
             <div class="news-list-header">
                 <h1 class="news-list-title">Semua Berita</h1>
@@ -704,9 +736,25 @@ $showDetail = $currentNews !== null;
             <?php else: ?>
                 <div class="news-grid">
                     <?php foreach ($allNews as $news): ?>
-                        <div class="news-card" onclick="location.href='news.php?id=<?= $news['id'] ?>'">
-                            <?php if (!empty($news['image_path']) && file_exists($news['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($news['image_path']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
+                        <div class="news-card" onclick="location.href='/news/<?= $news['id'] ?>'">
+                            <?php
+                                $newsImage = null;
+                                if (!empty($news['image_path'])) {
+                                    $candidates = [
+                                        $news['image_path'],
+                                        'storage/' . ltrim($news['image_path'], '/'),
+                                        'storage/' . ltrim($news['image_path'], '/'),
+                                    ];
+                                    foreach ($candidates as $p) {
+                                        if (!empty($p) && file_exists(public_path($p))) {
+                                            $newsImage = asset($p);
+                                            break;
+                                        }
+                                    }
+                                }
+                            ?>
+                            <?php if (!empty($newsImage)): ?>
+                                <img src="<?= htmlspecialchars($newsImage) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
                             <?php else: ?>
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>

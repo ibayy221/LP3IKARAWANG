@@ -1,414 +1,7 @@
-<?php
-// Admin functions for carousel management
-function getCarouselData() {
-    $csvFile = 'data/carousel.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $slideData = array_combine($header, $row);
-                $data[] = $slideData;
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-// News management functions
-function getNewsData() {
-    $csvFile = 'data/news.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $newsData = array_combine($header, $row);
-                if ($newsData['status'] === 'active') {
-                    $data[] = [
-                        'id' => $newsData['id'],
-                        'title' => $newsData['title'],
-                        'content' => $newsData['content'],
-                        'excerpt' => $newsData['excerpt'],
-                        'category' => $newsData['category'],
-                        'image_path' => $newsData['image_path'],
-                        'gallery_images' => isset($newsData['gallery_images']) ? $newsData['gallery_images'] : '',
-                        'author' => $newsData['author'],
-                        'created_at' => $newsData['created_at'],
-                        'status' => $newsData['status']
-                    ];
-                }
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-function getAllNewsData() {
-    $csvFile = 'data/news.csv';
-    $data = [];
-    
-    if (file_exists($csvFile) && ($handle = fopen($csvFile, "r")) !== FALSE) {
-        $header = fgetcsv($handle);
-        while (($row = fgetcsv($handle)) !== FALSE) {
-            if (count($row) === count($header)) {
-                $newsData = array_combine($header, $row);
-                $data[] = [
-                    'id' => $newsData['id'],
-                    'title' => $newsData['title'],
-                    'content' => $newsData['content'],
-                    'excerpt' => $newsData['excerpt'],
-                    'category' => $newsData['category'],
-                    'image_path' => $newsData['image_path'],
-                    'gallery_images' => isset($newsData['gallery_images']) ? $newsData['gallery_images'] : '',
-                    'author' => $newsData['author'],
-                    'created_at' => $newsData['created_at'],
-                    'status' => $newsData['status']
-                ];
-            }
-        }
-        fclose($handle);
-    }
-    
-    return $data;
-}
-
-function saveNewsData($data) {
-    $csvFile = 'data/news.csv';
-    $handle = fopen($csvFile, 'w');
-    
-    if ($handle) {
-        // Write header
-        $header = ['id', 'title', 'content', 'excerpt', 'category', 'image_path', 'gallery_images', 'author', 'created_at', 'status'];
-        fputcsv($handle, $header);
-        
-        // Write data
-        foreach ($data as $row) {
-            fputcsv($handle, [
-                $row['id'],
-                $row['title'],
-                $row['content'],
-                $row['excerpt'],
-                $row['category'],
-                $row['image_path'],
-                $row['gallery_images'],
-                $row['author'],
-                $row['created_at'],
-                $row['status']
-            ]);
-        }
-        
-        fclose($handle);
-        return true;
-    }
-    
-    return false;
-}
-
-function deleteNews($id) {
-    $data = getAllNewsData();
-    $newData = [];
-    $deletedImage = '';
-    
-    foreach ($data as $news) {
-        if ($news['id'] != $id) {
-            $newData[] = $news;
-        } else {
-            $deletedImage = $news['image_path'];
-        }
-    }
-    
-    // Delete image file if exists
-    if (!empty($deletedImage) && file_exists($deletedImage)) {
-        unlink($deletedImage);
-    }
-    
-    return saveNewsData($newData);
-}
-
-function saveCarouselData($data) {
-    $csvFile = 'data/carousel.csv';
-    $handle = fopen($csvFile, 'w');
-    
-    if ($handle) {
-        // Write header
-        $header = ['id', 'title', 'subtitle', 'button_text', 'image_path', 'created_at', 'status'];
-        fputcsv($handle, $header);
-        
-        // Write data
-        foreach ($data as $row) {
-            fputcsv($handle, $row);
-        }
-        
-        fclose($handle);
-        return true;
-    }
-    
-    return false;
-}
-
-function deleteSlide($id) {
-    $data = getCarouselData();
-    $newData = [];
-    $deletedImage = '';
-    
-    foreach ($data as $slide) {
-        if ($slide['id'] != $id) {
-            $newData[] = $slide;
-        } else {
-            $deletedImage = $slide['image_path'];
-        }
-    }
-    
-    // Delete image file if exists
-    if (!empty($deletedImage) && file_exists($deletedImage)) {
-        unlink($deletedImage);
-    }
-    
-    return saveCarouselData($newData);
-}
-
-// Handle AJAX requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    header('Content-Type: application/json');
-    
-    try {
-        switch ($_POST['action']) {
-            case 'get_slides':
-                echo json_encode(['success' => true, 'data' => getCarouselData()]);
-                exit;
-                
-            case 'delete_slide':
-                $id = $_POST['id'];
-                $success = deleteSlide($id);
-                echo json_encode(['success' => $success]);
-                exit;
-                
-            case 'save_slide':
-                // Validate required fields
-                if (empty($_POST['title']) || empty($_POST['subtitle']) || empty($_POST['button_text'])) {
-                    echo json_encode(['success' => false, 'error' => 'Semua field harus diisi']);
-                    exit;
-                }
-                
-                $data = getCarouselData();
-                $slideId = !empty($_POST['id']) ? $_POST['id'] : (count($data) + 1);
-                
-                $newSlide = [
-                    'id' => $slideId,
-                    'title' => trim($_POST['title']),
-                    'subtitle' => trim($_POST['subtitle']),
-                    'button_text' => trim($_POST['button_text']),
-                    'image_path' => '',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'status' => $_POST['status'] ?: 'active'
-                ];
-                
-                // Handle image upload
-                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = 'upload/carousel/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-                        echo json_encode(['success' => false, 'error' => 'Format gambar tidak didukung. Gunakan JPG, PNG, atau GIF']);
-                        exit;
-                    }
-                    
-                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) { // 5MB limit
-                        echo json_encode(['success' => false, 'error' => 'Ukuran gambar terlalu besar. Maksimal 5MB']);
-                        exit;
-                    }
-                    
-                    $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image']['name']);
-                    $uploadPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        $newSlide['image_path'] = $uploadPath;
-                    } else {
-                        echo json_encode(['success' => false, 'error' => 'Gagal upload gambar']);
-                        exit;
-                    }
-                } else if (!empty($_POST['existing_image'])) {
-                    $newSlide['image_path'] = $_POST['existing_image'];
-                }
-                
-                // Update existing or add new
-                $found = false;
-                foreach ($data as $key => $slide) {
-                    if ($slide['id'] == $newSlide['id']) {
-                        // Keep existing image if no new image uploaded
-                        if (empty($newSlide['image_path']) && !empty($slide['image_path'])) {
-                            $newSlide['image_path'] = $slide['image_path'];
-                        }
-                        $data[$key] = $newSlide;
-                        $found = true;
-                        break;
-                    }
-                }
-                
-                if (!$found) {
-                    $data[] = $newSlide;
-                }
-                
-                $success = saveCarouselData($data);
-                echo json_encode(['success' => $success, 'message' => 'Slide berhasil disimpan']);
-                exit;
-
-            // News management cases
-            case 'get_news':
-                echo json_encode(['success' => true, 'data' => getNewsData()]);
-                exit;
-                
-            case 'delete_news':
-                $id = $_POST['id'];
-                $success = deleteNews($id);
-                echo json_encode(['success' => $success]);
-                exit;
-                
-            case 'save_news':
-                // Validate required fields
-                if (empty($_POST['title']) || empty($_POST['content']) || empty($_POST['category'])) {
-                    echo json_encode(['success' => false, 'error' => 'Title, content, dan category harus diisi']);
-                    exit;
-                }
-                
-                $data = getAllNewsData();
-                
-                // Generate unique ID for new news
-                if (!empty($_POST['id'])) {
-                    $newsId = $_POST['id'];
-                } else {
-                    // Find the highest existing ID and add 1
-                    $maxId = 0;
-                    foreach ($data as $news) {
-                        if (intval($news['id']) > $maxId) {
-                            $maxId = intval($news['id']);
-                        }
-                    }
-                    $newsId = $maxId + 1;
-                }
-                
-                $newNews = [
-                    'id' => $newsId,
-                    'title' => trim($_POST['title']),
-                    'content' => trim($_POST['content']),
-                    'excerpt' => trim($_POST['excerpt']) ?: substr(strip_tags($_POST['content']), 0, 150) . '...',
-                    'category' => trim($_POST['category']),
-                    'image_path' => '',
-                    'gallery_images' => '',
-                    'author' => trim($_POST['author']) ?: 'Admin LP3I',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'status' => $_POST['status'] ?: 'active'
-                ];
-                
-                // Handle image upload
-                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = 'upload/news/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-                        echo json_encode(['success' => false, 'error' => 'Format gambar tidak didukung. Gunakan JPG, PNG, atau GIF']);
-                        exit;
-                    }
-                    
-                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) { // 5MB limit
-                        echo json_encode(['success' => false, 'error' => 'Ukuran gambar terlalu besar. Maksimal 5MB']);
-                        exit;
-                    }
-                    
-                    $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image']['name']);
-                    $uploadPath = $uploadDir . $fileName;
-                    
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        $newNews['image_path'] = $uploadPath;
-                    } else {
-                        echo json_encode(['success' => false, 'error' => 'Gagal upload gambar']);
-                        exit;
-                    }
-                } else if (!empty($_POST['existing_image'])) {
-                    $newNews['image_path'] = $_POST['existing_image'];
-                }
-                
-                // Handle gallery images upload
-                $galleryImages = [];
-                if (isset($_FILES['gallery_images'])) {
-                    $uploadDir = 'upload/news/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
-                    
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    
-                    foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
-                        if ($_FILES['gallery_images']['error'][$key] === UPLOAD_ERR_OK) {
-                            if (!in_array($_FILES['gallery_images']['type'][$key], $allowedTypes)) {
-                                continue; // Skip invalid file types
-                            }
-                            
-                            if ($_FILES['gallery_images']['size'][$key] > 5 * 1024 * 1024) {
-                                continue; // Skip files larger than 5MB
-                            }
-                            
-                            $fileName = time() . '_' . $key . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['gallery_images']['name'][$key]);
-                            $uploadPath = $uploadDir . $fileName;
-                            
-                            if (move_uploaded_file($tmpName, $uploadPath)) {
-                                $galleryImages[] = $uploadPath;
-                            }
-                        }
-                    }
-                }
-                
-                // Add existing gallery images if editing
-                if (!empty($_POST['existing_gallery'])) {
-                    $existingGallery = explode(',', $_POST['existing_gallery']);
-                    $galleryImages = array_merge($galleryImages, array_filter($existingGallery));
-                }
-                
-                $newNews['gallery_images'] = implode(',', $galleryImages);
-                
-                // Update existing or add new
-                $found = false;
-                foreach ($data as $key => $news) {
-                    if ($news['id'] == $newNews['id']) {
-                        // Keep existing image if no new image uploaded
-                        if (empty($newNews['image_path']) && !empty($news['image_path'])) {
-                            $newNews['image_path'] = $news['image_path'];
-                        }
-                        $data[$key] = $newNews;
-                        $found = true;
-                        break;
-                    }
-                }
-                
-                if (!$found) {
-                    $data[] = $newNews;
-                }
-                
-                $success = saveNewsData($data);
-                echo json_encode(['success' => $success, 'message' => 'Berita berhasil disimpan']);
-                exit;
-        }
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
-        exit;
-    }
-}
-
-$carouselData = getCarouselData();
-?>
+@php
+    // Carousel data is provided by AdminController@index
+    $carouselData = $carouselData ?? [];
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -524,7 +117,8 @@ $carouselData = getCarouselData();
 
         .carousel-list {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
@@ -534,8 +128,9 @@ $carouselData = getCarouselData();
             padding: 1.5rem;
             border-left: 4px solid #4a90e2;
             display: flex;
-            justify-content: space-between;
+            gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .carousel-item-info h4 {
@@ -555,7 +150,8 @@ $carouselData = getCarouselData();
 
         .news-list {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
@@ -566,8 +162,9 @@ $carouselData = getCarouselData();
             margin-bottom: 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
+            gap: 1rem;
+            align-items: flex-start;
             justify-content: space-between;
-            align-items: center;
         }
 
         .news-item-info h4 {
@@ -803,6 +400,32 @@ $carouselData = getCarouselData();
             }
         }
     </style>
+        <style>
+                /* Inline elegant-form fallback for admin (when global CSS not loaded) */
+                .elegant-form .form-control,
+                .elegant-form .form-select,
+                .elegant-form textarea.form-control {
+                    border-radius: 12px;
+                    padding: .75rem .9rem;
+                    border: 1px solid rgba(30,60,114,0.12);
+                    background: linear-gradient(180deg, #ffffff, #fbfbff);
+                    box-shadow: 0 6px 18px rgba(30, 60, 114, 0.06);
+                    transition: all .18s ease-in-out;
+                }
+                .elegant-form .form-control:focus,
+                .elegant-form .form-select:focus,
+                .elegant-form textarea.form-control:focus {
+                    border-color: rgba(30,60,114,0.35);
+                    box-shadow: 0 10px 26px rgba(30,60,114,0.12), 0 0 0 4px rgba(116,185,255,0.06);
+                    outline: none;
+                }
+                .elegant-form .form-label, .elegant-form label { color: #1e3c72; font-weight:600; }
+                .elegant-form .btn { border-radius: 999px; padding: .68rem 1.2rem; transition: transform .08s ease, box-shadow .08s ease; }
+                .elegant-form .btn-primary { background: linear-gradient(90deg,#1e3c72,#2a5298); border:none; color:#fff; }
+                .elegant-form .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,60,114,0.14); }
+                .elegant-form .form-help { color: rgba(30,60,114,0.7); }
+                .ts-dropdown, .ts-control .dropdown-content { max-height: 240px; overflow: auto; }
+        </style>
 </head>
 <body>
     <div class="admin-container">
@@ -815,24 +438,31 @@ $carouselData = getCarouselData();
             <div class="sidebar">
                 <h3>Menu Admin</h3>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="menu-link active" data-section="carousel">
+                    <li><a href="#" class="{{ (isset($active) && $active === 'carousel') ? 'menu-link active' : 'menu-link' }}" data-section="carousel">
                         <i class="fas fa-images"></i> Kelola Carousel
                     </a></li>
-                    <li><a href="#" class="menu-link" data-section="news">
+                    <li><a href="#" class="{{ (isset($active) && $active === 'news') ? 'menu-link active' : 'menu-link' }}" data-section="news">
                         <i class="fas fa-newspaper"></i> Kelola Berita
                     </a></li>
+
                     <li><a href="#" class="menu-link" data-section="settings">
                         <i class="fas fa-cog"></i> Pengaturan
                     </a></li>
-                    <li><a href="index.php" class="menu-link">
+                    <li><a href="/" class="menu-link">
                         <i class="fas fa-home"></i> Kembali ke Website
                     </a></li>
+                    <li style="margin-top:1rem">
+                        <form method="POST" action="/admin/logout">
+                            @csrf
+                            <button type="submit" class="btn btn-danger" style="width:100%">Logout Admin</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
 
             <div class="main-content">
                 <!-- Carousel Management Section -->
-                <div class="content-section active" id="carousel-section">
+                <div class="content-section {{ (isset($active) && $active === 'carousel') ? 'active' : '' }}" id="carousel-section">
                     <h2 class="section-title">Kelola Carousel</h2>
                     
                     <button class="btn btn-success" onclick="openAddModal()">
@@ -846,11 +476,22 @@ $carouselData = getCarouselData();
                                 <h3><?= htmlspecialchars($slide['title']) ?></h3>
                                 <p><?= htmlspecialchars($slide['subtitle']) ?></p>
                                 <span class="status <?= $slide['status'] ?>"><?= ucfirst($slide['status']) ?></span>
-                                <?php if (!empty($slide['image_path'])): ?>
+                                <?php if (!empty($slide['image_path'])):
+                                    // normalize slide image URL (public path -> storage link)
+                                    $imgUrl = '';
+                                    $p = $slide['image_path'];
+                                    if (file_exists(public_path($p))) {
+                                        $imgUrl = asset($p);
+                                    } elseif (file_exists(public_path('storage/' . ltrim($p, '/')))) {
+                                        $imgUrl = asset('storage/' . ltrim($p, '/'));
+                                    } elseif (file_exists(storage_path('app/public/' . ltrim($p, '/')))) {
+                                        $imgUrl = asset('storage/' . ltrim($p, '/'));
+                                    }
+                                    if ($imgUrl): ?>
                                     <div class="image-preview">
-                                        <img src="<?= $slide['image_path'] ?>" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                        <img src="<?= $imgUrl ?>" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                                     </div>
-                                <?php endif; ?>
+                                <?php endif; endif; ?>
                             </div>
                             <div class="carousel-actions">
                                 <button class="btn-edit" onclick="editSlide(<?= $slide['id'] ?>)">
@@ -881,7 +522,23 @@ $carouselData = getCarouselData();
                 <!-- Settings Section -->
                 <div class="content-section" id="settings-section">
                     <h2 class="section-title">Pengaturan</h2>
-                    <p>Fitur pengaturan akan ditambahkan di sini.</p>
+                    <p>Atur aset dan preferensi website seperti gambar registrasi.</p>
+                    <div style="display:flex; gap:1rem; flex-direction:column; max-width:600px;">
+                        <div class="form-group">
+                            <label for="registration-image-input">Gambar Registrasi (tampil di halaman pendaftaran)</label>
+                            <div class="image-upload" onclick="document.getElementById('registration-image-input').click();">
+                                <i class="fas fa-upload"></i>
+                                <div id="registration-image-preview" class="image-preview"></div>
+                            </div>
+                            <small id="registration-image-path" style="display:block;margin-top:0.5rem;color:#666;font-size:0.85rem;"></small>
+                            <input type="file" id="registration-image-input" name="image" style="display:none;" accept="image/*" onchange="previewRegistrationImage(this)">
+                            <span class="form-help">Pilih file gambar (jpg, png) untuk ditampilkan pada halaman pendaftaran.</span>
+                        </div>
+                        <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                            <button type="button" class="btn btn-danger" onclick="resetRegistrationImage()">Reset</button>
+                            <button type="button" class="btn btn-success" onclick="saveRegistrationImage()">Simpan</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -895,7 +552,7 @@ $carouselData = getCarouselData();
                 <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             
-            <form id="slide-form" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
+            <form id="slide-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="slide-id" name="id">
                 <input type="hidden" id="existing-image" name="existing_image">
                 
@@ -944,7 +601,7 @@ $carouselData = getCarouselData();
                 <button class="close-modal" onclick="closeNewsModal()">&times;</button>
             </div>
             
-            <form id="news-form" enctype="multipart/form-data" onsubmit="handleNewsFormSubmit(event)">
+            <form id="news-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handleNewsFormSubmit(event)">
                 <input type="hidden" id="news-id" name="id">
                 <input type="hidden" id="news-existing-image" name="existing_image">
                 
@@ -1021,44 +678,88 @@ $carouselData = getCarouselData();
         let newsData = [];
         let editingId = null;
 
+        // Helper function for safe AJAX calls
+        async function safeJsonFetch(endpoint, formData) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Check if response is OK
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Response is not JSON:', text.substring(0, 200));
+                    throw new Error('Server returned non-JSON response. Check server logs.');
+                }
+                
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
+        }
+
         // Carousel management functions
         async function fetchCarouselData() {
             try {
                 const formData = new FormData();
                 formData.append('action', 'get_slides');
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const responseText = await response.text();
-                const result = JSON.parse(responseText);
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     carouselData = result.data;
                     loadCarouselList();
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('Error loading carousel data: ' + error.message);
             }
+        }
+
+        function loadCarouselList() {
+            const list = document.getElementById('carousel-list');
+            list.innerHTML = '';
+
+            if (!carouselData || carouselData.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Belum ada slide.</p>';
+                return;
+            }
+
+            carouselData.forEach(slide => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.setAttribute('data-id', slide.id);
+                item.innerHTML = `
+                    <div class="carousel-info">
+                        <h3>${slide.title}</h3>
+                        <p>${slide.subtitle}</p>
+                        <span class="status ${slide.status}">${(slide.status || '').charAt(0).toUpperCase() + (slide.status || '').slice(1)}</span>
+                        ${slide.image_path ? `<div class="image-preview"><img src="${slide.image_path}" alt="Slide Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
+                    </div>
+                    <div class="carousel-actions">
+                        <button class="btn-edit" onclick="editSlide(${slide.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteSlide(${slide.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
         }
 
         async function saveCarouselSlide(formData) {
             try {
                 formData.append('action', 'save_slide');
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const responseText = await response.text();
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    alert('Server error: Invalid response format');
-                    return false;
-                }
+                const result = await safeJsonFetch('/admin/action', formData);
                 
                 if (result.success) {
                     alert(result.message || 'Slide berhasil disimpan');
@@ -1081,11 +782,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_slide');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     location.reload();
                     return true;
@@ -1095,7 +792,7 @@ $carouselData = getCarouselData();
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error deleting slide');
+                alert('Error deleting slide: ' + error.message);
                 return false;
             }
         }
@@ -1106,17 +803,99 @@ $carouselData = getCarouselData();
                 const formData = new FormData();
                 formData.append('action', 'get_news');
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     newsData = result.data;
                     loadNewsList();
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error fetching news:', error);
+                alert('Error loading news: ' + error.message);
+            }
+        }
+
+        // Registration illustration (settings)
+        let registrationImageFile = null;
+        let existingRegPath = '';
+        function previewRegistrationImage(input) {
+            const preview = document.getElementById('registration-image-preview');
+            if (input.files && input.files[0]) {
+                registrationImageFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function resetRegistrationImage() {
+            if (!confirm('Yakin ingin menghapus gambar registrasi?')) return;
+            registrationImageFile = null;
+            document.getElementById('registration-image-input').value = '';
+            document.getElementById('registration-image-preview').innerHTML = '';
+            // Also clear server-side setting
+            try {
+                const formData = new FormData();
+                formData.append('action', 'save_registration_image');
+                // No file => clear setting
+                const result = await safeJsonFetch('/admin/action', formData);
+                if (!result.success) alert('Failed to clear registration image');
+            } catch (e) {
+                console.error('Error clearing registration image:', e);
+            }
+        }
+
+        async function fetchRegistrationImage() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_registration_image');
+                const result = await safeJsonFetch('/admin/action', formData);
+                    if (result.success && result.data) {
+                    let p = result.data.registration_image_url || result.data.registration_image || '';
+                    existingRegPath = result.data.registration_image || '';
+                    if (p && !p.startsWith('/') && !p.startsWith('http')) p = '/' + p;
+                    document.getElementById('registration-image-preview').innerHTML = `<img src="${p}" alt="Registration Image" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                    document.getElementById('registration-image-path').innerText = existingRegPath ? existingRegPath : '';
+                }
+            } catch (error) {
+                console.error('Error fetching registration image:', error);
+            }
+        }
+
+        async function saveRegistrationImage() {
+            const btn = document.querySelector('#settings-section .btn-success');
+            if (btn) btn.disabled = true;
+            try {
+                const formData = new FormData();
+                formData.append('action', 'save_registration_image');
+                if (registrationImageFile) { formData.append('image', registrationImageFile); }
+                else if (!registrationImageFile && existingRegPath) { formData.append('existing_image', existingRegPath); }
+                else { alert('Pilih gambar terlebih dahulu.'); if (btn) btn.disabled = false; return false; }
+                const result = await safeJsonFetch('/admin/action', formData);
+                if (result.success) {
+                    alert('Gambar registrasi berhasil disimpan');
+                    if (result.data) {
+                        let p = result.data.registration_image_url || result.data.registration_image || '';
+                        if (p && !p.startsWith('/') && !p.startsWith('http')) p = '/' + p;
+                        document.getElementById('registration-image-preview').innerHTML = `<img src="${p}" alt="Registration Image" style="max-width:200px; max-height:150px; object-fit:cover; border-radius:8px;">`;
+                        document.getElementById('registration-image-path').innerText = result.data.registration_image || '';
+                    }
+                    registrationImageFile = null;
+                    existingRegPath = result.data && result.data.registration_image ? result.data.registration_image : '';
+                    document.getElementById('registration-image-input').value = '';
+                    if (btn) btn.disabled = false;
+                    return true;
+                } else {
+                    alert('Error: ' + (result.error || 'Unknown error'));
+                    if (btn) btn.disabled = false;
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error saving registration image:', error);
+                alert('Error: ' + error.message);
+                if (btn) btn.disabled = false;
+                return false;
             }
         }
 
@@ -1130,6 +909,15 @@ $carouselData = getCarouselData();
             }
             
             newsData.forEach(news => {
+                // normalize image path for news items (if it's a relative path saved in storage/app/public)
+                let imgSrc = '';
+                if (news.image_path) {
+                    imgSrc = news.image_path.trim();
+                    // if path is not absolute (no leading / or protocol), assume it's stored in public storage
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                }
                 const newsItem = document.createElement('div');
                 newsItem.className = 'news-item';
                 newsItem.innerHTML = `
@@ -1141,7 +929,7 @@ $carouselData = getCarouselData();
                             <i class="fas fa-user"></i> ${news.author} | 
                             <i class="fas fa-calendar"></i> ${new Date(news.created_at).toLocaleDateString('id-ID')}
                         </span>
-                        ${news.image_path ? `<div class="image-preview"><img src="${news.image_path}" alt="News Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
+                        ${imgSrc ? `<div class="image-preview"><img src="${imgSrc}" alt="News Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
                     </div>
                     <div class="news-actions">
                         <button class="btn-edit" onclick="editNews(${news.id})">
@@ -1159,12 +947,7 @@ $carouselData = getCarouselData();
         async function saveNews(formData) {
             try {
                 formData.append('action', 'save_news');
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     alert(result.message || 'Berita berhasil disimpan');
                     closeNewsModal();
@@ -1187,11 +970,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_news');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+                const result = await safeJsonFetch('/admin/action', formData);
                 if (result.success) {
                     fetchNewsData();
                     return true;
@@ -1201,7 +980,7 @@ $carouselData = getCarouselData();
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error deleting news');
+                alert('Error deleting news: ' + error.message);
                 return false;
             }
         }
@@ -1238,10 +1017,14 @@ $carouselData = getCarouselData();
             if (galleryImages) {
                 const images = galleryImages.split(',').filter(img => img.trim());
                 images.forEach((imagePath, index) => {
+                    let imgSrc = imagePath.trim();
+                    if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
                     galleryItem.innerHTML = `
-                        <img src="${imagePath.trim()}" alt="Gallery Image">
+                        <img src="${imgSrc}" alt="Gallery Image">
                         <button type="button" class="remove-btn" onclick="removeExistingGalleryItem(this, '${imagePath.trim()}')" data-path="${imagePath.trim()}">×</button>
                     `;
                     galleryGrid.appendChild(galleryItem);
@@ -1288,7 +1071,11 @@ $carouselData = getCarouselData();
                 
                 const preview = document.getElementById('image-preview');
                 if (slide.image_path) {
-                    preview.innerHTML = `<img src="${slide.image_path}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
+                    let imgSrc = slide.image_path.trim();
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                    preview.innerHTML = `<img src="${imgSrc}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
                 } else {
                     preview.innerHTML = '';
                 }
@@ -1352,7 +1139,11 @@ $carouselData = getCarouselData();
                 
                 const preview = document.getElementById('news-image-preview');
                 if (news.image_path) {
-                    preview.innerHTML = `<img src="${news.image_path}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
+                    let imgSrc = news.image_path.trim();
+                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
+                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
+                    }
+                    preview.innerHTML = `<img src="${imgSrc}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 8px;">`;
                 } else {
                     preview.innerHTML = '';
                 }
@@ -1410,7 +1201,7 @@ $carouselData = getCarouselData();
                 const formData = new FormData();
                 formData.append('action', 'get_news');
                 
-                const response = await fetch('admin.php', {
+                const response = await fetch('/admin/action', {
                     method: 'POST',
                     body: formData
                 });
@@ -1466,7 +1257,7 @@ $carouselData = getCarouselData();
                 formData.append('action', 'delete_news');
                 formData.append('id', id);
                 
-                const response = await fetch('admin.php', {
+                const response = await fetch('/admin/action', {
                     method: 'POST',
                     body: formData
                 });
@@ -1487,6 +1278,8 @@ $carouselData = getCarouselData();
         document.addEventListener('DOMContentLoaded', function() {
             fetchCarouselData();
             fetchNewsData();
+            fetchRegistrationImage();
+
             
             // Menu switching
             document.querySelectorAll('.menu-link').forEach(link => {
@@ -1508,6 +1301,8 @@ $carouselData = getCarouselData();
                         // Load data for the section
                         if (section === 'news') {
                             fetchNewsData();
+                        } else if (section === 'settings') {
+                            fetchRegistrationImage();
                         }
                     }
                 });
