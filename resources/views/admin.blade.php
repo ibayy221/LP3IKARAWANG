@@ -11,36 +11,40 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .news-list-container {
+            margin-top: 20px;
+            overflow-x: auto;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #333;
+        .news-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .news-table thead {
+            background: #f6f8fb;
         }
 
-        .admin-header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            color: white;
-            text-align: center;
+        .news-table th,
+        .news-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #eef1f5;
+            vertical-align: middle;
         }
 
-        .admin-header h1 {
+        .news-table tbody tr:hover {
+            background: #fbfdff;
+        }
+
+        .news-excerpt {
+            color: #586674;
+            font-size: 13px;
+        }
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
@@ -148,24 +152,17 @@
             gap: 0.5rem;
         }
 
-        .news-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
 
-        .news-item {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-            justify-content: space-between;
-        }
+        /* News list as a clean table for admin */
+        .news-list-container { margin-bottom: 2rem; }
+        .news-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 18px rgba(2,6,23,0.06); }
+        .news-table thead { background: linear-gradient(90deg,#eef6fb,#f7fbff); }
+        .news-table th, .news-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid #f0f4f8; font-size:0.95rem; color:#07374a }
+        .news-table th { color:#1e3c72; font-weight:700; font-size:0.95rem }
+        .news-table tbody tr:hover { background: #fbfdff }
+        .news-excerpt { color: #546b75; display:block; margin-top:0.35rem; font-size:0.9rem }
+        .news-actions { display:flex; gap:0.5rem }
+        .news-actions .btn { padding:0.4rem 0.7rem; border-radius:6px; font-size:0.9rem }
 
         .news-item-info h4 {
             margin: 0 0 0.5rem 0;
@@ -428,11 +425,64 @@
         </style>
 </head>
 <body>
+    <header>
+        {{-- <nav>
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
+                </a>
+            </div>
+            <button class="mobile-menu-toggle">☰</button>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li class="dropdown">
+                    <a href="#profil">Profil</a>
+                    <div class="dropdown-content">
+                        <a href="#sejarah">Sejarah</a>
+                        <a href="#visi-misi">Visi & Misi</a>
+                        <a href="#struktur">Struktur Organisasi</a>
+                        <a href="#fasilitas">Fasilitas</a>
+                    </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#programs">Program Studi</a>
+                    <div class="dropdown-content">
+                        <a href="#teknik-informatika">Teknik Informatika</a>
+                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
+                        <a href="#akuntansi">Akuntansi</a>
+                        <a href="#marketing-digital">Marketing Digital</a>
+                    </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#akademik">Akademik</a>
+                    <div class="dropdown-content">
+                        <a href="#kalender-akademik">Kalender Akademik</a>
+                        <a href="#kurikulum">Kurikulum</a>
+                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
+                        <a href="#evaluasi">Evaluasi</a>
+                    </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#pusat-karir">Pusat Karir</a>
+                    <div class="dropdown-content">
+                        <a href="#lowongan-kerja">Lowongan Kerja</a>
+                        <a href="#magang">Program Magang</a>
+                        <a href="#alumni">Alumni</a>
+                        <a href="#kerjasama-industri">Kerjasama Industri</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
     <div class="admin-container">
         <div class="admin-header">
             <h1><i class="fas fa-cogs"></i> Admin Panel</h1>
             <p>Kelola Carousel & Konten Website LP3I Karawang</p>
-        </div>
+        </div> --}}
 
         <div class="admin-content">
             <div class="sidebar">
@@ -514,8 +564,21 @@
                         <i class="fas fa-plus"></i> Tambah Berita Baru
                     </button>
 
-                    <div class="news-list" id="news-list">
-                        <!-- News items will be loaded here -->
+                    <div class="news-list-container">
+                        <table class="news-table">
+                            <thead>
+                                <tr>
+                                    <th>Judul & Ringkasan</th>
+                                    <th>Kategori</th>
+                                    <th>Penulis</th>
+                                    <th>Tanggal</th>
+                                    <th style="width:190px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="news-list">
+                                <!-- news rows injected here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -899,50 +962,7 @@
             }
         }
 
-        function loadNewsList() {
-            const newsList = document.getElementById('news-list');
-            newsList.innerHTML = '';
-            
-            if (newsData.length === 0) {
-                newsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Belum ada berita.</p>';
-                return;
-            }
-            
-            newsData.forEach(news => {
-                // normalize image path for news items (if it's a relative path saved in storage/app/public)
-                let imgSrc = '';
-                if (news.image_path) {
-                    imgSrc = news.image_path.trim();
-                    // if path is not absolute (no leading / or protocol), assume it's stored in public storage
-                    if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && !imgSrc.startsWith('data:')) {
-                        imgSrc = '/storage/' + imgSrc.replace(/^\/+/, '');
-                    }
-                }
-                const newsItem = document.createElement('div');
-                newsItem.className = 'news-item';
-                newsItem.innerHTML = `
-                    <div class="news-info">
-                        <h3>${news.title}</h3>
-                        <p class="news-category">${news.category}</p>
-                        <p class="news-excerpt">${news.excerpt || news.content.substring(0, 100) + '...'}</p>
-                        <span class="news-meta">
-                            <i class="fas fa-user"></i> ${news.author} | 
-                            <i class="fas fa-calendar"></i> ${new Date(news.created_at).toLocaleDateString('id-ID')}
-                        </span>
-                        ${imgSrc ? `<div class="image-preview"><img src="${imgSrc}" alt="News Image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"></div>` : ''}
-                    </div>
-                    <div class="news-actions">
-                        <button class="btn-edit" onclick="editNews(${news.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn-delete" onclick="deleteNews(${news.id})">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                `;
-                newsList.appendChild(newsItem);
-            });
-        }
+        // Unified loadNewsList implemented later (table-based) — duplicate removed here.
 
         async function saveNews(formData) {
             try {
@@ -1196,83 +1216,52 @@
             const success = await saveNews(formData);
         }
 
-        async function fetchNewsData() {
-            try {
-                const formData = new FormData();
-                formData.append('action', 'get_news');
-                
-                const response = await fetch('/admin/action', {
-                    method: 'POST',
-                    body: formData
-                });
-                const responseText = await response.text();
-                const result = JSON.parse(responseText);
-                if (result.success) {
-                    newsData = result.data;
-                    loadNewsList();
-                }
-            } catch (error) {
-                console.error('Error fetching news:', error);
-            }
-        }
+        /* fetchNewsData is defined earlier using safeJsonFetch; duplicate removed */
 
         function loadNewsList() {
-            const listContainer = document.getElementById('news-list');
-            listContainer.innerHTML = '';
+            const tbody = document.getElementById('news-list');
+            tbody.innerHTML = '';
 
-            if (newsData.length === 0) {
-                listContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Belum ada berita. Klik "Tambah Berita Baru" untuk menambahkan berita pertama.</p>';
+            if (!newsData || newsData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666;padding:2rem;">Belum ada berita. Klik "Tambah Berita Baru" untuk menambahkan berita pertama.</td></tr>';
                 return;
             }
 
             newsData.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'news-item';
-                itemElement.innerHTML = `
-                    <div class="news-item-info">
-                        <h4>${item.title}</h4>
-                        <p>${item.excerpt || item.content.substring(0, 100) + '...'}</p>
-                        <div style="margin-top: 0.5rem;">
-                            <span class="category-badge">${item.category}</span>
-                            <small style="color: #666; margin-left: 1rem;">📅 ${item.created_at}</small>
-                            <small style="color: #666; margin-left: 1rem;">✍️ ${item.author}</small>
-                        </div>
-                    </div>
-                    <div class="news-item-actions">
-                        <button class="btn btn-primary" onclick="editNews(${item.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteNewsItem(${item.id})">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
+                const tr = document.createElement('tr');
+
+                const titleTd = document.createElement('td');
+                titleTd.innerHTML = `<div class="news-item-info"><h4 style="margin:0">${item.title}</h4><span class="news-excerpt">${item.excerpt || (item.content ? item.content.substring(0,120) + '...' : '')}</span></div>`;
+
+                const categoryTd = document.createElement('td');
+                categoryTd.textContent = item.category || '';
+
+                const authorTd = document.createElement('td');
+                authorTd.textContent = item.author || '';
+
+                const dateTd = document.createElement('td');
+                try { dateTd.textContent = new Date(item.created_at).toLocaleDateString('id-ID'); } catch(e) { dateTd.textContent = item.created_at || ''; }
+
+                const actionsTd = document.createElement('td');
+                actionsTd.innerHTML = `
+                    <div class="news-actions">
+                        <button class="btn btn-primary" onclick="editNews(${item.id})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-danger" onclick="deleteNews(${item.id})"><i class="fas fa-trash"></i> Hapus</button>
+                        <a class="btn" href="/news/${item.id}" target="_blank" style="background:#1e90ff;color:#fff;margin-left:6px;border-radius:6px;padding:0.4rem 0.7rem;text-decoration:none">Detail</a>
                     </div>
                 `;
-                listContainer.appendChild(itemElement);
+
+                tr.appendChild(titleTd);
+                tr.appendChild(categoryTd);
+                tr.appendChild(authorTd);
+                tr.appendChild(dateTd);
+                tr.appendChild(actionsTd);
+
+                tbody.appendChild(tr);
             });
         }
 
-        async function deleteNews(id) {
-            try {
-                const formData = new FormData();
-                formData.append('action', 'delete_news');
-                formData.append('id', id);
-                
-                const response = await fetch('/admin/action', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.success) {
-                    fetchNewsData();
-                    alert('Berita berhasil dihapus');
-                } else {
-                    alert('Error: ' + result.error);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error deleting news');
-            }
-        }
+        /* deleteNews duplicate removed; using deleteNewsItem(id) implementation above */
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {

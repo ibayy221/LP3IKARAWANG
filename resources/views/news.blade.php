@@ -580,8 +580,8 @@ $showDetail = $currentNews !== null;
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo">
-                <img src="{{ asset('storage/logo/logo white.png') }}" alt="LP3I Karawang Logo" />
+                <div class="logo">
+                <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'" />
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
@@ -638,8 +638,9 @@ $showDetail = $currentNews !== null;
                 </li>
                 <li><a href="/news">Berita</a></li>
                 <li><a href="/index.php#contact">Kontak</a></li>
-                <li><a href="/admin">Admin</a></li>
+                <!-- Admin link removed from public navbar -->
                 <li><a href="#kegiatan">Kegiatan</a></li>
+                <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 <li><a href="/mahasiswa/create" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>

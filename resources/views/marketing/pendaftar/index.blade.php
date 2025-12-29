@@ -156,7 +156,7 @@
           @method('DELETE')
           <button class="btn btn-small desktop-only" id="btn-delete-all" style="background:#ef4444;border:none" onclick="return confirm('Yakin ingin menghapus SEMUA pendaftar? Hanya untuk pengembangan.');">Hapus Semua</button>
         </form>
-        <a class="btn btn-small desktop-only" href="{{ route('marketing.pendaftar.trash') }}" style="background:#fff;color:var(--brand-dark);border:1px solid #e6eef6;margin-left:.5rem">Lihat Trash</a>
+        <a class="btn btn-small desktop-only" href="{{ route('marketing.pendaftar.trash') }}" style="background:#fff;color:var(--brand-dark);border:1px solid #e6eef6;margin-left:.5rem"></a>
         <span class="desktop-only" style="font-size:.85rem;color:#b91c1c;margin-left:.4rem">(hanya pengembangan)</span>
 
         <!-- Mobile actions dropdown -->

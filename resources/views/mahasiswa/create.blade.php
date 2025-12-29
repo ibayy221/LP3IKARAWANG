@@ -258,15 +258,16 @@
       <nav>
         <div class="logo">
           <a href="/">
-            <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Logo">
+            <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Logo" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'">
           </a>
         </div>
         <button class="mobile-menu-toggle">☰</button>
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/news">Berita</a></li>
-          <li><a href="/admin">Admin</a></li>
+          <!-- Admin link removed from public navbar -->
           <li><a href="#contact">Kontak</a></li>
+          <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
           <li><a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
         </ul>
       </nav>

@@ -12,7 +12,7 @@
     /* Wrap to contain content and watermark */
     .wrap{max-width:1100px;margin:3rem auto;padding:1.5rem;position:relative}
     /* Watermark moved to bottom-right and placed behind content (non-overlapping). Hidden on small screens. */
-    .wrap::before{ content:''; position:absolute; right:-20px; bottom:-20px; width:260px; height:260px; background-image: url("{{ asset('storage/logo/lp3i-logo.png') }}"); background-size:contain; background-repeat:no-repeat; opacity:0.05; pointer-events:none; filter:grayscale(60%); z-index:0; }
+    .wrap::before{ content:''; position:absolute; right:-20px; bottom:-20px; width:260px; height:260px; background-image: url("{{ asset('storage/image/landingPage1.png') }}"); background-size:contain; background-repeat:no-repeat; opacity:0.05; pointer-events:none; filter:grayscale(60%); z-index:0; }
     .card{z-index:1}
     @media (max-width:768px){ .wrap::before{ display:none; } }
 

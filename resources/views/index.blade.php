@@ -676,6 +676,30 @@
             animation: none;
         }
 
+        /* Login Button Styling (adjacent to register) */
+        .login-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent !important;
+            color: white !important;
+            padding: 0.55rem 1rem !important;
+            text-decoration: none !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            cursor: pointer !important;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.06) !important;
+            transform: translateY(-1px);
+            box-shadow: none !important;
+        }
+
         @media (max-width: 768px) {
             .register-btn {
                 padding: 0.5rem 1rem !important;
@@ -1148,7 +1172,7 @@
         <nav>
             <div class="logo">
                 <a href="/">
-                    <img src="{{ asset('storage/logo/lp3i-logo.png') }}" alt="LP3I Karawang Logo" />
+                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
                 </a>
             </div>
             <button class="mobile-menu-toggle">☰</button>
@@ -1190,14 +1214,14 @@
                         <a href="#evaluasi">Evaluasi</a>
                     </div>
                 </li>
-                <li class="dropdown">
+                {{-- <li class="dropdown">
                     <a href="#dosen">Dosen</a>
                     <div class="dropdown-content">
                         <a href="#profil-dosen">Profil Dosen</a>
                         <a href="#penelitian">Penelitian</a>
                         <a href="#publikasi">Publikasi</a>
                     </div>
-                </li>
+                </li> --}}
                 <li class="dropdown">
                     <a href="#pusat-karir">Pusat Karir</a>
                     <div class="dropdown-content">
@@ -1207,7 +1231,7 @@
                         <a href="#kerjasama-industri">Kerjasama Industri</a>
                     </div>
                 </li>
-                <li><a href="#kegiatan">Kegiatan</a></li>
+                <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
