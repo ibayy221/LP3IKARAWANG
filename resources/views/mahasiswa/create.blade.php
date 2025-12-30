@@ -290,7 +290,7 @@
                     <!-- logo removed — keeping layout minimal and colorful -->
                     <div>
                       <h2 class="mb-0">Form Pendaftaran Mahasiswa</h2>
-                      <p class="registration-subtext small mb-0">Isi data diri sesuai dokumen resmi</p>
+                      <p class="registration-subtext small mb-0">Silahakan Isi data diri dengan benar</p>
                     </div>
                   </div>
 
@@ -318,8 +318,12 @@
                   </div>
 
                   <div class="mb-3 col-md-6">
-                    <label class="form-label">Email (Kontak)</label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="form-control">
+                    <label class="form-label">Jenis Kelas</label>
+                    <select id="jenis_kelas" name="jenis_kelas" class="form-select">
+                      <option value="">-- Pilih Jenis Kelas --</option>
+                      <option value="Regular" {{ old('jenis_kelas') == 'Regular' ? 'selected' : '' }}>Regular</option>
+                      <option value="Karyawan" {{ old('jenis_kelas') == 'Karyawan' ? 'selected' : '' }}>Karyawan</option>
+                    </select>
                   </div>
                 </div>
 
@@ -329,65 +333,13 @@
                     <input type="text" name="no_hp" value="{{ old('no_hp') }}" class="form-control" required>
                   </div>
                   <div class="mb-3 col-md-6">
-                    <label class="form-label">Jurusan / Program Studi</label>
+                    <label class="form-label">Program Studi</label>
                     <select name="jurusan" class="form-control">
                       <option value="">Pilih Jurusan</option>
+                      <option value="AIS" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>Accounting Information System</option>
                       <option value="ASE" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
                       <option value="OAA" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
-                      <option value="AIS" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>AAccounting Information System</option>
                     </select>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Tahun Lulus</label>
-                    <input type="number" min="1900" max="2100" name="tahun_lulus" value="{{ old('tahun_lulus') }}" class="form-control">
-                  </div>
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Kecamatan</label>
-                    <select id="kecamatan" name="kecamatan" class="form-select">
-                      <option value=""> Pilih Kecamatan </option>
-                      @foreach($kecamatans as $k)
-                        <option value="{{ $k->id }}" {{ (old('kecamatan') == $k->id || old('kecamatan') == $k->name) ? 'selected' : '' }}>{{ $k->name }}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Desa</label>
-                    <select id="desa" name="desa" class="form-select" disabled>
-                      <option value="">Pilih Desa</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Address (moved to bottom) - removed duplicate kecamatan block -->
-
-                <div class="row">
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}" class="form-control">
-                  </div>
-
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Tanggal Lahir</label>
-                    <input type="text" id="tgl_lahir" name="tgl_lahir" value="{{ old('tgl_lahir') }}" class="form-control" placeholder="YYYY-MM-DD">
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Jenis Kelamin</label>
-                    <select id="jenis_kelamin" name="jenis_kelamin" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                      <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
-                    </select>
-                  </div>
-
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Kode Pos</label>
-                    <input id="kode_pos" type="text" name="kode_pos" value="{{ old('kode_pos') }}" class="form-control">
                   </div>
                 </div>
 
@@ -398,31 +350,7 @@
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Jenis Sekolah</label>
-                    <select id="jenis_sekolah" name="jenis_sekolah" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="SMA/SMK" {{ old('jenis_sekolah') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
-                    </select>
-                  </div>
 
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Kategori Sekolah</label>
-                    <select id="kategori_sekolah" name="kategori_sekolah" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="Negeri" {{ old('kategori_sekolah') == 'Negeri' ? 'selected' : '' }}>Negeri</option>
-                      <option value="Swasta" {{ old('kategori_sekolah') == 'Swasta' ? 'selected' : '' }}>Swasta</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-12">
-                    <label class="form-label">Alamat Lengkap</label>
-                    <textarea name="alamat" rows="4" class="form-control">{{ old('alamat') }}</textarea>
-                  </div>
-                </div>
 
                 <hr />
                 <div class="row mt-3">
@@ -461,89 +389,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Flatpickr -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Tom Select (Bootstrap 5 theme) -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-      // initialize flatpickr for date field
-      flatpickr('#tgl_lahir', {
-        dateFormat: 'Y-m-d',
-        maxDate: 'today',
-        altInput: true,
-        altFormat: 'd F Y'
-      });
-
-      // initialize Tom Select for selects
-      const kecamatanSelect = new TomSelect('#kecamatan', { maxOptions: 100, plugins: ['dropdown_input'] });
-      const desaSelect = new TomSelect('#desa', { maxOptions: 100, plugins: ['dropdown_input'], create: false });
-      // duplicates removed - Tom Select already initialized above
-
-      // desas grouped passed by controller as a JSON object
-      const desasGrouped = {!! json_encode($desas ?? []) !!};
-      const kecamatanList = {!! json_encode($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name])) !!};
-      const oldKecamatan = {!! json_encode(old('kecamatan')) !!};
-      const oldDesa = {!! json_encode(old('desa')) !!};
-      const oldKodePos = {!! json_encode(old('kode_pos')) !!};
-
-      // On kecamatan change, populate desa
-      kecamatanSelect.on('change', function(value) {
-        const data = desasGrouped[value] || [];
-        desaSelect.clearOptions();
-        if (data.length) {
-          desaSelect.enable();
-          desaSelect.addOption(data.map(function(d){ return {value: d.name, text: d.name, kode_pos: d.kode_pos}; }));
-          desaSelect.refreshOptions(false);
-        } else {
-          desaSelect.disable();
-        }
-        // also clear kode pos
-        document.getElementById('kode_pos').value = '';
-      });
-
-      // After page load: if old kecamatan is set, initialize selection and desa
-      (function initialOldSelection(){
-        let selectedKec = oldKecamatan || null;
-        if (selectedKec) {
-          // if old is name, find ID
-          if (isNaN(selectedKec)) {
-            for (const id in kecamatanList) {
-              if (kecamatanList[id] === selectedKec) { selectedKec = id; break; }
-            }
-          }
-          if (selectedKec) {
-            kecamatanSelect.setValue(String(selectedKec));
-            // populate desa via change handler
-            // after a short delay allow desa options to be added
-            setTimeout(function(){
-              if (oldDesa) {
-                desaSelect.setValue(oldDesa);
-                document.getElementById('kode_pos').value = oldKodePos || '';
-              }
-            }, 200);
-          }
-        }
-      })();
-
-      // on desa change, set kode pos from options
-      desaSelect.on('change', function(value) {
-        const opt = desaSelect.getOption(value);
-        let kode = '';
-        if (opt) {
-          // Tom Select stores data in option attrs; try read 'data-kode_pos' or from JSON
-          // The Tom Select api doesn't expose custom attributes, so find by value in desasGrouped
-          for (const key in desasGrouped) {
-            const list = desasGrouped[key];
-            const found = list.find(function(d){ return d.name === value; });
-            if (found) { kode = found.kode_pos; break; }
-          }
-        }
-        document.getElementById('kode_pos').value = kode || '';
-      });
-      new TomSelect('#jenis_kelamin', { create: false, placeholder: 'Pilih jenis kelamin...' });
-      new TomSelect('#jenis_sekolah', { create: false, placeholder: 'Pilih jenis sekolah...' });
-      new TomSelect('#kategori_sekolah', { create: false, placeholder: 'Pilih kategori sekolah...' });
+      // initialize Tom Select for the new Jenis Kelas dropdown
+      new TomSelect('#jenis_kelas', { create: false, placeholder: 'Pilih jenis kelas...' });
 
         // Mobile menu toggle
         document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {

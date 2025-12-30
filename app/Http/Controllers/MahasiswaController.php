@@ -44,7 +44,8 @@ class MahasiswaController extends Controller
             }
         }
         \Illuminate\Support\Facades\Log::info('mahasiswa.create registration_image', ['registration_image' => $registrationImageUrl]);
-        return view('mahasiswa.create', compact('kecamatans', 'desas', 'registrationImageUrl'));
+        $kecamatanList = $kecamatans->pluck('name','id');
+        return view('mahasiswa.create', compact('kecamatans', 'desas', 'registrationImageUrl', 'kecamatanList'));
     }
 
     public function store(Request $request)
