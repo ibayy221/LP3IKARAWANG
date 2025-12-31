@@ -140,14 +140,14 @@
         .dropdown-content {
             position: absolute;
             top: calc(100% + 8px);
-            left: 0;
-            transform: none;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            min-width: 100%; /* match parent width */
+            min-width: 220px; /* fixed min width to avoid covering neighbors */
             max-width: 320px;
-            width: max-content;
+            width: auto;
             border-radius: 10px;
             z-index: 1000;
             overflow: hidden;
@@ -156,7 +156,7 @@
             opacity: 0;
             visibility: hidden;
             max-height: 0;
-            transition: opacity .22s ease, max-height .28s ease, visibility .22s;
+            transition: opacity .22s ease, max-height .28s ease, visibility .22s, transform .18s ease;
         }
 
         /* Hover-to-open is only for desktop; mobile uses click toggle (JS adds .active) */
@@ -1181,20 +1181,19 @@
                 <li class="dropdown">
                     <a href="#profil">Profil</a>
                     <div class="dropdown-content">
-                        <a href="#sejarah">Sejarah</a>
-                        <a href="#visi-misi">Visi & Misi</a>
-                        <a href="#struktur">Struktur Organisasi</a>
-                        <a href="#fasilitas">Fasilitas</a>
+                        <a href="/sambutan">Sambutan</a>
+                        <a href="/sejarah">Sejarah</a>
+                        {{-- <a href="#prestasi">Prestasi</a> --}}
+                        <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
 
                 <li class="dropdown">
                     <a href="#programs">Program Studi</a>
                     <div class="dropdown-content">
+                        <a href="#akuntansi">Akuntansi</a>
                         <a href="#teknik-informatika">Teknik Informatika</a>
                         <a href="#manajemen-bisnis">Manajemen Bisnis</a>
-                        <a href="#akuntansi">Akuntansi</a>
-                        <a href="#marketing-digital">Marketing Digital</a>
                     </div>
                 </li>
 
@@ -1209,9 +1208,6 @@
                     <a href="#akademik">Akademik</a>
                     <div class="dropdown-content">
                         <a href="#kalender-akademik">Kalender Akademik</a>
-                        <a href="#kurikulum">Kurikulum</a>
-                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
-                        <a href="#evaluasi">Evaluasi</a>
                     </div>
                 </li>
                 {{-- <li class="dropdown">
@@ -1225,14 +1221,13 @@
                 <li class="dropdown">
                     <a href="#pusat-karir">Pusat Karir</a>
                     <div class="dropdown-content">
-                        <a href="#lowongan-kerja">Lowongan Kerja</a>
-                        <a href="#magang">Program Magang</a>
-                        <a href="#alumni">Alumni</a>
-                        <a href="#kerjasama-industri">Kerjasama Industri</a>
+                        <a href="#pedoman">Pedoman Lowongan Kerja</a>
+                        <a href="#magang">Bukti Penempatan kerja</a>
                     </div>
                 </li>
+                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
                 <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
+                
             </ul>
         </nav>
     </header>
@@ -1406,6 +1401,14 @@
         <div class="container">
             <h2 class="section-title">Program Studi Unggulan</h2>
             <div class="programs-grid">
+            <div class="program-card">
+                    <div class="program-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Accounting Information System</h3>
+                    <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
+                </div>
+
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-laptop-code"></i>
@@ -1420,13 +1423,7 @@
                     <h3>Office Administration automatization</h3>
                     <p>Membekali mahasiswa dengan kemampuan manajemen modern dan kewirausahaan untuk menghadapi tantangan dunia bisnis yang dinamis.</p>
                 </div>
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <h3>Accounting Information System</h3>
-                    <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
-                </div>
+                
                 <!-- <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-bullhorn"></i>
@@ -1480,10 +1477,10 @@
             </div>
             <div class="footer-section">
                 <h3>Program Studi</h3>
+                <a href="#">Akuntansi</a>
                 <a href="#">Teknik Informatika</a>
                 <a href="#">Manajemen Bisnis</a>
-                <a href="#">Akuntansi</a>
-                <a href="#">Marketing Digital</a>
+                
             </div>
             <div class="footer-section">
                 <h3>Layanan</h3>

@@ -438,10 +438,10 @@
                 <li class="dropdown">
                     <a href="#profil">Profil</a>
                     <div class="dropdown-content">
-                        <a href="#sejarah">Sejarah</a>
-                        <a href="#visi-misi">Visi & Misi</a>
-                        <a href="#struktur">Struktur Organisasi</a>
-                        <a href="#fasilitas">Fasilitas</a>
+                        <a href="/sambutan">Sambutan</a>
+                        <a href="/sejarah">Sejarah</a>
+                        <a href="#prestasi">Prestasi</a>
+                        <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
 

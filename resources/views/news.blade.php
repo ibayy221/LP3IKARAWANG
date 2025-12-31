@@ -278,26 +278,26 @@ $showDetail = $currentNews !== null;
             }
 
             .dropdown-content {
-                position: static;
-                display: block;
-                box-shadow: none;
-                background: rgba(255,255,255,0.1);
-                margin-left: 20px;
+                position: absolute;
+                top: calc(100% + 8px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(255, 255, 255, 0.06);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                min-width: 220px; /* fixed min width to avoid covering neighbors */
+                max-width: 320px;
+                width: auto;
+                border-radius: 10px;
+                z-index: 1000;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                transition: opacity .22s ease, max-height .28s ease, visibility .22s, transform .18s ease;
             }
-
-            .dropdown-content a {
-                color: #ccc;
-                padding: 8px 20px;
-            }
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            margin-top: 80px; /* Add space for fixed header */
-        }
 
         .breadcrumb {
             margin-bottom: 2rem;
@@ -589,10 +589,10 @@ $showDetail = $currentNews !== null;
                 <li class="dropdown">
                     <a href="#profil">Profil</a>
                     <div class="dropdown-content">
-                        <a href="#sejarah">Sejarah</a>
-                        <a href="#visi-misi">Visi & Misi</a>
-                        <a href="#struktur">Struktur Organisasi</a>
-                        <a href="#fasilitas">Fasilitas</a>
+                        <a href="/sambutan">Sambutan</a>
+                        <a href="/sejarah">Sejarah</a>
+                        /* <a href="#prestasi">Prestasi</a> */
+                        <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
                 <li class="dropdown">
@@ -819,16 +819,33 @@ $showDetail = $currentNews !== null;
             }
         });
 
-        // Mobile menu toggle
+        // Mobile menu toggle + mobile dropdown toggle
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
             const navLinks = document.querySelector('.nav-links');
 
-            if (mobileMenuToggle) {
+            if (mobileMenuToggle && navLinks) {
                 mobileMenuToggle.addEventListener('click', function() {
                     navLinks.classList.toggle('active');
+                    document.querySelectorAll('.dropdown-content').forEach(content => content.classList.remove('active'));
                 });
             }
+
+            // Mobile dropdown toggle (prevent open-on-touch default behavior)
+            document.querySelectorAll('.nav-links .dropdown > a').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        const dropdownContent = this.nextElementSibling;
+                        if (dropdownContent && dropdownContent.classList.contains('dropdown-content')) {
+                            document.querySelectorAll('.dropdown-content.active').forEach(openDropdown => {
+                                if (openDropdown !== dropdownContent) openDropdown.classList.remove('active');
+                            });
+                            dropdownContent.classList.toggle('active');
+                        }
+                    }
+                });
+            });
         });
     </script>
 </body>
