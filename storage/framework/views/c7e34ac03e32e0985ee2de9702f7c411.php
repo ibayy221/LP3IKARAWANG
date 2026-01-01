@@ -38,16 +38,16 @@
 <body>
   <div class="card">
     <div class="logo-wrap">
-      <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'" />
+      <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/landingPage1.png')); ?>'" />
     </div>
     <h2>Login Pendaftar</h2>
     <p class="lead">Masuk untuk mengelola pendaftaran dan melihat status Anda.</p>
 
-    @if(session('success')) <div class="alert-success">{{ session('success') }}</div> @endif
-    @if($errors->any()) <div class="alert-error">{{ $errors->first() }}</div> @endif
+    <?php if(session('success')): ?> <div class="alert-success"><?php echo e(session('success')); ?></div> <?php endif; ?>
+    <?php if($errors->any()): ?> <div class="alert-error"><?php echo e($errors->first()); ?></div> <?php endif; ?>
 
-    <form action="{{ route('pendaftar.login.post') }}" method="POST">
-      @csrf
+    <form action="<?php echo e(route('pendaftar.login.post')); ?>" method="POST">
+      <?php echo csrf_field(); ?>
       <div style="margin:.6rem 0">
         <label class="form-label">Email</label>
         <input type="email" name="email" required class="form-control" placeholder="email@domain.com">
@@ -57,10 +57,10 @@
         <input type="password" name="password" required class="form-control" placeholder="Masukkan password">
       </div>
       <div class="actions">
-        <a href="{{ url('/') }}" style="color:var(--brand-dark);text-decoration:none;font-weight:600;margin-right:auto">Kembali</a>
+        <a href="<?php echo e(url('/')); ?>" style="color:var(--brand-dark);text-decoration:none;font-weight:600;margin-right:auto">Kembali</a>
         <button class="btn-primary" type="submit">Login</button>
       </div>
     </form>
   </div>
 </body>
-</html>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/pendaftar/login.blade.php ENDPATH**/ ?>

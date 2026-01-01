@@ -258,7 +258,7 @@
       <nav>
         <div class="logo">
           <a href="/">
-            <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Logo" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'">
+            <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Logo" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/landingPage1.png')); ?>'">
           </a>
         </div>
         <button class="mobile-menu-toggle">☰</button>
@@ -268,7 +268,7 @@
           <!-- Admin link removed from public navbar -->
           <li><a href="#contact">Kontak</a></li>
           <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-          <li><a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
+          <li><a href="<?php echo e(route('mahasiswa.create')); ?>" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
         </ul>
       </nav>
     </header>
@@ -278,12 +278,12 @@
           <div class="card registration-card shadow-sm">
             <div class="card-body p-4">
               
-                <form action="{{ route('mahasiswa.store') }}" method="POST" enctype="multipart/form-data" novalidate class="elegant-form">
-                  @csrf
+                <form action="<?php echo e(route('mahasiswa.store')); ?>" method="POST" enctype="multipart/form-data" novalidate class="elegant-form">
+                  <?php echo csrf_field(); ?>
                   <div class="registration-grid">
                     <div class="registration-illustration">
                       <div class="illustration-wrapper">
-                        <img loading="lazy" src="{{ !empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl, '/')) : asset('storage/illustrations/registration-illustration.svg') }}" alt="Registration Illustration" onerror="this.style.display='none'" />
+                        <img loading="lazy" src="<?php echo e(!empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl, '/')) : asset('storage/illustrations/registration-illustration.svg')); ?>" alt="Registration Illustration" onerror="this.style.display='none'" />
                       </div>
                     </div>
                     <div>
@@ -295,47 +295,47 @@
                     </div>
                   </div>
 
-              {{-- Flash / validation messages --}}
-              @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-              @endif
+              
+              <?php if(session('success')): ?>
+                <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+              <?php endif; ?>
 
-              @if($errors->any())
+              <?php if($errors->any()): ?>
                 <div class="alert alert-danger">
                   <ul class="mb-0">
-                    @foreach($errors->all() as $err)
-                      <li>{{ $err }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $err): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <li><?php echo e($err); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                   </ul>
                 </div>
-              @endif
+              <?php endif; ?>
 
               
 
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Nama Lengkap *</label>
-                    <input type="text" name="nama_mhs" value="{{ old('nama_mhs') }}" class="form-control" required>
+                    <input type="text" name="nama_mhs" value="<?php echo e(old('nama_mhs')); ?>" class="form-control" required>
                   </div>
 
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Email (Kontak)</label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="form-control">
+                    <input type="email" name="email" value="<?php echo e(old('email')); ?>" class="form-control">
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">No. HP *</label>
-                    <input type="text" name="no_hp" value="{{ old('no_hp') }}" class="form-control" required>
+                    <input type="text" name="no_hp" value="<?php echo e(old('no_hp')); ?>" class="form-control" required>
                   </div>
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Jurusan / Program Studi</label>
                     <select name="jurusan" class="form-control">
                       <option value="">Pilih Jurusan</option>
-                      <option value="ASE" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
-                      <option value="OAA" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
-                      <option value="AIS" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>AAccounting Information System</option>
+                      <option value="ASE" <?php echo e(old('jurusan') == 'ASE' ? 'selected' : ''); ?>>Application Software Engineering</option>
+                      <option value="OAA" <?php echo e(old('jurusan') == 'OAA' ? 'selected' : ''); ?>>Office Administration Automatization</option>
+                      <option value="AIS" <?php echo e(old('jurusan') == 'AIS' ? 'selected' : ''); ?>>AAccounting Information System</option>
                     </select>
                   </div>
                 </div>
@@ -343,15 +343,15 @@
                 <div class="row">
                   <div class="mb-3 col-md-4">
                     <label class="form-label">Tahun Lulus</label>
-                    <input type="number" min="1900" max="2100" name="tahun_lulus" value="{{ old('tahun_lulus') }}" class="form-control">
+                    <input type="number" min="1900" max="2100" name="tahun_lulus" value="<?php echo e(old('tahun_lulus')); ?>" class="form-control">
                   </div>
                   <div class="mb-3 col-md-4">
                     <label class="form-label">Kecamatan</label>
                     <select id="kecamatan" name="kecamatan" class="form-select">
                       <option value=""> Pilih Kecamatan </option>
-                      @foreach($kecamatans as $k)
-                        <option value="{{ $k->id }}" {{ (old('kecamatan') == $k->id || old('kecamatan') == $k->name) ? 'selected' : '' }}>{{ $k->name }}</option>
-                      @endforeach
+                      <?php $__currentLoopData = $kecamatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($k->id); ?>" <?php echo e((old('kecamatan') == $k->id || old('kecamatan') == $k->name) ? 'selected' : ''); ?>><?php echo e($k->name); ?></option>
+                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                   </div>
                   <div class="mb-3 col-md-4">
@@ -367,12 +367,12 @@
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}" class="form-control">
+                    <input type="text" name="tempat_lahir" value="<?php echo e(old('tempat_lahir')); ?>" class="form-control">
                   </div>
 
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Tanggal Lahir</label>
-                    <input type="text" id="tgl_lahir" name="tgl_lahir" value="{{ old('tgl_lahir') }}" class="form-control" placeholder="YYYY-MM-DD">
+                    <input type="text" id="tgl_lahir" name="tgl_lahir" value="<?php echo e(old('tgl_lahir')); ?>" class="form-control" placeholder="YYYY-MM-DD">
                   </div>
                 </div>
 
@@ -381,21 +381,21 @@
                     <label class="form-label">Jenis Kelamin</label>
                     <select id="jenis_kelamin" name="jenis_kelamin" class="form-select">
                       <option value="">-- Pilih --</option>
-                      <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                      <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                      <option value="L" <?php echo e(old('jenis_kelamin') == 'L' ? 'selected' : ''); ?>>Laki-laki</option>
+                      <option value="P" <?php echo e(old('jenis_kelamin') == 'P' ? 'selected' : ''); ?>>Perempuan</option>
                     </select>
                   </div>
 
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Kode Pos</label>
-                    <input id="kode_pos" type="text" name="kode_pos" value="{{ old('kode_pos') }}" class="form-control">
+                    <input id="kode_pos" type="text" name="kode_pos" value="<?php echo e(old('kode_pos')); ?>" class="form-control">
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Asal Sekolah</label>
-                    <input type="text" name="asal_sekolah" value="{{ old('asal_sekolah') }}" class="form-control">
+                    <input type="text" name="asal_sekolah" value="<?php echo e(old('asal_sekolah')); ?>" class="form-control">
                   </div>
                 </div>
 
@@ -404,7 +404,7 @@
                     <label class="form-label">Jenis Sekolah</label>
                     <select id="jenis_sekolah" name="jenis_sekolah" class="form-select">
                       <option value="">-- Pilih --</option>
-                      <option value="SMA/SMK" {{ old('jenis_sekolah') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                      <option value="SMA/SMK" <?php echo e(old('jenis_sekolah') == 'SMA/SMK' ? 'selected' : ''); ?>>SMA/SMK</option>
                     </select>
                   </div>
 
@@ -412,8 +412,8 @@
                     <label class="form-label">Kategori Sekolah</label>
                     <select id="kategori_sekolah" name="kategori_sekolah" class="form-select">
                       <option value="">-- Pilih --</option>
-                      <option value="Negeri" {{ old('kategori_sekolah') == 'Negeri' ? 'selected' : '' }}>Negeri</option>
-                      <option value="Swasta" {{ old('kategori_sekolah') == 'Swasta' ? 'selected' : '' }}>Swasta</option>
+                      <option value="Negeri" <?php echo e(old('kategori_sekolah') == 'Negeri' ? 'selected' : ''); ?>>Negeri</option>
+                      <option value="Swasta" <?php echo e(old('kategori_sekolah') == 'Swasta' ? 'selected' : ''); ?>>Swasta</option>
                     </select>
                   </div>
                 </div>
@@ -421,7 +421,7 @@
                 <div class="row">
                   <div class="mb-3 col-12">
                     <label class="form-label">Alamat Lengkap</label>
-                    <textarea name="alamat" rows="4" class="form-control">{{ old('alamat') }}</textarea>
+                    <textarea name="alamat" rows="4" class="form-control"><?php echo e(old('alamat')); ?></textarea>
                   </div>
                 </div>
 
@@ -432,7 +432,7 @@
 
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Email Akun</label>
-                    <input type="email" name="account_email" value="{{ old('account_email') }}" class="form-control">
+                    <input type="email" name="account_email" value="<?php echo e(old('account_email')); ?>" class="form-control">
                   </div>
 
                   <div class="mb-3 col-md-6">
@@ -482,11 +482,11 @@
       // duplicates removed - Tom Select already initialized above
 
       // desas grouped passed by controller as a JSON object
-      const desasGrouped = {!! json_encode($desas ?? []) !!};
-      const kecamatanList = {!! json_encode($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name])) !!};
-      const oldKecamatan = {!! json_encode(old('kecamatan')) !!};
-      const oldDesa = {!! json_encode(old('desa')) !!};
-      const oldKodePos = {!! json_encode(old('kode_pos')) !!};
+      const desasGrouped = <?php echo json_encode($desas ?? []); ?>;
+      const kecamatanList = <?php echo json_encode($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name])); ?>;
+      const oldKecamatan = <?php echo json_encode(old('kecamatan')); ?>;
+      const oldDesa = <?php echo json_encode(old('desa')); ?>;
+      const oldKodePos = <?php echo json_encode(old('kode_pos')); ?>;
 
       // On kecamatan change, populate desa
       kecamatanSelect.on('change', function(value) {
@@ -555,3 +555,4 @@
     </script>
   </body>
 </html>
+<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/mahasiswa/create.blade.php ENDPATH**/ ?>

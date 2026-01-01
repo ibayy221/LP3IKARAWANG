@@ -1,9 +1,9 @@
-@php
+<?php
     // Normalize variables so the template is safe whether controller
     // provides Blade $carouselData or legacy $carousel.
     $carouselData = isset($carouselData) ? $carouselData : (isset($carousel) ? $carousel : []);
     $newsData = isset($newsData) ? $newsData : [];
-@endphp
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1172,7 +1172,7 @@
         <nav>
             <div class="logo">
                 <a href="/">
-                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
+                    <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang Logo" />
                 </a>
             </div>
             <button class="mobile-menu-toggle">☰</button>
@@ -1183,7 +1183,7 @@
                     <div class="dropdown-content">
                         <a href="/sambutan">Sambutan</a>
                         <a href="/sejarah">Sejarah</a>
-                        {{-- <a href="#prestasi">Prestasi</a> --}}
+                        
                         <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
@@ -1197,9 +1197,9 @@
                     </div>
                 </li>
 
-                    <!-- <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
+                    <!-- <a href="<?php echo e(route('mahasiswa.create')); ?>">Pendaftaran</a>
                     <div class="dropdown-content">
-                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
+                        <a href="<?php echo e(route('mahasiswa.create')); ?>">Form Pendaftaran</a>
                     </div>
                 </li> -->
 
@@ -1210,14 +1210,7 @@
                         <a href="#kalender-akademik">Kalender Akademik</a>
                     </div>
                 </li>
-                {{-- <li class="dropdown">
-                    <a href="#dosen">Dosen</a>
-                    <div class="dropdown-content">
-                        <a href="#profil-dosen">Profil Dosen</a>
-                        <a href="#penelitian">Penelitian</a>
-                        <a href="#publikasi">Publikasi</a>
-                    </div>
-                </li> --}}
+                
                 <li class="dropdown">
                     <a href="#pusat-karir">Pusat Karir</a>
                     <div class="dropdown-content">
@@ -1235,13 +1228,13 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="carousel-container">
-            @foreach($carouselData as $index => $slide)
-                @php
+            <?php $__currentLoopData = $carouselData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $slide): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $slideNum = $index + 1;
                     $imagePath = !empty($slide['image']) ? $slide['image'] : '';
-                @endphp
+                ?>
 
-                @php
+                <?php
                     // Normalize slide image path: try public path first, then storage (public disk)
                     $slideImageUrl = null;
                     if (!empty($imagePath) && file_exists(public_path($imagePath))) {
@@ -1252,29 +1245,29 @@
                         // If the file exists in storage/app/public, ensure it will be served from public/storage
                         $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
                     }
-                @endphp
-                @if(!empty($slideImageUrl))
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="url('{{ $slideImageUrl }}')">
+                ?>
+                <?php if(!empty($slideImageUrl)): ?>
+                    <div class="carousel-slide slide-<?php echo e($slideNum); ?> <?php echo e($index === 0 ? 'active' : ''); ?>" data-bg="url('<?php echo e($slideImageUrl); ?>')">
                     </div>
-                @else
-                    @php
+                <?php else: ?>
+                    <?php
                         $gradients = [
                             "linear-gradient(rgba(30, 60, 114, 0.8), rgba(42, 82, 152, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f0f8ff\" width=\"1200\" height=\"600\"/><circle fill=\"%23e6f3ff\" cx=\"200\" cy=\"150\" r=\"80\"/><circle fill=\"%23d9edff\" cx=\"800\" cy=\"400\" r=\"120\"/><circle fill=\"%23cce7ff\" cx=\"1000\" cy=\"200\" r=\"60\"/></svg>')",
                             "linear-gradient(rgba(42, 82, 152, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23e8f4fd\" width=\"1200\" height=\"600\"/><polygon fill=\"%23d1e7fc\" points=\"0,0 400,200 0,400\"/><polygon fill=\"%23b8d9fb\" points=\"800,0 1200,0 1200,300\"/><circle fill=\"%239fc9f9\" cx=\"600\" cy=\"300\" r=\"100\"/></svg>')",
                             "linear-gradient(rgba(74, 144, 226, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f5f9ff\" width=\"1200\" height=\"600\"/><rect fill=\"%23e1f0ff\" x=\"100\" y=\"100\" width=\"200\" height=\"150\" rx=\"20\"/><rect fill=\"%23cce7ff\" x=\"900\" y=\"350\" width=\"250\" height=\"180\" rx=\"25\"/><circle fill=\"%23b3ddff\" cx=\"500\" cy=\"400\" r=\"90\"/></svg>')"
                         ];
                         $gradientIndex = $index % count($gradients);
-                    @endphp
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="{{ $gradients[$gradientIndex] }}">
+                    ?>
+                    <div class="carousel-slide slide-<?php echo e($slideNum); ?> <?php echo e($index === 0 ? 'active' : ''); ?>" data-bg="<?php echo e($gradients[$gradientIndex]); ?>">
                     </div>
-                @endif
-            @endforeach
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
 
         <button class="carousel-nav prev">‹</button>
         <button class="carousel-nav next">›</button>
 
-        @php
+        <?php
             // Decide what to show in the hero content. We always render the
             // slide backgrounds, but if the first slide lacks human-friendly
             // title/subtitle/button, show the default hero copy on top of the
@@ -1303,26 +1296,26 @@
                     $hasReadableContent = true;
                 }
             }
-        @endphp
+        ?>
 
         <div class="carousel-content">
             <div class="hero-content" id="slide-content">
-                @if($hasReadableContent)
-                    <h1>{{ $firstSlide['title'] ?? '' }}</h1>
-                    <p>{{ $firstSlide['subtitle'] ?? '' }}</p>
-                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">{{ !empty($firstSlide['button']) ? $firstSlide['button'] : 'DAFTAR' }}</a>
-                @else
+                <?php if($hasReadableContent): ?>
+                    <h1><?php echo e($firstSlide['title'] ?? ''); ?></h1>
+                    <p><?php echo e($firstSlide['subtitle'] ?? ''); ?></p>
+                    <a href="<?php echo e(route('mahasiswa.create')); ?>" class="cta-button"><?php echo e(!empty($firstSlide['button']) ? $firstSlide['button'] : 'DAFTAR'); ?></a>
+                <?php else: ?>
                     <h1>Kembangkan Karirmu bersama LP3I Karawang</h1>
                     <p>Praktik nyata. Kurikulum up-to-date. Lulusan siap kerja.</p>
-                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">Daftar Sekarang</a>
-                @endif
+                    <a href="<?php echo e(route('mahasiswa.create')); ?>" class="cta-button">Daftar Sekarang</a>
+                <?php endif; ?>
             </div>
         </div>
         
         <div class="carousel-indicators">
-            @foreach($carouselData as $index => $slide)
-                <div class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
-            @endforeach
+            <?php $__currentLoopData = $carouselData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $slide): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="indicator <?php echo e($index === 0 ? 'active' : ''); ?>" data-slide="<?php echo e($index); ?>"></div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </section>
 
@@ -1330,7 +1323,7 @@
     <section class="registration-banner" id="pendaftaran">
         <h3><i class="fas fa-graduation-cap"></i> Bergabunglah dengan LP3I Karawang</h3>
         <p>Raih masa depan cerah bersama program studi unggulan kami. Daftar sekarang dan dapatkan kesempatan untuk berkembang dengan kurikulum terdepan dan fasilitas modern.</p>
-        <a href="{{ route('mahasiswa.create') }}" class="register-btn">
+        <a href="<?php echo e(route('mahasiswa.create')); ?>" class="register-btn">
             <i class="fas fa-sign-in-alt"></i> Daftar Online Sekarang
         </a>
     </section>
@@ -1340,17 +1333,17 @@
         <div class="container">
             <h2 class="section-title">Berita Terbaru</h2>
             
-            @if(empty($newsData))
+            <?php if(empty($newsData)): ?>
                 <div style="text-align: center; padding: 3rem; color: #666;">
                     <i class="fas fa-newspaper" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                     <h3>Belum Ada Berita</h3>
                     <p>Berita terbaru akan ditampilkan di sini.</p>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="news-grid">
-                    @foreach($newsData as $news)
-                        <div class="news-card" data-url="{{ route('news.show', $news['id']) }}" style="cursor: pointer;">
-                                            @php
+                    <?php $__currentLoopData = $newsData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $news): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="news-card" data-url="<?php echo e(route('news.show', $news['id'])); ?>" style="cursor: pointer;">
+                                            <?php
                                                 $newsImage = null;
                                                 if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
                                                     $newsImage = asset($news['image_path']);
@@ -1359,40 +1352,43 @@
                                                 } elseif (!empty($news['image_path']) && file_exists(storage_path('app/public/' . ltrim($news['image_path'], '/')))) {
                                                     $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
                                                 }
-                                            @endphp
-                                            @if($newsImage)
-                                                <img src="{{ $newsImage }}" alt="{{ $news['title'] }}" class="news-image">
-                            @else
+                                            ?>
+                                            <?php if($newsImage): ?>
+                                                <img src="<?php echo e($newsImage); ?>" alt="<?php echo e($news['title']); ?>" class="news-image">
+                            <?php else: ?>
                                 <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                                     <i class="fas fa-newspaper"></i>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                             
                             <div class="news-content">
-                                <span class="news-category">{{ $news['category'] }}</span>
-                                <h3>{{ $news['title'] }}</h3>
+                                <span class="news-category"><?php echo e($news['category']); ?></span>
+                                <h3><?php echo e($news['title']); ?></h3>
                                 <p class="news-excerpt">
-                                    {{ $news['excerpt'] ?: (strlen($news['content']) > 150 ? substr($news['content'], 0, 150) . '...' : $news['content']) }}
+                                    <?php echo e($news['excerpt'] ?: (strlen($news['content']) > 150 ? substr($news['content'], 0, 150) . '...' : $news['content'])); ?>
+
                                 </p>
                                 <div class="news-meta">
                                     <div class="news-date">
                                         <i class="fas fa-calendar-alt"></i>
-                                        {{ date('d M Y', strtotime($news['created_at'])) }}
+                                        <?php echo e(date('d M Y', strtotime($news['created_at']))); ?>
+
                                     </div>
                                     <div class="news-author">
                                         <i class="fas fa-user"></i>
-                                        {{ $news['author'] }}
+                                        <?php echo e($news['author']); ?>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
                 
                 <div class="view-all-news">
                     <a href="/news" class="btn">Lihat Semua Berita</a>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
 
@@ -1502,7 +1498,7 @@
         </div>
     </footer>
 
-    <script id="slide-data" type="application/json">{!! json_encode($carouselData, JSON_UNESCAPED_UNICODE) !!}</script>
+    <script id="slide-data" type="application/json"><?php echo json_encode($carouselData, JSON_UNESCAPED_UNICODE); ?></script>
 
     <script>
         // Smooth scrolling for navigation links
@@ -1596,7 +1592,7 @@
     // Slide data generated from server-side carouselData (read from JSON script tag)
     const slideData = JSON.parse(document.getElementById('slide-data').textContent || '[]');
     // URL to redirect when CTA is clicked (Mahasiswa create)
-    const MAHASISWA_CREATE_URL = "{{ route('mahasiswa.create') }}";
+    const MAHASISWA_CREATE_URL = "<?php echo e(route('mahasiswa.create')); ?>";
 
         function updateSlideContent(index) {
             if (slideData.length === 0) return;
@@ -1739,4 +1735,4 @@
         staggerNewsCards();
     </script>
 </body>
-</html>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/index.blade.php ENDPATH**/ ?>

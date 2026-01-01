@@ -13,6 +13,13 @@ use App\Http\Middleware\EnsureAdmin;
 Route::get('/', [CarouselController::class, 'showCarousel']);
 Route::get('/carousel-view', [CarouselController::class, 'showCarousel']);
 
+// Sambutan (static page)
+Route::view('/sambutan', 'sambutan')->name('sambutan');
+// Sejarah (static page)
+Route::view('/sejarah', 'sejarah')->name('sejarah');
+// Struktur organisasi
+Route::view('/struktur', 'struktur')->name('struktur');
+
 // Mahasiswa registration
 Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
 Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
