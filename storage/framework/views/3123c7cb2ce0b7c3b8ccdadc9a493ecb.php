@@ -38,7 +38,7 @@
 <body>
     <header>
         <nav>
-            <div class="logo"><a href="/"><img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I"></a></div>
+            <div class="logo"><a href="/"><img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I"></a></div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
                 <li class="dropdown">
@@ -46,7 +46,7 @@
                     <div class="dropdown-content">
                         <a href="/sambutan">Sambutan</a>
                         <a href="/sejarah">Sejarah</a>
-                        {{-- <a href="#prestasi">Prestasi</a> --}}
+                        
                         <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
@@ -83,7 +83,7 @@
 
     <main class="container">
         <div class="banner">
-            <img src="{{ asset('storage/image/landingPage1.png') }}" alt="Sejarah LP3I Karawang">
+            <img src="<?php echo e(asset('storage/image/landingPage1.png')); ?>" alt="Sejarah LP3I Karawang">
         </div>
 
         <article class="content">
@@ -140,3 +140,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/sejarah.blade.php ENDPATH**/ ?>

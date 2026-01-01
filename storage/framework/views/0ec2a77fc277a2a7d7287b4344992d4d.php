@@ -436,7 +436,7 @@
         <nav>
             <div class="logo">
                 <a href="/">
-                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
+                    <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang Logo" />
                 </a>
             </div>
             <button class="mobile-menu-toggle">☰</button>
@@ -447,7 +447,7 @@
                     <div class="dropdown-content">
                         <a href="/sambutan">Sambutan</a>
                         <a href="/sejarah">Sejarah</a>
-                        {{-- <a href="#prestasi">Prestasi</a> --}}
+                        
                         <a href="/struktur">Struktur Organisasi</a>
                     </div>
                 </li>
@@ -481,7 +481,7 @@
                     </div>
                 </li>
                 <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                {{-- <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li> --}}
+                
             </ul>
         </nav>
     </header>
@@ -489,7 +489,7 @@
     <main class="container">
         <section class="hero">
             <div class="box-avatar">
-                <img src="{{ asset('storage/image/Pemimpin.jpg') }}" alt="Nama Pemimpin">
+                <img src="<?php echo e(asset('storage/image/Pemimpin.jpg')); ?>" alt="Nama Pemimpin">
             </div>
             <div class="leader">
                 <h1>Nama Pemimpin</h1>
@@ -565,3 +565,4 @@ Aceng Ajat, ST. Kepala Kampus LP3I Karawang
     </script>
 </body>
 </html>
+<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/sambutan.blade.php ENDPATH**/ ?>
