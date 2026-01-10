@@ -78,6 +78,7 @@ $showDetail = $currentNews !== null;
             line-height: 1.6;
             color: #333;
             background: #f8f9fa;
+            padding-top: 84px; /* room for fixed header */
         }
 
 
@@ -108,17 +109,17 @@ $showDetail = $currentNews !== null;
         }
 
         .logo {
-            height: 50px;
+            height: 48px;
             display: flex;
             align-items: center;
         }
 
         .logo img {
-            height: 100%;
+            height: 36px;
             width: auto;
-            max-width: 200px;
+            max-width: 160px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.06));
         }
 
         .nav-links {
@@ -299,6 +300,21 @@ $showDetail = $currentNews !== null;
                 transition: opacity .22s ease, max-height .28s ease, visibility .22s, transform .18s ease;
             }
 
+        .container{max-width:1100px;margin:0 auto;padding:2rem}
+        /* Force main blocks to center and limit wide images */
+        .container > * { max-width: 1100px; margin-left: auto; margin-right: auto; }
+        .news-list-header img, .news-hero-image, .news-image { max-width: 100%; height: auto; display:block; margin: 0 auto; }
+        /* If a large logo was used as an image in the list header, limit its visual size */
+        .news-list-header img { max-height: 220px; object-fit: contain; }
+        /* Ensure main news blocks are centered within the page */
+        .news-detail, .news-list-header, .news-grid {
+            max-width: 980px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Make inner content a bit narrower for better measure */
+        .news-detail-content { max-width: 820px; margin-left: auto; margin-right: auto; }
+
         .breadcrumb {
             margin-bottom: 2rem;
             color: #666;
@@ -322,9 +338,36 @@ $showDetail = $currentNews !== null;
             margin-bottom: 3rem;
         }
 
+        /* Stronger rules to ensure content styling applies (fallback for overrides) */
+        .news-detail, .news-detail * {
+            background: white !important;
+            color: inherit !important;
+        }
+
+        .news-title-detail {
+            font-size: 2.1rem !important;
+            margin-bottom: 1rem !important;
+            color: #1e3c72 !important;
+            line-height: 1.25 !important;
+            font-weight: 700 !important;
+        }
+
+        .news-content-detail {
+            font-size: 1.03rem !important;
+            line-height: 1.8 !important;
+            color: #374151 !important;
+            margin-bottom: 2.25rem !important;
+        }
+
+        .breadcrumb a {
+            color: #4a90e2 !important;
+            text-decoration: none !important;
+        }
+
         .news-hero-image {
             width: 100%;
-            height: 400px;
+            max-height: 420px;
+            height: clamp(220px, 36vw, 420px);
             object-fit: cover;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
         }
@@ -345,10 +388,11 @@ $showDetail = $currentNews !== null;
         }
 
         .news-title-detail {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.1rem;
+            margin-bottom: 1rem;
             color: #1e3c72;
-            line-height: 1.3;
+            line-height: 1.25;
+            font-weight:700;
         }
 
         .news-meta-detail {
@@ -366,10 +410,10 @@ $showDetail = $currentNews !== null;
         }
 
         .news-content-detail {
-            font-size: 1.1rem;
+            font-size: 1.03rem;
             line-height: 1.8;
-            color: #444;
-            margin-bottom: 3rem;
+            color: #374151;
+            margin-bottom: 2.25rem;
         }
 
         .news-content-detail p {
@@ -413,18 +457,20 @@ $showDetail = $currentNews !== null;
         /* News List */
         .news-list-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
+            padding: 1rem 0 1.5rem 0;
         }
 
         .news-list-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #1e3c72;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight:700;
         }
 
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
 
@@ -432,9 +478,10 @@ $showDetail = $currentNews !== null;
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
             cursor: pointer;
+            border: 1px solid rgba(2,6,23,0.03);
         }
 
         .news-card:hover {
@@ -444,7 +491,7 @@ $showDetail = $currentNews !== null;
 
         .news-image {
             width: 100%;
-            height: 200px;
+            height: clamp(160px, 24vw, 260px);
             object-fit: cover;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
         }
@@ -465,10 +512,10 @@ $showDetail = $currentNews !== null;
         }
 
         .news-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            color: #1e3c72;
-            line-height: 1.4;
+            font-size: 1.25rem;
+            margin-bottom: 0.6rem;
+            color: #004269; /* brand indigo */
+            line-height: 1.3;
         }
 
         .news-excerpt {
@@ -483,7 +530,7 @@ $showDetail = $currentNews !== null;
             align-items: center;
             font-size: 0.85rem;
             color: #888;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #f1f1f1;
             padding-top: 1rem;
         }
 
@@ -581,67 +628,12 @@ $showDetail = $currentNews !== null;
     <header>
         <nav>
                 <div class="logo">
-                <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'" />
+                <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
+                    &nbsp;&nbsp;<img src="{{ asset('storage/image/global.png') }}" alt="Global Logo" class="logo-global" />
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li class="dropdown">
-                    <a href="#profil">Profil</a>
-                    <div class="dropdown-content">
-                        <a href="/sambutan">Sambutan</a>
-                        <a href="/sejarah">Sejarah</a>
-                        /* <a href="#prestasi">Prestasi</a> */
-                        <a href="/struktur">Struktur Organisasi</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#programs">Program Studi</a>
-                    <div class="dropdown-content">
-                        <a href="#teknik-informatika">Teknik Informatika</a>
-                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
-                        <a href="#akuntansi">Akuntansi</a>
-                        <a href="#marketing-digital">Marketing Digital</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
-                    <div class="dropdown-content">
-                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#akademik">Akademik</a>
-                    <div class="dropdown-content">
-                        <a href="#kalender-akademik">Kalender Akademik</a>
-                        <a href="#kurikulum">Kurikulum</a>
-                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
-                        <a href="#evaluasi">Evaluasi</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#dosen">Dosen</a>
-                    <div class="dropdown-content">
-                        <a href="#profil-dosen">Profil Dosen</a>
-                        <a href="#penelitian">Penelitian</a>
-                        <a href="#publikasi">Publikasi</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#pusat-karir">Pusat Karir</a>
-                    <div class="dropdown-content">
-                        <a href="#lowongan-kerja">Lowongan Kerja</a>
-                        <a href="#magang">Program Magang</a>
-                        <a href="#alumni">Alumni</a>
-                        <a href="#kerjasama-industri">Kerjasama Industri</a>
-                    </div>
-                </li>
-                <li><a href="/news">Berita</a></li>
-                <li><a href="/index.php#contact">Kontak</a></li>
-                <!-- Admin link removed from public navbar -->
-                <li><a href="#kegiatan">Kegiatan</a></li>
-                <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                <li><a href="/mahasiswa/create" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar Sekarang</a></li>
             </ul>
         </nav>
     </header>

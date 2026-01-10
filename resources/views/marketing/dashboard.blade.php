@@ -75,7 +75,7 @@
     <div class="card">
       <div class="dashboard-header">
         <h1>Dashboard</h1>
-        <p class="lead">Kelola calon mahasiswa, pantau performa pendaftaran, dan tindak lanjuti lead secara efisien.</p>
+        <p class="lead">Manage prospective students, monitor enrollment performance, and follow up on leads efficiently.</p>
       </div>
 
       <div class="stats" aria-hidden="false">
@@ -108,15 +108,15 @@
           </div>
           <div>
             <div class="stat-number">{{ $pendaftarToday }}</div>
-            <div class="stat-label">Pendaftar Hari Ini</div>
+            <div class="stat-label">Today's Registrar</div>
           </div>
         </div>
       </div>
 
       <div class="card-body">
-        <p>Selamat datang di Smart Presenter. Di sini Anda dapat mengelola daftar pendaftar.</p>
+        <p>Welcome to Smart Presenter. Here you can manage your list of registrants..</p>
         <div style="text-align:center;margin-top:1rem">
-          <a class="btn" href="{{ route('marketing.pendaftar.index') }}">Buka Pendaftar</a>
+          <a class="btn" href="{{ route('marketing.pendaftar.index') }}">Open applicant</a>
         </div>
       </div>
     </div>

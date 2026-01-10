@@ -196,12 +196,6 @@
             }
         }
 
-        /* .dropdown:hover .dropdown-content { */ /* Moved to desktop-only styles */
-        /*     display: block; */
-        /*     opacity: 1; */
-        /*     transform: translateX(-50%) translateY(0) scale(1); */
-        /* } */
-
         .dropdown-content a {
             color: rgba(255, 255, 255, 0.9);
             padding: 10px 20px; /* Adjusted padding */
@@ -211,29 +205,42 @@
             border-radius: 0;
             position: relative;
             overflow: hidden;
-            background: transparent;
+            background-color: #043158;
             border: none;
         }
-
-        /* .dropdown-content a::before { */ /* Removed for mobile */
-        /*     content: ''; */
-        /*     position: absolute; */
-        /*     left: 0; */
-        /*     top: 0; */
-        /*     width: 0; */
-        /*     height: 100%; */
-        /*     background: linear-gradient(90deg, rgba(74, 144, 226, 0.3), rgba(74, 144, 226, 0.1)); */
-        /*     transition: width 0.3s ease; */
-        /* } */
 
         .dropdown-content a:hover::before {
             width: 100%;
         }
 
         .dropdown-content a:hover {
-            color: rgba(255, 255, 255, 0.9); /* Keep original color */
+            color: rgba(0, 0, 0, 0.9); /* Keep original color */
             background: transparent; /* Ensure no background on hover */
             transform: none; /* Ensure no transform on hover */
+        }
+        /* Akademik dropdown: prefix (white), separator (white), rest text (red) */
+        .dropdown-content a.akademik-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 10px 20px;
+        }
+        .dropdown-content a.akademik-item .ak-prefix {
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .dropdown-content a.akademik-item .ak-sep {
+            color: #ffffff;
+            margin: 0 6px;
+        }
+        .dropdown-content a.akademik-item .ak-text {
+            color: #e63946; /* red */
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .dropdown-content a.akademik-item .ak-text {
+                color: #e63946 !important;
+            }
         }
         /* Mobile specific adjustments for dropdown-content a */
         @media (max-width: 768px) {
@@ -681,7 +688,7 @@
             display: inline-flex !important;
             align-items: center;
             gap: 0.5rem;
-            background: transparent !important;
+            background: #004269 !important;
             color: white !important;
             padding: 0.55rem 1rem !important;
             text-decoration: none !important;
@@ -1162,8 +1169,11 @@
             .view-all-news .btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.75rem;
-            }
+            } 
+            
         }
+        .banner img{width:100%;height:370px;object-fit:cover;border-radius:12px;box-shadow:0 12px 36px rgba(2,6,23,0.06)}
+        
     </style>
 </head>
 <body>
@@ -1171,13 +1181,15 @@
     <header>
         <nav>
             <div class="logo">
-                <a href="/">
+               
                     <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
-                </a>
+                    &nbsp;&nbsp;<img src="{{ asset('storage/image/global.png') }}" alt="Global Logo" class="logo-global" />
+
+                
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
+                <li><a href="https://www.google.com/maps/place/LP3I+Karawang/@-6.2995622,107.2856211,3a,75y,264.26h,95.07t/data=!3m7!1e1!3m5!1su7x47dS9enRmU-zWr47sTw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-5.074011886356928%26panoid%3Du7x47dS9enRmU-zWr47sTw%26yaw%3D264.26469794857564!7i16384!8i8192!4m14!1m7!3m6!1s0x2e699d5eb7f4db0b:0x551b56aa7299222a!2sLP3I+Karawang!8m2!3d-6.2995349!4d107.2853592!16s%2Fg%2F1pxw3x29_!3m5!1s0x2e699d5eb7f4db0b:0x551b56aa7299222a!8m2!3d-6.2995349!4d107.2853592!16s%2Fg%2F1pxw3x29_?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D">Map</a></li>
                 <li class="dropdown">
                     <a href="#profil">Profil</a>
                     <div class="dropdown-content">
@@ -1189,11 +1201,13 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#programs">Program Studi</a>
+                    <a href="#programs">Bidang</a>
                     <div class="dropdown-content">
-                        <a href="#akuntansi">Akuntansi</a>
-                        <a href="#teknik-informatika">Teknik Informatika</a>
-                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
+                        <a href="/ais">Accounting Information System</a>
+						<a href="/ase">Application Software Engineering</a>
+						<a href="/oaa">Office Administration automatization</a>
+                        {{-- <a href="#teknik-informatika">Teknik Informatika</a> --}}
+                        {{-- <a href="#manajemen-bisnis">Manajemen Bisnis</a> --}}
                     </div>
                 </li>
 
@@ -1205,9 +1219,11 @@
 
 
                 <li class="dropdown">
-                    <a href="#akademik">Akademik</a>
+                    <a href="#">E |</a>
                     <div class="dropdown-content">
-                        <a href="#kalender-akademik">Kalender Akademik</a>
+                        <a href="#akademik" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Akademik</span></a>
+                        <a href="#management" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Management</span></a>
+                        <a href="#student" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Student</span></a>
                     </div>
                 </li>
                 {{-- <li class="dropdown">
@@ -1221,11 +1237,11 @@
                 <li class="dropdown">
                     <a href="#pusat-karir">Pusat Karir</a>
                     <div class="dropdown-content">
-                        <a href="#pedoman">Pedoman Lowongan Kerja</a>
-                        <a href="#magang">Bukti Penempatan kerja</a>
+                        <a href="{{ route('pedoman.download') }}" target="_blank" rel="noopener noreferrer">Download Pedoman Kerja</a>
+                        <a href="/penempatan">Bukti Penempatan kerja</a>
                     </div>
                 </li>
-                <li><a href="#pendaftaran" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
+                <li><a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
                 <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 
             </ul>
@@ -1399,28 +1415,34 @@
     <!-- Programs Section -->
     <section class="programs" id="programs">
         <div class="container">
-            <h2 class="section-title">Program Studi Unggulan</h2>
+            <h2 class="section-title">Bidang Keahlian Unggulan</h2>
             <div class="programs-grid">
             <div class="program-card">
                     <div class="program-icon">
-                        <i class="fas fa-calculator"></i>
+                        <i class="fas fa-calculator" ></i>
                     </div>
+                    <a href="/ais">
                     <h3>Accounting Information System</h3>
+                    </a>
                     <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
                 </div>
-
+                    
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-laptop-code"></i>
                     </div>
+                    <a href="/ase">
                     <h3>Application Software Engineering</h3>
+                    </a>
                     <p>Program studi yang mempersiapkan mahasiswa menjadi programmer dan developer handal dengan kurikulum yang selalu update mengikuti perkembangan teknologi.</p>
                 </div>
                 <div class="program-card">
                     <div class="program-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
+                    <a href="/oaa">
                     <h3>Office Administration automatization</h3>
+                    </a>
                     <p>Membekali mahasiswa dengan kemampuan manajemen modern dan kewirausahaan untuk menghadapi tantangan dunia bisnis yang dinamis.</p>
                 </div>
                 
@@ -1464,6 +1486,9 @@
                 </div>
             </div>
         </div>
+        <div class="banner">
+            <img src="{{ asset('storage/image/apiliasi.png') }}" alt="Sejarah LP3I Karawang">
+        </div>
     </section>
 
     <!-- Footer -->
@@ -1498,7 +1523,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Politeknik LP3I Kampus Karawang. All rights reserved.</p>
+            <p>&copy; 2024 LP3I College Karawang.</p>
         </div>
     </footer>
 

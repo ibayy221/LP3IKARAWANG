@@ -14,16 +14,20 @@
     <style>
       :root { --brand-dark: #004269; --brand-accent: #009DA5; --brand-pink: #F15B67; --brand-red: #FF0000; }
       /* Color theme — match admin/dashboard vibe */
-        body.registration-bg {
-          background: #f8fafc; /* match input background */
+      body.registration-bg {
+        background: #004269; /* match input background */
         min-height: 100vh;
+        padding-top: 72px; /* avoid fixed header overlap */
         color: #111827;
         font-family: 'Poppins', sans-serif;
       }
 
+      /* Limit the registration container width so it doesn't reach the navbar edges */
+      .registration-container { max-width: 1100px; margin: 0 auto; }
+
       .registration-card {
         background: #ffffff; /* card matching input background */
-        border: 1px solid rgba(30,60,114,0.06);
+        border: 2px solid rgba(30,60,114,0.12);
         border-radius: 14px;
         box-shadow: 0 10px 30px rgba(16,24,40,0.06);
         overflow: hidden;
@@ -56,7 +60,7 @@
       .registration-card .form-control,
       .registration-card .form-select {
         background: #f8fafc; /* input lightly contrasted with page */
-        border: 1px solid rgba(30,60,114,0.08);
+        border: 1.5px solid rgba(30,60,114,0.12);
         color: #111827;
         text-align: left;
         border-radius: 10px;
@@ -141,7 +145,29 @@
         .illustration-wrapper { height: 160px; }
         .illustration-wrapper img { object-position: center 35%; }
       }
+/* Login Button Styling (adjacent to register) */
+        .login-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.5rem;
+            background: #004269 !important;
+            color: white !important;
+            padding: 0.55rem 1rem !important;
+            text-decoration: none !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            cursor: pointer !important;
+            white-space: nowrap;
+        }
 
+        .login-btn:hover {
+            background: rgba(255,255,255,0.06) !important;
+            transform: translateY(-1px);
+            box-shadow: none !important;
+        }
       /* Form actions and spacing */
       .form-actions { display:flex; gap: 1rem; align-items:center; justify-content:center; margin-top: 1.25rem; }
       .form-actions .btn { min-width: 150px; border-radius: 28px; padding: 0.6rem 1.25rem; font-weight:600; }
@@ -169,7 +195,7 @@
       /* Inputs and selects: uniform height, padding and border */
       .elegant-form .form-control,
       .elegant-form .form-select {
-        height:44px; padding: .56rem .75rem; border-radius:10px; border:1px solid rgba(30,60,114,0.10); box-shadow:none; background: #fff; transition: box-shadow .12s ease, border-color .12s ease; font-size:0.95rem;
+        height:44px; padding: .56rem .75rem; border-radius:10px; border:1.5px solid rgba(30,60,114,0.12); box-shadow:none; background: #fff; transition: box-shadow .12s ease, border-color .12s ease; font-size:0.95rem;
       }
       .elegant-form textarea.form-control { min-height:110px; height:auto; padding:.75rem .9rem; }
       .elegant-form .form-control:focus, .elegant-form .form-select:focus { border-color: var(--brand-accent); box-shadow: 0 6px 18px rgba(0,157,165,0.06); }
@@ -214,12 +240,12 @@
     </style>
     <style>
       /* Header — match landing styles */
-      header { background: rgba(30, 60, 114, 0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.5rem 0; position: sticky; top:0; z-index: 1200; width:100%; }
+      header { background: rgba(30, 60, 114, 0.12); -webkit-backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.5rem 0; position: fixed; top:0; z-index: 1000; width:100%; }
       nav { display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto; padding:0 1rem; }
       .logo img { height:48px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08)); }
       .nav-links { list-style: none; display:flex; gap: 0; align-items:center; }
       .nav-links li { position: relative; }
-      .nav-links a { color: #0f1724; text-decoration:none; padding: 0.6rem 1.2rem; font-weight:500; border-radius: 8px; display:block; }
+      .nav-links a { color: #ffffff; text-decoration:none; padding: 0.6rem 1.2rem; font-weight:500; border-radius: 8px; display:block; }
       .nav-links a:hover { background: rgba(0,0,0,0.03); }
       .mobile-menu-toggle { display:none; }
       @media (max-width:768px){ .mobile-menu-toggle { display:block; } .nav-links { display:none; } .nav-links.active{ display:flex; flex-direction:column; gap:0; width:100%; }
@@ -233,7 +259,7 @@
       .elegant-form textarea.form-control {
         border-radius: 12px;
         padding: .75rem .9rem;
-        border: 1px solid rgba(30,60,114,0.12);
+        border: 3px solid rgba(17, 0, 255, 0.12);
         background: linear-gradient(180deg, #ffffff, #fbfbff);
         box-shadow: 0 6px 18px rgba(30, 60, 114, 0.06);
         transition: all .18s ease-in-out;
@@ -246,7 +272,7 @@
         outline: none;
       }
       .elegant-form .form-label { color: var(--brand-dark); font-weight:600; }
-      .elegant-form .btn { border-radius: 999px; padding: .68rem 1.2rem; transition: transform .08s ease, box-shadow .08s ease; }
+      .elegant-form .btn { border-radius: 900px; padding: .68rem 1.2rem; transition: transform .08s ease, box-shadow .08s ease; }
       .elegant-form .btn-primary { background: linear-gradient(90deg,var(--brand-dark),var(--brand-accent)); border:none; color:#fff; }
       .elegant-form .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,60,114,0.14); }
       .ts-dropdown, .ts-control .dropdown-content { max-height: 240px; overflow: auto; }
@@ -256,23 +282,22 @@
     <!-- Header (simple variant to match site nav) -->
     <header>
       <nav>
-        <div class="logo">
+        <div class="logo" style="display:flex;align-items:center;gap:8px;">
           <a href="/">
-            <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Logo" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/landingPage1.png')); ?>'">
+            <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang" style="height:48px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.08));">
           </a>
+          <img src="<?php echo e(asset('storage/image/global.png')); ?>" alt="Global Mandiri" style="height:36px;opacity:0.95;margin-left:6px;">
         </div>
         <button class="mobile-menu-toggle">☰</button>
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
-          <li><a href="/news">Berita</a></li>
-          <!-- Admin link removed from public navbar -->
           <li><a href="#contact">Kontak</a></li>
-          <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-          <li><a href="<?php echo e(route('mahasiswa.create')); ?>" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
+         <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+
         </ul>
       </nav>
     </header>
-    <div class="container py-5">
+    <div class="container registration-container py-5">
       <div class="row justify-content-center">
         <div class="col-lg-10">
           <div class="card registration-card shadow-sm">
@@ -283,7 +308,11 @@
                   <div class="registration-grid">
                     <div class="registration-illustration">
                       <div class="illustration-wrapper">
-                        <img loading="lazy" src="<?php echo e(!empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl, '/')) : asset('storage/illustrations/registration-illustration.svg')); ?>" alt="Registration Illustration" onerror="this.style.display='none'" />
+                        <iframe
+                          loading="lazy"
+                          src="https://www.google.com/maps?q=Jalan+Tarumanegara+Blok+B+No.+4-6,+Kelurahan+Purwadana,+Kecamatan+Teluk+Jambe+Timur,+Kabupaten+Karawang,+Jawa+Barat&output=embed"
+                          style="width:100%;height:100%;border:0;display:block;border-radius:10px;"
+                          allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"></iframe>
                       </div>
                     </div>
                     <div>
@@ -291,7 +320,7 @@
                     <!-- logo removed — keeping layout minimal and colorful -->
                     <div>
                       <h2 class="mb-0">Form Pendaftaran Mahasiswa</h2>
-                      <p class="registration-subtext small mb-0">Isi data diri sesuai dokumen resmi</p>
+                      <p class="registration-subtext small mb-0">Silahakan Isi data diri dengan benar</p>
                     </div>
                   </div>
 
@@ -319,8 +348,12 @@
                   </div>
 
                   <div class="mb-3 col-md-6">
-                    <label class="form-label">Email (Kontak)</label>
-                    <input type="email" name="email" value="<?php echo e(old('email')); ?>" class="form-control">
+                    <label class="form-label">Jenis Kelas</label>
+                    <select id="jenis_kelas" name="jenis_kelas" class="form-select">
+                      <option value="">-- Pilih Jenis Kelas --</option>
+                      <option value="Regular" <?php echo e(old('jenis_kelas') == 'Regular' ? 'selected' : ''); ?>>Regular</option>
+                      <option value="Karyawan" <?php echo e(old('jenis_kelas') == 'Karyawan' ? 'selected' : ''); ?>>Karyawan</option>
+                    </select>
                   </div>
                 </div>
 
@@ -330,67 +363,17 @@
                     <input type="text" name="no_hp" value="<?php echo e(old('no_hp')); ?>" class="form-control" required>
                   </div>
                   <div class="mb-3 col-md-6">
-                    <label class="form-label">Jurusan / Program Studi</label>
+                    <label class="form-label">Bidang Keahlian</label>
                     <select name="jurusan" class="form-control">
-                      <option value="">Pilih Jurusan</option>
+                      <option value="">--Pilih--</option>
+                      <option value="AIS" <?php echo e(old('jurusan') == 'AIS' ? 'selected' : ''); ?>>Accounting Information System</option>
                       <option value="ASE" <?php echo e(old('jurusan') == 'ASE' ? 'selected' : ''); ?>>Application Software Engineering</option>
                       <option value="OAA" <?php echo e(old('jurusan') == 'OAA' ? 'selected' : ''); ?>>Office Administration Automatization</option>
-                      <option value="AIS" <?php echo e(old('jurusan') == 'AIS' ? 'selected' : ''); ?>>AAccounting Information System</option>
                     </select>
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Tahun Lulus</label>
-                    <input type="number" min="1900" max="2100" name="tahun_lulus" value="<?php echo e(old('tahun_lulus')); ?>" class="form-control">
-                  </div>
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Kecamatan</label>
-                    <select id="kecamatan" name="kecamatan" class="form-select">
-                      <option value=""> Pilih Kecamatan </option>
-                      <?php $__currentLoopData = $kecamatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <option value="<?php echo e($k->id); ?>" <?php echo e((old('kecamatan') == $k->id || old('kecamatan') == $k->name) ? 'selected' : ''); ?>><?php echo e($k->name); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                  </div>
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Desa</label>
-                    <select id="desa" name="desa" class="form-select" disabled>
-                      <option value="">Pilih Desa</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Address (moved to bottom) - removed duplicate kecamatan block -->
-
-                <div class="row">
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" value="<?php echo e(old('tempat_lahir')); ?>" class="form-control">
-                  </div>
-
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Tanggal Lahir</label>
-                    <input type="text" id="tgl_lahir" name="tgl_lahir" value="<?php echo e(old('tgl_lahir')); ?>" class="form-control" placeholder="YYYY-MM-DD">
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Jenis Kelamin</label>
-                    <select id="jenis_kelamin" name="jenis_kelamin" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="L" <?php echo e(old('jenis_kelamin') == 'L' ? 'selected' : ''); ?>>Laki-laki</option>
-                      <option value="P" <?php echo e(old('jenis_kelamin') == 'P' ? 'selected' : ''); ?>>Perempuan</option>
-                    </select>
-                  </div>
-
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label">Kode Pos</label>
-                    <input id="kode_pos" type="text" name="kode_pos" value="<?php echo e(old('kode_pos')); ?>" class="form-control">
-                  </div>
-                </div>
+                
 
                 <div class="row">
                   <div class="mb-3 col-md-6">
@@ -399,31 +382,7 @@
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Jenis Sekolah</label>
-                    <select id="jenis_sekolah" name="jenis_sekolah" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="SMA/SMK" <?php echo e(old('jenis_sekolah') == 'SMA/SMK' ? 'selected' : ''); ?>>SMA/SMK</option>
-                    </select>
-                  </div>
 
-                  <div class="mb-3 col-md-4">
-                    <label class="form-label">Kategori Sekolah</label>
-                    <select id="kategori_sekolah" name="kategori_sekolah" class="form-select">
-                      <option value="">-- Pilih --</option>
-                      <option value="Negeri" <?php echo e(old('kategori_sekolah') == 'Negeri' ? 'selected' : ''); ?>>Negeri</option>
-                      <option value="Swasta" <?php echo e(old('kategori_sekolah') == 'Swasta' ? 'selected' : ''); ?>>Swasta</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-12">
-                    <label class="form-label">Alamat Lengkap</label>
-                    <textarea name="alamat" rows="4" class="form-control"><?php echo e(old('alamat')); ?></textarea>
-                  </div>
-                </div>
 
                 <hr />
                 <div class="row mt-3">
@@ -462,89 +421,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Flatpickr -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Tom Select (Bootstrap 5 theme) -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-      // initialize flatpickr for date field
-      flatpickr('#tgl_lahir', {
-        dateFormat: 'Y-m-d',
-        maxDate: 'today',
-        altInput: true,
-        altFormat: 'd F Y'
-      });
-
-      // initialize Tom Select for selects
-      const kecamatanSelect = new TomSelect('#kecamatan', { maxOptions: 100, plugins: ['dropdown_input'] });
-      const desaSelect = new TomSelect('#desa', { maxOptions: 100, plugins: ['dropdown_input'], create: false });
-      // duplicates removed - Tom Select already initialized above
-
-      // desas grouped passed by controller as a JSON object
-      const desasGrouped = <?php echo json_encode($desas ?? []); ?>;
-      const kecamatanList = <?php echo json_encode($kecamatans->mapWithKeys(fn($k)=>[$k->id=>$k->name])); ?>;
-      const oldKecamatan = <?php echo json_encode(old('kecamatan')); ?>;
-      const oldDesa = <?php echo json_encode(old('desa')); ?>;
-      const oldKodePos = <?php echo json_encode(old('kode_pos')); ?>;
-
-      // On kecamatan change, populate desa
-      kecamatanSelect.on('change', function(value) {
-        const data = desasGrouped[value] || [];
-        desaSelect.clearOptions();
-        if (data.length) {
-          desaSelect.enable();
-          desaSelect.addOption(data.map(function(d){ return {value: d.name, text: d.name, kode_pos: d.kode_pos}; }));
-          desaSelect.refreshOptions(false);
-        } else {
-          desaSelect.disable();
-        }
-        // also clear kode pos
-        document.getElementById('kode_pos').value = '';
-      });
-
-      // After page load: if old kecamatan is set, initialize selection and desa
-      (function initialOldSelection(){
-        let selectedKec = oldKecamatan || null;
-        if (selectedKec) {
-          // if old is name, find ID
-          if (isNaN(selectedKec)) {
-            for (const id in kecamatanList) {
-              if (kecamatanList[id] === selectedKec) { selectedKec = id; break; }
-            }
-          }
-          if (selectedKec) {
-            kecamatanSelect.setValue(String(selectedKec));
-            // populate desa via change handler
-            // after a short delay allow desa options to be added
-            setTimeout(function(){
-              if (oldDesa) {
-                desaSelect.setValue(oldDesa);
-                document.getElementById('kode_pos').value = oldKodePos || '';
-              }
-            }, 200);
-          }
-        }
-      })();
-
-      // on desa change, set kode pos from options
-      desaSelect.on('change', function(value) {
-        const opt = desaSelect.getOption(value);
-        let kode = '';
-        if (opt) {
-          // Tom Select stores data in option attrs; try read 'data-kode_pos' or from JSON
-          // The Tom Select api doesn't expose custom attributes, so find by value in desasGrouped
-          for (const key in desasGrouped) {
-            const list = desasGrouped[key];
-            const found = list.find(function(d){ return d.name === value; });
-            if (found) { kode = found.kode_pos; break; }
-          }
-        }
-        document.getElementById('kode_pos').value = kode || '';
-      });
-      new TomSelect('#jenis_kelamin', { create: false, placeholder: 'Pilih jenis kelamin...' });
-      new TomSelect('#jenis_sekolah', { create: false, placeholder: 'Pilih jenis sekolah...' });
-      new TomSelect('#kategori_sekolah', { create: false, placeholder: 'Pilih kategori sekolah...' });
+      // initialize Tom Select for the new Jenis Kelas dropdown
+      new TomSelect('#jenis_kelas', { create: false, placeholder: 'Pilih jenis kelas...' });
 
         // Mobile menu toggle
         document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
@@ -554,5 +436,4 @@
 
     </script>
   </body>
-</html>
-<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/mahasiswa/create.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/mahasiswa/create.blade.php ENDPATH**/ ?>

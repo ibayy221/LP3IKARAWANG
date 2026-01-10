@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root{--basic:#004269;--adv:#40826D;--muted:#6b7280}
         html { font-family: 'Poppins', sans-serif; }
         * {
             margin: 0;
@@ -17,14 +18,15 @@
         body {
             font-family: 'Poppins', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #0f172a;
+            background: linear-gradient(180deg,var(--basic) 0%, rgba(0,66,105,0.10) 30%, #f6f9fc 100%);
         }
 
-        /* Header (glass effect) */
+        /* Header (indigo brand) */
         header {
-            background: linear-gradient(90deg,#1e3c72,#2a5298); /* solid LP3I blue gradient */
-            color: rgb(255, 255, 255);
-            padding: 0.5rem 0; /* slightly larger for visual balance */
+            background: linear-gradient(90deg,var(--basic),var(--adv));
+            color: #fff;
+            padding: 0.6rem 0; /* slightly larger for visual balance */
             position: fixed;
             width: 100%;
             top: 0;
@@ -72,7 +74,7 @@
         }
 
         .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             text-decoration: none;
             padding: 0.6rem 1.2rem; /* Adjusted padding */
             display: block;
@@ -115,7 +117,7 @@
                 width: 100%;
                 padding: 0.8rem 2rem; /* Adjusted padding for better mobile touch targets */
                 text-align: left;
-                background: transparent; /* Ensure no background on mobile */
+                    background: transparent; /* Ensure no background on mobile */
                 backdrop-filter: none; /* Ensure no backdrop-filter on mobile */
             }
         }
@@ -188,7 +190,7 @@
         }
 
         .dropdown-content a {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(0, 0, 0, 0.9);
             padding: 10px 20px; /* Adjusted padding */
             text-decoration: none;
             display: block;
@@ -238,6 +240,30 @@
             }
         }
 
+/* Login Button Styling (adjacent to register) */
+        .login-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.5rem;
+            background: #004269 !important;
+            color: white !important;
+            padding: 0.55rem 1rem !important;
+            text-decoration: none !important;
+            border-radius: 18px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            cursor: pointer !important;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.06) !important;
+            transform: translateY(-1px);
+            box-shadow: none !important;
+        }
+
         /* Mobile Menu */
         .mobile-menu-toggle {
             display: none;
@@ -248,9 +274,9 @@
             cursor: pointer;
         }
 
-        /* Hero Section — mobile-first improvements */
+        /* Hero Section — indigo-dominant */
         .hero {
-            min-height: 65vh; /* mobile-first: compact hero */
+            min-height: 60vh;
             height: auto;
             position: relative;
             overflow: hidden;
@@ -259,8 +285,31 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: #222;
+            color: #fff;
             padding: 2.5rem 1rem;
+            background: linear-gradient(180deg, rgba(0, 23, 232, 0.12), rgba(64,130,109,0.04));
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(2,6,23,0.08);
+        }
+
+        /* Akademik dropdown: prefix (white), separator (white), rest text (red) */
+        .dropdown-content a.akademik-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 10px 20px;
+        }
+        .dropdown-content a.akademik-item .ak-prefix {
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .dropdown-content a.akademik-item .ak-sep {
+            color: #ffffff;
+            margin: 0 6px;
+        }
+        .dropdown-content a.akademik-item .ak-text {
+            color: #e63946; /* red */
+            font-weight: 600;
         }
 
         /* subtle top-wide overlay (keeps faces in photo visible), add a stronger bottom band via ::after */
@@ -280,8 +329,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            height: 40%; /* gentle band at the bottom for better text contrast */
-            background: linear-gradient(180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.45) 100%);
+            height: 30%;
+            background: linear-gradient(180deg, rgba(194, 200, 255, 0.059) 0%, rgba(0, 26, 255, 0.273) 100%);
             z-index: 1;
             pointer-events: none;
         }
@@ -318,7 +367,7 @@
             z-index: 2;
             width: 100%;
             max-width: 920px;
-            padding: 1.25rem; /* tighter on mobile */
+            padding: 1.25rem;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -401,24 +450,102 @@
         }
 
         .hero-content h1 {
-            font-size: 1.6rem; /* mobile-first headline */
+            font-size: 1.8rem; /* mobile-first headline */
             font-weight: 800;
             margin-bottom: 0.35rem;
             color: #ffffff;
-            text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            text-shadow: 0 6px 18px rgba(24, 0, 130, 0.45);
         }
+
+        /* Programs Section */
+        .programs {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .program-card {
+            opacity: 0;
+            transform: translateY(50px);
+            animation-fill-mode: both;
+        }
+
+        .program-card.animate {
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        .program-card.animate:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .program-card.animate:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .program-card.animate:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .program-card.animate:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .programs-grid .program-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .programs-grid .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .program-icon {
+            font-size: 3rem;
+            color: #2a5298;
+            margin-bottom: 1rem;
+        }
+
+        .program-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
         /* keep additional site CSS (hero, sections) minimal for sambutan layout below */
-        .container{max-width:1100px;margin:90px auto 3rem;padding:0 1rem}
-        .container{max-width:1100px;margin:90px auto 3rem;padding:0 1rem}
+        .container{max-width:1100px;margin:110px auto 3rem;padding:0 1rem}
+        .container{max-width:1100px;margin:110px auto 3rem;padding:0 1rem}
         /* Desktop: place avatar + name on left; Mobile: stack centered */
         .hero{display:flex;align-items:center;gap:2rem;background:transparent}
-        .box-avatar{width:200px;height:200px;border:3px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;background:#fff;border-radius:12px;color:#1e3c72;overflow:hidden;flex-shrink:0}
-        .box-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+        .box-avatar{width:200px;height:200px;border:3px solid rgba(0, 0, 169, 0.12);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;background:rgba(255,255,255,0.04);border-radius:12px;color:#fff;overflow:hidden;flex-shrink:0}
+        .box-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
         .leader{margin-left:1rem}
-        .leader h1{margin:0;font-size:40px;color:#1e3c72;text-transform:capitalize}
-        .leader .subtitle{color:rgba(0,0,0,0.6);margin-top:.4rem}
-        .content{margin-top:2rem;background:#f9f9fb;padding:1.2rem;border-radius:8px}
-        .content p{line-height:1.7;color:#333}
+        .leader h1{margin:0;font-size:40px;color:#004269;text-transform:capitalize}
+        .leader .subtitle{color:rgba(0, 0, 0, 0.85);margin-top:.4rem;font-size:20px}
+        .content{margin-top:2rem;background:rgba(255,255,255,0.98);padding:1.6rem;border-radius:12px;box-shadow:0 12px 36px rgba(2,6,23,0.06);color:#0f172a}
+        .content p{line-height:1.8;color:#0f172a}
         @media(max-width:720px){.hero{flex-direction:column;align-items:center;text-align:center}.leader{margin-left:0}}
         @media(min-width:721px){.hero{flex-direction:row;justify-content:flex-start;text-align:left;padding:3.5rem 1rem 2.5rem}.container{padding-left:2rem}}
         .content p{
@@ -435,9 +562,11 @@
     <header>
         <nav>
             <div class="logo">
-                <a href="/">
+                
                     <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang Logo" />
-                </a>
+                    &nbsp;&nbsp;<img src="<?php echo e(asset('storage/image/global.png')); ?>" alt="Global Logo" class="logo-global" />
+
+               
             </div>
             <button class="mobile-menu-toggle">☰</button>
             <ul class="nav-links">
@@ -452,34 +581,7 @@
                     </div>
                 </li>
 
-                <li class="dropdown">
-                    <a href="#programs">Program Studi</a>
-                    <div class="dropdown-content">
-                        <a href="#akuntansi">Akuntansi</a>
-                        <a href="#teknik-informatika">Teknik Informatika</a>
-                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
-                    </div>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#akademik">Akademik</a>
-                    <div class="dropdown-content">
-                        <a href="#kalender-akademik">Kalender Akademik</a>
-                        <a href="#kurikulum">Kurikulum</a>
-                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
-                        <a href="#evaluasi">Evaluasi</a>
-                    </div>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#pusat-karir">Pusat Karir</a>
-                    <div class="dropdown-content">
-                        <a href="#lowongan-kerja">Lowongan Kerja</a>
-                        <a href="#magang">Program Magang</a>
-                        <a href="#alumni">Alumni</a>
-                        <a href="#kerjasama-industri">Kerjasama Industri</a>
-                    </div>
-                </li>
+                
                 <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 
             </ul>
@@ -492,20 +594,22 @@
                 <img src="<?php echo e(asset('storage/image/Pemimpin.jpg')); ?>" alt="Nama Pemimpin">
             </div>
             <div class="leader">
-                <h1>Nama Pemimpin</h1>
+                <h1>Aceng Ajat, S.T., M.M.</h1>
                 <div class="subtitle">Branch manager</div>
             </div>
         </section>
 
         <section class="content">
             <p>
-                Assalamu’alaikum Warahmatullahi Wabarakatuh, Salam Sejahtera bagi kita semua,
-
+                &nbsp;&nbsp;&nbsp;Assalamu’alaikum Warahmatullahi Wabarakatuh, Salam Sejahtera bagi kita semua,
 Selamat datang di LP3I College Kampus Karawang. Sebagai bagian dari keluarga besar LP3I, 
 saya merasa bangga dan terhormat dapat menyambut Anda di institusi yang memiliki dedikasi penuh terhadap masa depan generasi muda 
-Indonesia.
+Indonesia.<br>
+<br>
 Pendidikan bukan hanya soal deretan teori di atas kertas, melainkan tentang bagaimana kita mempersiapkan diri untuk menjadi solusi 
-di tengah masyarakat. Di LP3I Karawang, kami berkomitmen menyediakan pendidikan vokasi berkualitas yang membekali lulusan dengan 
+di tengah masyarakat. 
+<br><br>
+Di LP3I Karawang, kami berkomitmen menyediakan pendidikan vokasi berkualitas yang membekali lulusan dengan 
 keterampilan praktis dan profesionalisme tinggi. Kami terus berinovasi dalam kurikulum dan memperluas jaringan kerja sama industri 
 untuk memastikan setiap mahasiswa memiliki jalur yang jelas menuju kesuksesan.
 Wassalamu’alaikum Warahmatullahi Wabarakatuh.
@@ -514,8 +618,11 @@ Salam hangat,
 
 Aceng Ajat, ST. Kepala Kampus LP3I Karawang
             </p>
+            
         </section>
+
     </main>
+    
     <script>
         // Ensure dropdowns are closed on load and enable mobile toggles (same behavior as index)
         document.addEventListener('DOMContentLoaded', function() {

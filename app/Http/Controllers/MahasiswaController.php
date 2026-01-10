@@ -64,8 +64,11 @@ class MahasiswaController extends Controller
             'tempat_lahir' => 'nullable|string|max:255',
             'tgl_lahir' => 'nullable|date',
             'jenis_kelamin' => 'nullable|string|max:10',
+            'agama' => 'nullable|string|max:50',
             'jenis_sekolah' => 'nullable|string|max:50',
+            'jenis_kelas' => 'nullable|string|max:50',
             'kategori_sekolah' => 'nullable|string|max:50',
+            'sumber_pendaftaran' => 'nullable|string|in:online,offline',
             'status_verifikasi' => 'nullable|string|max:50',
             'asal_sekolah' => 'nullable|string|max:255',
             'file' => 'nullable|file|max:5120'
@@ -111,9 +114,15 @@ class MahasiswaController extends Controller
         }
 
         $validated['user_id'] = $userId;
+        // Persist contact email into mahasiswa.email: prefer account_email if provided
+        if (!empty($validated['account_email'])) {
+            $validated['email'] = $validated['account_email'];
+        }
         // set default payment fields if not present
         $validated['payment_status'] = $validated['payment_status'] ?? 'unpaid';
         $validated['payment_amount'] = $validated['payment_amount'] ?? 350000;
+        // set default status for every pendaftar
+        $validated['status'] = $validated['status'] ?? 'aktif';
 
         // Remove account-related fields so they are not persisted into mahasiswas table
         unset($validated['account_email'], $validated['password'], $validated['password_confirmation']);
@@ -135,26 +144,9 @@ class MahasiswaController extends Controller
             return redirect()->back()->with('success', 'Pendaftaran sudah diterima sebelumnya. Nomor pendaftaran: ' . ($duplicate->nipd ?? $duplicate->id));
         }
 
-        // Generate NIPD if not set (format: branch(6) + program(3) + sequence(4))
+        // Generate NIPD if not set using the model helper (ensures consistent format)
         if (empty($validated['nipd'])) {
-            $branch = config('nipd.branch_code', '240781');
-            $programCodes = config('nipd.program_codes', []);
-            $seqDigits = (int) config('nipd.sequence_digits', 4);
-            $programKey = strtoupper($validated['jurusan'] ?? '');
-            $deptCode = $programCodes[$programKey] ?? '000';
-            $prefix = $branch . $deptCode;
-
-            // Count existing entries with same prefix and generate next sequence
-            // NOTE: This is a simple approach using a count; in high-concurrency scenarios
-            // there is a small race condition (two concurrent requests may get the same
-            // next value). For production-critical correctness you can either:
-            //  - Use a DB sequence or table-level atomic counter per prefix, or
-            //  - Wrap creation in a transaction and retry on unique constraint violation.
-            $count = \App\Models\Mahasiswa::where('nipd', 'like', $prefix . '%')->count();
-            $next = $count + 1;
-            $sequence = str_pad((string) $next, $seqDigits, '0', STR_PAD_LEFT);
-
-            $validated['nipd'] = $prefix . $sequence;
+            $validated['nipd'] = \App\Models\Mahasiswa::generateNipd($validated['jurusan'] ?? null);
         }
 
         // create the mahasiswa record inside a try/catch to handle unique-constraint races

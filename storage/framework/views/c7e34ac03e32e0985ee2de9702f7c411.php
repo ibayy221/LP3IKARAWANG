@@ -6,33 +6,31 @@
   <title>Login Pendaftar</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root{--brand-dark:#004269;--brand-accent:#009DA5;--bg-start:#eef6fb;--bg-end:#f4fbfd}
+    :root{--brand-dark:#004269;--brand-accent:#009DA5}
     html,body{height:100%}
-    body{font-family:'Poppins',Arial,Helvetica,sans-serif;margin:0;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(180deg,var(--bg-start),var(--bg-end));color:#072033}
+    body{font-family:'Poppins';margin:0;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--brand-dark),#0b7280);color:#fff}
 
-    .card{width:100%;max-width:520px;padding:2rem;background:#ffffff;border-radius:16px;box-shadow:0 18px 45px rgba(2,6,23,0.08);border:1px solid rgba(2,6,23,0.04)}
-    .card .logo-wrap{display:flex;justify-content:center;margin-bottom:0.6rem}
-    .card .logo-wrap img{height:56px;object-fit:contain}
-    .card h2{margin:0 0 0.5rem 0;color:var(--brand-dark);font-size:1.6rem}
-    .card p.lead{margin:0 0 1rem 0;color:#4b6b7a}
+    .card{width:100%;max-width:420px;padding:2.2rem 2rem;background:rgba(255,255,255,0.98);border-radius:16px;box-shadow:0 18px 45px rgba(2,6,23,0.08);border:1px solid rgba(2,6,23,0.04);text-align:center;color:#072033}
+    .logo-wrap{display:flex;justify-content:center;margin-bottom:0.5rem}
+    .logo-wrap img{height:48px;object-fit:contain}
 
-    label.form-label{display:block;margin-bottom:0.45rem;color:var(--brand-dark);font-weight:600}
-    .form-control{width:100%;padding:0.9rem;border-radius:10px;border:1px solid rgba(2,6,23,0.06);background:#f3fbfd;box-shadow:inset 0 3px 10px rgba(2,6,23,0.02);font-size:0.95rem}
-    .form-control:focus{outline:none;border-color:var(--brand-accent);box-shadow:0 6px 18px rgba(0,157,165,0.08)}
+    .login-title{font-family:'Poppins'; font-weight:700;letter-spacing:4px;margin:0 0 0.6rem 0;color:var(--brand-dark)}
+    .login-title::after{content:'';display:block;height:4px;width:70px;margin:8px auto 0;background:linear-gradient(90deg,var(--brand-dark),var(--brand-accent));border-radius:4px}
+    .lead{margin:0 0 1rem 0;color:#6b7880;font-size:0.95rem}
 
-    .actions{display:flex;gap:0.75rem;justify-content:flex-end;align-items:center;margin-top:0.6rem}
-    .btn-primary{background:linear-gradient(90deg,var(--brand-dark),var(--brand-accent));color:#fff;border:none;padding:0.65rem 1.05rem;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(0,77,110,0.12);cursor:pointer}
-    .btn-primary:hover{transform:translateY(-2px)}
+    label.form-label{display:block;margin:1.1rem 0 0.35rem 0;text-align:left;color:#374151;font-weight:600}
+    .input-wrap{position:relative}
+    .form-control{width:100%;Padding:.55rem 0;border:none;border-bottom:2px solid rgba(4,10,15,0.06);background:transparent;font-size:1rem;color:#072033}
+    .form-control::placeholder{color:#9aa6ac}
+    .form-control:focus{outline:none;border-bottom-color:transparent;background-image:linear-gradient(90deg,var(--brand-dark),var(--brand-accent));background-repeat:no-repeat;background-position:0 100%;background-size:100% 3px}
 
-    .alert-success{color:#054d3a;background:#ecfdf5;padding:.5rem .75rem;border-radius:8px;margin-bottom:0.75rem}
-    .alert-error{color:#7f1d1d;background:#fff1f2;padding:.5rem .75rem;border-radius:8px;margin-bottom:0.75rem}
+    .forgot{font-size:0.9rem;color:var(--brand-accent);text-decoration:none}
 
-    @media (max-width:480px){
-      body{padding:1rem}
-      .card{padding:1.25rem;border-radius:12px}
-      .card h2{font-size:1.25rem}
-      .actions{justify-content:stretch}
-    }
+    .btn-primary{display:inline-block;margin-top:1.6rem;padding:.85rem 2.4rem;border-radius:999px;background:linear-gradient(90deg,var(--brand-dark),var(--brand-accent));color:#fff;border:none;cursor:pointer;font-weight:700;box-shadow:0 18px 30px rgba(0,157,165,0.12);text-transform:uppercase;letter-spacing:2px}
+
+    .small-note{margin-top:0.8rem;color:var(--brand-accent)}
+
+    @media (max-width:480px){body{padding:1rem}.card{padding:1.25rem;border-radius:12px}}
   </style>
 </head>
 <body>
@@ -40,7 +38,7 @@
     <div class="logo-wrap">
       <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/landingPage1.png')); ?>'" />
     </div>
-    <h2>Login Pendaftar</h2>
+    <h2 class="login-title">LOGIN</h2>
     <p class="lead">Masuk untuk mengelola pendaftaran dan melihat status Anda.</p>
 
     <?php if(session('success')): ?> <div class="alert-success"><?php echo e(session('success')); ?></div> <?php endif; ?>
@@ -48,17 +46,18 @@
 
     <form action="<?php echo e(route('pendaftar.login.post')); ?>" method="POST">
       <?php echo csrf_field(); ?>
-      <div style="margin:.6rem 0">
+      <div style="margin:.2rem 0;text-align:left">
         <label class="form-label">Email</label>
-        <input type="email" name="email" required class="form-control" placeholder="email@domain.com">
+        <div class="input-wrap"><input type="email" name="email" required class="form-control" placeholder="email@domain.com"></div>
       </div>
-      <div style="margin:.6rem 0">
+      <div style="margin:.2rem 0;text-align:left">
         <label class="form-label">Password</label>
-        <input type="password" name="password" required class="form-control" placeholder="Masukkan password">
+        <div class="input-wrap"><input type="password" name="password" required class="form-control" placeholder="Masukkan password"></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:6px"><a href="#" class="forgot">Lupa password?</a></div>
       </div>
-      <div class="actions">
-        <a href="<?php echo e(url('/')); ?>" style="color:var(--brand-dark);text-decoration:none;font-weight:600;margin-right:auto">Kembali</a>
+      <div style="text-align:center">
         <button class="btn-primary" type="submit">Login</button>
+        <div class="small-note">Belum punya akun? <a href="<?php echo e(route('mahasiswa.create')); ?>" style="color:var(--brand-accent);text-decoration:none">Daftar</a></div>
       </div>
     </form>
   </div>
