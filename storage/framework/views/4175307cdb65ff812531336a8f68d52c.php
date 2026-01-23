@@ -6,6 +6,8 @@
   <title>Biodata Pendaftar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+
+
     :root{--basic:#004269;--adv:#40826D}
     body{background:var(--basic);}
     /* Card: white background with viridian border */
@@ -22,6 +24,8 @@
   </style>
 </head>
 <body class="text-slate-800">
+
+  
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <!-- Sidebar (same style as dashboard) -->
@@ -102,7 +106,7 @@
                     ['label'=>'No. HP','value'=>$pendaftar->no_hp ?? '-'],
                     ['label'=>'Email','value'=>$pendaftar->email ?? '-'],
                     ['label'=>'Jenis Kelas','value'=>$pendaftar->jenis_kelas ?? '-'],
-                    ['label'=>'Program Studi','value'=>$pendaftar->jurusan ?? '-'],
+                    ['label'=>'Program Studi','value'=>\App\Helpers\JurusanHelper::getFormat($pendaftar->jurusan ?? null)],
                     ['label'=>'Asal Sekolah','value'=>$pendaftar->asal_sekolah ?? '-'],
                     ['label'=>'Agama','value'=>$pendaftar->agama ?? '-'],
                     ['label'=>'Jenis Kelamin','value'=>$pendaftar->jenis_kelamin ?? '-'],

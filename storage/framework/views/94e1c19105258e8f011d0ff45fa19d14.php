@@ -26,7 +26,7 @@
   <div class="wrap">
     <div class="card">
       <div class="bg-hero" style="background-image: url('<?php echo e(!empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl,'/')) : asset('storage/illustrations/registration-illustration.svg')); ?>')"></div>
-      <h2 style="margin:0 0 .5rem">Detail Calon Mahasiswa</h2>
+      <h2 style="margin:0 0 .5rem">Student detail</h2>
       <?php if(session('success')): ?> <div style="color:green;margin-bottom:.75rem"><?php echo e(session('success')); ?></div> <?php endif; ?>
 
       <div class="grid-2">
@@ -58,7 +58,7 @@
 
         <aside>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
-            <div style="font-weight:700">Dokumen</div>
+            <div style="font-weight:700">Document</div>
             <div style="font-size:.85rem;color:var(--muted)">ID: <?php echo e($m->id); ?></div>
           </div>
 
@@ -76,7 +76,7 @@
               <div class="doc-file"><div style="flex:1">Surat Keterangan Bekerja</div><a href="<?php echo e(route('marketing.pendaftar.surat_bekerja', $m->id)); ?>" class="doc-btn">Download</a></div>
             <?php endif; ?>
             <?php if(empty($m->ktp_path) && empty($m->ijazah_path) && empty($m->akte_kelahiran_path) && empty($m->surat_sudah_bekerja_path)): ?>
-              <div style="color:#64748b">Tidak ada dokumen yang diunggah.</div>
+              <div style="color:#64748b">No document uploaded</div>
             <?php endif; ?>
           </div>
         </aside>

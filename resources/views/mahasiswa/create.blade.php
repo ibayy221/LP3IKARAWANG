@@ -319,7 +319,7 @@
                       <div class="registration-header">
                     <!-- logo removed — keeping layout minimal and colorful -->
                     <div>
-                      <h2 class="mb-0">Form Pendaftaran Mahasiswa</h2>
+                      <h2 class="mb-0">Pendaftaran Mahasiswa Baru</h2>
                       <p class="registration-subtext small mb-0">Silahakan Isi data diri dengan benar</p>
                     </div>
                   </div>

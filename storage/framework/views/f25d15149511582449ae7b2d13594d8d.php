@@ -723,11 +723,17 @@
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="<?php echo e(asset('storage/image/AIS.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="<?php echo e(asset('storage/image/AIS2.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
+                    <br>
+                    <br>
+                     <br>
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="<?php echo e(asset('storage/image/AIS.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
+                    <img class="program-img" src="<?php echo e(asset('storage/image/AIS3.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
 					
 						
 					

@@ -1,6 +1,4 @@
 @php
-    // Normalize variables so the template is safe whether controller
-    // provides Blade $carouselData or legacy $carousel.
     $carouselData = isset($carouselData) ? $carouselData : (isset($carousel) ? $carousel : []);
     $newsData = isset($newsData) ? $newsData : [];
 @endphp
@@ -12,1756 +10,408 @@
     <title>LP3I Karawang - Politeknik LP3I Kampus Karawang</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* CSS DASAR DARI KODE ASLI KAMU */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #333; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
+        /* --- MODIFIKASI HEADER 3 LAYER (PERMINTAAN DOSEN) --- */
+        header { width: 100%; z-index: 1000; position: relative; }
 
-        /* Header (glass effect) */
-        header {
-            background: rgba(30, 60, 114, 0.12); /* semi-transparent brand blue */
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            color: white;
-            padding: 0.44rem 0; /* slightly reduced for mobile space */
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: all 0.28s ease;
-        }
+        /* Site header (assistant navbar) - minimal rules to preserve your layout but keep assistant look */
+        .site-header { width: 100%; position: relative; z-index: 1100; }
+        .site-header .topbar { background: #ff7a18; color: white; padding: 6px 0; font-size: 0.9rem; font-weight: 600; }
+        .site-header .topbar .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display:flex; justify-content:space-between; align-items:center; }
 
-        header.scrolled {
-            background: rgba(30, 60, 114, 0.95);
-            backdrop-filter: blur(30px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: auto;
-            max-height: 48px; /* keep logo visible and not cropped */
-            width: auto;
-            max-width: 220px;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 0;
-            align-items: center;
-        }
-
-        .nav-links li {
-            position: relative;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            padding: 0.6rem 1.2rem; /* Adjusted padding */
-            display: block;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border-radius: 0;
-            font-size: 0.95rem;
-            font-weight: 500;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-            /* background: rgba(255, 255, 255, 0.05); */ /* Removed for mobile */
-            border: none;
-            /* backdrop-filter: blur(10px); */ /* Removed for mobile */
-        }
-
-        /* .nav-links a::before { */ /* Removed for mobile */
-        /*     content: ''; */
-        /*     position: absolute; */
-        /*     top: 0; */
-        /*     left: -100%; */
-        /*     width: 100%; */
-        /*     height: 100%; */
-        /*     background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent); */
-        /*     transition: left 0.5s; */
-        /* } */
-
-        .nav-links a:hover::before {
-            left: 100%;
-        }
-
-        .nav-links a:hover {
-            /* background: rgba(74, 144, 226, 0.2); */
-            /* color: #74b9ff; */
-            /* transform: none; */
-            box-shadow: none;
-        }
-        /* Mobile specific adjustments for nav-links a */
+        /* Ensure standalone .topbar (used in this view) is styled consistently */
+        .topbar { background: #009da5; color: white; padding: 6px 0; font-size: 0.95rem; font-weight: 600; }
+        .topbar .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+        .topbar-left, .topbar-right { display:flex; align-items:center; gap:1rem; }
+        .topbar a { color: white; text-decoration: none; display:inline-flex; align-items:center; gap:0.5rem; padding:4px 8px; border-radius:6px; }
+        .topbar a:hover { background: rgba(255,255,255,0.08); }
+        .topbar a i { font-size:0.95rem; }
         @media (max-width: 768px) {
-            .nav-links a {
-                width: 100%;
-                padding: 0.8rem 2rem; /* Adjusted padding for better mobile touch targets */
-                text-align: left;
-                background: transparent; /* Ensure no background on mobile */
-                backdrop-filter: none; /* Ensure no backdrop-filter on mobile */
-            }
+            .topbar .container { flex-direction: column; align-items: flex-start; gap:8px; }
+            .topbar-right { justify-content: flex-start; }
         }
+        .site-header .brandbar { background: #213C72; color: white; padding: 12px 0; }
+        .site-header .brandbar .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display:flex; justify-content:space-between; align-items:center; }
+        .site-header .brandbar .logo img { max-height: 55px; }
+        .site-header .menubar { background: #ffffff; border-bottom: 1px solid #eee; }
+        .site-header .menubar .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; display:flex; justify-content:space-between; align-items:center; }
+        .site-header .menubar .nav-links { display:flex; gap:0; list-style:none; align-items:center; }
+        .site-header .menubar .nav-links a { color:#213C72; text-decoration:none; padding:1rem 1.2rem; font-weight:600; }
+        .site-header .menubar .nav-links a:hover { color:#0b2a59; background:#f6f8fb; }
+        .site-header .menubar .dropdown-content { background:#ffffff; border:1px solid #eee; box-shadow:0 8px 22px rgba(0,0,0,0.06); }
 
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-            display: inline-block; /* allow dropdown to size to its trigger */
+        /* keep your dropdown item appearance when inside assistant menubar */
+        .site-header .menubar .dropdown-content a { color:#213C72 !important; }
+
+        /* Layer 1: Top Bar (legacy names kept for compatibility) */
+        .top-bar { background: #00a8e8; padding: 6px 0; color: white; font-size: 0.8rem; font-weight: 500; }
+        .top-bar .container { display: flex; justify-content: flex-end; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .top-bar a { color: white; text-decoration: none; }
+
+        /* Layer 2: Mid Header (Logo & Kontak) */
+        .mid-header { background: #1e3c72; padding: 15px 0; color: white; }
+        .mid-header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .logo img { max-height: 55px; width: auto; object-fit: contain; }
+        .header-contact { display: flex; gap: 30px; }
+        .contact-item { display: flex; align-items: center; gap: 10px; }
+        .contact-item i { font-size: 1.9rem; color: #00a8e8; }
+        .contact-text strong { display: block; font-size: 0.85rem; }
+        .contact-text span { font-size: 0.75rem; opacity: 0.8; }
+
+        /* Layer 3: Nav Utama (Putih & Sticky saat scroll) */
+        nav { 
+            background: white; 
+            border-bottom: 1px solid #eee; 
+            position: sticky; 
+            top: 0; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
+        nav.scrolled { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
 
-        /* Desktop-style absolute submenu but hidden by default via opacity/max-height
-           so it won't push layout when toggled. Hover behavior applied only on desktop below. */
+        /* Mempertahankan style Nav-Links kamu */
+        .nav-links { display: flex; list-style: none; align-items: center; }
+        .nav-links a { 
+            color: #333; 
+            text-decoration: none; 
+            padding: 1rem 1.2rem; 
+            display: block; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+        }
+        .nav-links a:hover { color: #1e3c72; background: #f8f9fa; }
+
+        /* Mempertahankan Dropdown & Item Akademik (AK|MI) kamu */
+        .dropdown { position: relative; }
         .dropdown-content {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            min-width: 220px; /* fixed min width to avoid covering neighbors */
-            max-width: 320px;
-            width: auto;
-            border-radius: 10px;
-            z-index: 1000;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-            opacity: 0;
-            visibility: hidden;
-            max-height: 0;
-            transition: opacity .22s ease, max-height .28s ease, visibility .22s, transform .18s ease;
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #043158; min-width: 220px; display: none; z-index: 1000;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: white !important; font-size: 0.85rem; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .dropdown-content a.akademik-item { display: flex; gap: 8px; }
+        .dropdown-content a.akademik-item .ak-prefix { color: #fff; font-weight: 700; }
+        .dropdown-content a.akademik-item .ak-text { color: #e63946; font-weight: 600; }
+
+        /* Mempertahankan style Button & Animasi Pulse kamu */
+        .register-btn {
+            background: #004269 !important; color: white !important; padding: 0.6rem 1.2rem !important;
+            border-radius: 20px !important; font-weight: 600 !important; font-size: 0.9rem !important;
+            animation: registerPulse 2s ease-in-out infinite; text-decoration: none;
+        }
+        .login-btn {
+            background: transparent !important; color: #1e3c72 !important; padding: 0.55rem 1rem !important;
+            border-radius: 18px !important; font-weight: 600 !important; border: 1px solid #1e3c72 !important;
+            margin-right: 10px; text-decoration: none;
+        }
+        @keyframes registerPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(0, 66, 105, 0.3); }
+            50% { box-shadow: 0 6px 25px rgba(0, 66, 105, 0.6); }
         }
 
-        /* Hover-to-open is only for desktop; mobile uses click toggle (JS adds .active) */
-        @media (min-width: 769px) {
-            .dropdown:hover .dropdown-content {
-                opacity: 1;
-                visibility: visible;
-                max-height: 480px; /* allow smooth reveal without changing layout */
-            }
-        }
-
-        /* Mobile specific adjustments: keep submenu out of flow but allow vertical expand
-           using .active class toggled by JS. Hover states are ignored on small screens. */
-        @media (max-width: 768px) {
-            .dropdown-content {
-                position: static; /* place inside flow for mobile accordion */
-                width: 100%;
-                left: 0;
-                transform: none;
-                background: rgba(255,255,255,0.03);
-                border-radius: 0;
-                box-shadow: none;
-                margin-left: 0;
-                border: none;
-                max-width: 100%;
-                opacity: 0;
-                visibility: hidden;
-                max-height: 0;
-                overflow: hidden;
-                transition: opacity .22s ease, max-height .28s ease, visibility .22s;
-            }
-
-            .dropdown-content.active {
-                opacity: 1;
-                visibility: visible;
-                max-height: 800px; /* generous for all items */
-            }
-        }
-
-        .dropdown-content a {
-            color: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px; /* Adjusted padding */
-            text-decoration: none;
-            display: block;
-            transition: all 0.3s;
-            border-radius: 0;
-            position: relative;
-            overflow: hidden;
-            background-color: #043158;
-            border: none;
-        }
-
-        .dropdown-content a:hover::before {
-            width: 100%;
-        }
-
-        .dropdown-content a:hover {
-            color: rgba(0, 0, 0, 0.9); /* Keep original color */
-            background: transparent; /* Ensure no background on hover */
-            transform: none; /* Ensure no transform on hover */
-        }
-        /* Akademik dropdown: prefix (white), separator (white), rest text (red) */
-        .dropdown-content a.akademik-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 10px 20px;
-        }
-        .dropdown-content a.akademik-item .ak-prefix {
-            color: #ffffff;
-            font-weight: 700;
-        }
-        .dropdown-content a.akademik-item .ak-sep {
-            color: #ffffff;
-            margin: 0 6px;
-        }
-        .dropdown-content a.akademik-item .ak-text {
-            color: #e63946; /* red */
-            font-weight: 600;
-        }
-        @media (max-width: 768px) {
-            .dropdown-content a.akademik-item .ak-text {
-                color: #e63946 !important;
-            }
-        }
-        /* Mobile specific adjustments for dropdown-content a */
-        @media (max-width: 768px) {
-            .dropdown-content a {
-                padding: 0.6rem 2.5rem; /* Indent dropdown items, adjusted padding */
-                color: rgba(255, 255, 255, 0.8);
-                background: transparent;
-                transform: none; /* Remove transform on hover for mobile */
-            }
-            .dropdown-content a:hover {
-                background: transparent; /* Ensure no background on hover for mobile */
-                color: rgba(255, 255, 255, 0.8); /* Keep original color for mobile */
-                transform: none; /* Ensure no transform on hover for mobile */
-            }
-        }
-
-        .dropdown > a::after {
-            content: ' ▼';
-            font-size: 0.7rem;
-            margin-left: 3px;
-            transition: transform 0.3s;
-        }
-
-        /* Only rotate the caret on desktop hover; mobile uses click/toggle */
-        @media (min-width: 769px) {
-            .dropdown:hover > a::after {
-                transform: rotate(180deg);
-            }
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-
-        /* Hero Section — mobile-first improvements */
-        .hero {
-            min-height: 65vh; /* mobile-first: compact hero */
-            height: auto;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding: 2.5rem 1rem;
-        }
-
-        /* subtle top-wide overlay (keeps faces in photo visible), add a stronger bottom band via ::after */
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            /* very subtle darkening so the image stays visible */
-            background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.03) 40%, rgba(0,0,0,0.00) 70%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 40%; /* gentle band at the bottom for better text contrast */
-            background: linear-gradient(180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.45) 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .carousel-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            background-size: cover;
-            background-position: center;
-        }
-
+        /* --- SEMUA CSS CONTENT (HERO, NEWS, ABOUT, DLL) DARI KODE ASLI KAMU --- */
+        .hero { min-height: 80vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; }
+        .carousel-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s; background-size: cover; background-position: center; }
         .carousel-slide.active { opacity: 1; }
+        .hero-content { position: relative; z-index: 2; text-align: center; max-width: 900px; padding: 20px; }
+            .hero-content h1 { font-size: 3rem; font-weight: 800; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }        
 
-/* Per-slide backgrounds are applied inline on each .carousel-slide element
-   to avoid embedding Blade/PHP directives inside the <style> block, which
-   can confuse CSS parsers and editors. */
+            /* Alasan Pilih LP3I section */
+            .reasons { padding: 4rem 2rem; background: #f5f8fb; }
+            .reasons .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+            .reasons .section-title { color: #1e3c72; font-size: 1.5rem; font-weight: 700; }
+            .reasons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
+            .reason-card { background: #fff; border-radius: 12px; padding: 1.25rem; text-align: center; box-shadow: 0 6px 18px rgba(16,24,40,0.06); }
+            .reason-card i { font-size: 2rem; color: #1e3c72; margin-bottom: 0.5rem; }
+            .reason-card h4 { margin: 0.35rem 0; font-size: 1rem; color: #213C72; }
+            .reason-card p { font-size: 0.95rem; color: #556; opacity: 0.95; }
 
-        /* Center hero content but slightly lower to avoid covering faces */
-        .carousel-content {
-            position: absolute;
-            top: 60%; /* move content lower than center */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            width: 100%;
-            max-width: 920px;
-            padding: 1.25rem; /* tighter on mobile */
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            align-items: center;
-            justify-content: center;
-        }
+            @media (max-width: 992px) {
+                .reasons-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media (max-width: 576px) {
+                .reasons-grid { grid-template-columns: 1fr; }
+            }
 
-        @media (max-width: 576px) {
-            .carousel-content { top: 66%; }
-        }
+            /* Partners / Kerjasama Perusahaan */
+            .partners { padding: 3.5rem 2rem; background: #ffffff; }
+            .partners .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+            .partners .heading { display:flex; align-items:center; gap:12px; margin-bottom:1rem; }
+            .partners .heading .accent { width:6px; height:36px; background:#ff7a18; border-radius:4px; }
+            .partners h2 { margin:0; color:#1e3c72; font-size:1.6rem; font-weight:700; }
+            .partners p.lead { color:#6b7280; margin-bottom:1.5rem; }
+            .partners-grid { display:grid; grid-template-columns: repeat(6, 1fr); gap:1.5rem; align-items:center; }
+            .partner-item { display:flex; align-items:center; justify-content:center; padding:12px; background:transparent; }
+            .partner-item img { max-width:100%; max-height:56px; opacity:0.95; filter:grayscale(0%); transition: transform .18s ease, opacity .18s ease; }
+            .partner-item:hover img { transform: translateY(-6px); opacity:1; }
 
-        .carousel-indicators {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 3;
-        }
+            /* Single wide partner image (responsive/cropped) */
+            .partners-hero { width:100%; overflow:hidden; border-radius:12px; margin-top:1rem; }
+            .partners-hero img { width:100%; height:360px; object-fit:cover; display:block; }
+            @media (max-width: 768px) { .partners-hero img { height:180px; } }
 
-        .indicator {
-            width: 40px;
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            overflow: hidden;
-        }
+            @media (max-width: 1100px) { .partners-grid { grid-template-columns: repeat(4, 1fr); } }
+            @media (max-width: 768px) { .partners-grid { grid-template-columns: repeat(2, 1fr); } .partner-item img { max-height:48px; } }
+            @media (max-width: 420px) { .partners-grid { grid-template-columns: 1fr; } }
+            
+            /* Promo video styles merged into reasons */
+            .reasons .video-block { padding-top: 1.5rem; }
+            .reasons .video-wrapper { width: 100%; max-width: 980px; margin: 0.75rem auto 0 auto; position: relative; padding-top: 56.25%; }
+            .reasons .video-wrapper video, .reasons .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 12px 34px rgba(16,24,40,0.08); }
+            .reasons .video-caption { text-align: center; margin-top: 0.75rem; color: #556; font-size: 0.95rem; }
 
-        .indicator::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(116, 185, 255, 0.8), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .indicator:hover::before {
-            left: 100%;
-        }
-
-        .indicator.active {
-            background: #74b9ff;
-            box-shadow: 0 0 15px rgba(116, 185, 255, 0.6);
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 2rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 3;
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(74, 144, 226, 0.5);
-        }
-
-        .carousel-nav.prev {
-            left: 30px;
-        }
-
-        .carousel-nav.next {
-            right: 30px;
-        }
-
-
-        .hero-content h1 {
-            font-size: 1.6rem; /* mobile-first headline */
-            font-weight: 800;
-            margin-bottom: 0.35rem;
-            color: #ffffff;
-            text-shadow: 0 6px 18px rgba(0,0,0,0.45);
-            line-height: 1.05;
-            letter-spacing: 0.6px;
-            z-index: 3;
-            animation: slideInUp 0.9s ease-out;
-        }
-
-        .hero-content p {
-            font-size: 0.98rem; /* subtle subheadline */
-            margin-bottom: 0.9rem;
-            color: rgba(255,255,255,0.92);
-            text-shadow: 0 4px 12px rgba(0,0,0,0.35);
-            line-height: 1.5;
-            font-weight: 400;
-            z-index: 3;
-            max-width: 720px;
-            animation: slideInUp 0.9s ease-out 0.12s both;
-        }
-
+            @media (max-width: 768px) {
+                .reasons .video-wrapper { padding-top: 56.25%; }
+            }
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #1e3c72, #2a5298); /* brand blue gradient */
-            color: white;
-            padding: 0.9rem 1.6rem;
-            text-decoration: none;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
-            animation: slideInUp 0.9s ease-out 0.18s both;
-            box-shadow: 0 8px 26px rgba(30,60,114,0.18);
-            z-index: 3;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 36px rgba(30,60,114,0.22);
-            background: linear-gradient(135deg, #2a5298, #1e3c72);
-        }
-
-        /* Header: reduce vertical padding on small screens */
-        @media (max-width: 576px) {
-            header { padding: 0.28rem 0; }
-            .logo img { max-width: 140px; }
-            .hero { min-height: 58vh; padding: 1.5rem .75rem; }
-            .hero-content h1 { font-size: 1.8rem; }
-            .hero-content p { font-size: 0.98rem; }
-            .cta-button { padding: 0.9rem 1.2rem; font-size: 1rem; }
-        }
-
-        /* Larger screens: restore expansive hero */
-        @media (min-width: 992px) {
-            .hero { min-height: 100vh; }
-            .hero-content h1 { font-size: 2.8rem; }
-            .hero-content p { font-size: 1.15rem; }
-            .cta-button { padding: 0.8rem 2rem; font-size: 0.95rem; background: linear-gradient(135deg, #1e3c72, #2a5298); box-shadow: 0 6px 28px rgba(30,60,114,0.15); }
-        }
-
-
-        /* News Section */
-        .news {
-            padding: 5rem 2rem;
-            background: #f8f9fa;
-        }
-
-        .news-grid {
-            display: grid;
-            /* Default desktop: 3 columns */
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        /* Medium screens: 2 columns */
-        @media (max-width: 992px) {
-            .news-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* Small screens: 1 column */
-        @media (max-width: 576px) {
-            .news-grid { grid-template-columns: 1fr; }
-        }
-
-        .news-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            opacity: 0;
-            transform: translateY(50px);
-            animation-fill-mode: both;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .news-card.animate {
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        .news-card.animate:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .news-card.animate:nth-child(2) {
-            animation-delay: 0.3s;
-        }
-
-        .news-card.animate:nth-child(3) {
-            animation-delay: 0.5s;
-        }
-
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        /* Section title animation */
-        .section-title {
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: both;
-        }
-
-        .section-title.animate {
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        .news-image {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-        }
-
-        .news-content {
-            padding: 1.5rem;
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .news-category {
-            display: inline-block;
-            background: #4a90e2;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .news-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            color: #1e3c72;
-            line-height: 1.4;
-        }
-
-        .news-excerpt {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #888;
-            border-top: 1px solid #eee;
-            padding-top: 1rem;
-        }
-
-        .news-date {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .news-author {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .view-all-news {
-            text-align: center;
-            margin-top: 3rem;
-        }
-
-        .view-all-news .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 0.8rem 2rem;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
-        }
-
-        .view-all-news .btn:hover {
-            background: linear-gradient(135deg, #2a5298, #1e3c72);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
-        }
-
-        /* Registration Button Styling */
-        .register-btn {
-            display: inline-flex !important;
-            align-items: center;
-            gap: 0.5rem;
-            background: #004269 !important;
-            color: white !important;
-            padding: 0.6rem 1.2rem !important;
-            text-decoration: none !important;
-            border-radius: 20px !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 4px 15px rgba(0, 66, 105, 0.3) !important;
-            border: none !important;
-            cursor: pointer !important;
-            animation: registerPulse 2s ease-in-out infinite;
-            white-space: nowrap;
-        }
-
-        .register-btn:hover {
-            background: #003352 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 66, 105, 0.5) !important;
-            animation: none;
-        }
-
-        /* Login Button Styling (adjacent to register) */
-        .login-btn {
-            display: inline-flex !important;
-            align-items: center;
-            gap: 0.5rem;
-            background: #004269 !important;
-            color: white !important;
-            padding: 0.55rem 1rem !important;
-            text-decoration: none !important;
-            border-radius: 18px !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            transition: all 0.25s ease;
-            border: 1px solid rgba(255,255,255,0.12) !important;
-            cursor: pointer !important;
-            white-space: nowrap;
-        }
-
-        .login-btn:hover {
-            background: rgba(255,255,255,0.06) !important;
-            transform: translateY(-1px);
-            box-shadow: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .register-btn {
-                padding: 0.5rem 1rem !important;
-                font-size: 0.8rem !important;
-                font-weight: 600 !important;
-            }
-        }
-
-        @keyframes registerPulse {
-            0%, 100% {
-                box-shadow: 0 6px 20px rgba(0, 66, 105, 0.3);
-            }
-            50% {
-                box-shadow: 0 8px 30px rgba(0, 66, 105, 0.6);
-            }
-        }
-
-        /* CTA Registration Banner */
-        .registration-banner {
-            background: linear-gradient(135deg, #004269, #003352);
-            padding: 3rem 2rem;
-            text-align: center;
-            color: white;
-            margin: 3rem 0;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 66, 105, 0.2);
-        }
-
-        .registration-banner h3 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .registration-banner p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-
-        @media (max-width: 768px) {
-            .registration-banner {
-                padding: 2rem 1rem;
-            }
-            .registration-banner h3 {
-                font-size: 1.5rem;
-            }
-            .registration-banner p {
-                font-size: 0.95rem;
-            }
-        }
-
-        /* Programs Section */
-        .programs {
-            padding: 5rem 2rem;
-            background: white;
-        }
-
-        .program-card {
-            opacity: 0;
-            transform: translateY(50px);
-            animation-fill-mode: both;
-        }
-
-        .program-card.animate {
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        .program-card.animate:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .program-card.animate:nth-child(2) {
-            animation-delay: 0.3s;
-        }
-
-        .program-card.animate:nth-child(3) {
-            animation-delay: 0.5s;
-        }
-
-        .program-card.animate:nth-child(4) {
-            animation-delay: 0.7s;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1e3c72;
-        }
-
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .programs-grid .program-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .programs-grid .program-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .program-icon {
-            font-size: 3rem;
-            color: #2a5298;
-            margin-bottom: 1rem;
-        }
-
-        .program-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #1e3c72;
-        }
-
-        /* About Section */
-        .about {
-            padding: 5rem 2rem;
-            background: white;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-text h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: #1e3c72;
-        }
-
-        .about-text p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: #666;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #2a5298;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-top: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
             background: #1e3c72;
-            color: white;
-            padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            color: #ffd700;
-        }
-
-        .footer-section p, .footer-section a {
-            color: #ccc;
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 28px;
+            font-weight: 700;
             text-decoration: none;
-            margin-bottom: 0.5rem;
-            display: block;
+            margin-top: 1rem;
+            box-shadow: 0 6px 18px rgba(30,60,114,0.18);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+        }
+        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(30,60,114,0.28); opacity: 0.98; }
+        @media (max-width: 768px) {
+            .cta-button { padding: 0.6rem 1rem; font-size: 0.95rem; }
         }
 
-        .footer-section a:hover {
-            color: #ffd700;
-        }
+        .news { padding: 5rem 2rem; background: #f8f9fa; }
+        .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+        .news-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); opacity: 0; transform: translateY(30px); transition: 0.3s; display: block; text-decoration: none; color: inherit; }
+        .news-card.animate { opacity: 1; transform: translateY(0); transition: 0.8s ease-out; }
+        .news-image { width: 100%; height: 200px; object-fit: cover; }
+        .news-content { padding: 1.5rem; }
 
-        .footer-bottom {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #2a5298;
-            color: #ccc;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            nav {
-                max-width: 100%;
-                padding: 0 1rem;
-            }
-            
-            .nav-links a {
-                padding: 0.8rem 0.7rem;
-                font-size: 0.9rem;
-            }
-        }
+        .see-all-btn { display: inline-block; background: #1e3c72; color: #fff; padding: 0.6rem 1.1rem; border-radius: 18px; text-decoration: none; font-weight:700; box-shadow: 0 8px 20px rgba(30,60,114,0.12); }
+        .see-all-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: #1e3c72;
-                flex-direction: column;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .dropdown-content {
-                position: static;
-                display: none; /* Hidden by default on mobile */
-                box-shadow: none;
-                background: rgba(255,255,255,0.05); /* Slightly different background for sub-items */
-                margin-left: 0; /* Remove left margin */
-                width: 100%; /* Ensure full width */
-                border-radius: 0; /* No border-radius for flush look */
-                border: none; /* Remove border */
-                backdrop-filter: none; /* Remove backdrop-filter */
-            }
-
-            .dropdown-content a {
-                color: #ccc;
-                padding: 0.8rem 2.5rem; /* Adjust padding for better touch targets and indentation */
-            }
-
-            .hero-content h1 {
-                font-size: 1.6rem;
-            }
-
-            .hero-content p {
-                font-size: 0.9rem;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            /* Mobile News Section */
-            .news {
-                padding: 3rem 1rem;
-            }
-
-            .news-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Two columns for mobile */
-                gap: 1rem; /* Adjust gap for two columns */
-                margin-top: 2rem;
-            }
-
-
-            .news-content {
-                padding: 1rem; /* Adjusted padding */
-            }
-
-            .news-card h3 {
-                font-size: 0.9rem; /* Slightly smaller font for two columns */
-                margin-bottom: 0.4rem;
-                line-height: 1.2;
-            }
-
-            .news-excerpt {
-                font-size: 0.75rem; /* Slightly smaller font for two columns */
-                line-height: 1.3;
-                margin-bottom: 0.6rem;
-            }
-
-            .news-category {
-                font-size: 0.65rem; /* Slightly smaller font for two columns */
-                padding: 0.15rem 0.5rem;
-                margin-bottom: 0.6rem;
-            }
-
-            .news-meta {
-                font-size: 0.65rem; /* Slightly smaller font for two columns */
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.2rem;
-                padding-top: 0.6rem;
-            }
-
-            .news-image {
-                height: 100px; /* Adjust image height for two columns */
-            }
-
-            .section-title {
-                font-size: 1.6rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .view-all-news {
-                margin-top: 1.5rem;
-            }
-
-            .view-all-news .btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.8rem;
-            }
+            .top-bar, .header-contact { display: none; }
+            .news-grid { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 2rem; }
         }
-
-        @media (max-width: 480px) {
-            .news {
-                padding: 2rem 0.75rem;
-            }
-
-            .news-grid {
-                gap: 0.75rem; /* Further reduce gap for very small screens */
-            }
-
-            .news-content {
-                padding: 0.6rem; /* Further adjust padding for very small screens */
-            }
-
-            .news-card h3 {
-                font-size: 0.8rem; /* Further adjust font size for very small screens */
-                line-height: 1.1;
-            }
-
-            .news-excerpt {
-                font-size: 0.7rem; /* Further adjust font size for very small screens */
-                line-height: 1.2;
-            }
-
-            .news-category {
-                font-size: 0.6rem; /* Further adjust font size for very small screens */
-                padding: 0.1rem 0.4rem;
-            }
-
-            .news-meta {
-                font-size: 0.6rem; /* Further adjust font size for very small screens */
-            }
-
-            .news-image {
-                height: 80px; /* Further reduce image height for very small screens */
-            }
-
-            .section-title {
-                font-size: 1.4rem;
-                margin-bottom: 1.2rem;
-            }
-
-            .carousel-nav {
-                display: none;
-            }
-
-            .hero-content h1 {
-                font-size: 1.4rem;
-            }
-
-            .hero-content p {
-                font-size: 0.8rem;
-            }
-
-            .cta-button {
-                padding: 0.6rem 1.5rem;
-                font-size: 0.8rem;
-            }
-
-            .view-all-news .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.75rem;
-            } 
-            
-        }
-        .banner img{width:100%;height:370px;object-fit:cover;border-radius:12px;box-shadow:0 12px 36px rgba(2,6,23,0.06)}
-        
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav>
+
+<header>
+    <!-- legacy top-bar removed; using assistant topbar below -->
+        <div class="topbar">
+            <div class="container">
+                <div class="topbar-left"><a href="{{ route('virtual') }}"> Virtual</a></div>
+                <div class="topbar-right">
+                    <a href="{{ route('student') }}">E | Student</a>
+                    <a href="{{ route('akademik') }}">E | Akademik</a>
+                    <a href="{{ route('lecture') }}">E | Lecture</a>
+                </div>
+            </div>
+        </div>
+
+    <div class="mid-header">
+        <div class="container">
             <div class="logo">
-               
-                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
-                    &nbsp;&nbsp;<img src="{{ asset('storage/image/global.png') }}" alt="Global Logo" class="logo-global" />
-
                 
+                <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang">
+                <img src="{{ asset('storage/image/global.png') }}" alt="Global">
             </div>
-            <button class="mobile-menu-toggle">☰</button>
+            <div class="header-contact">
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div class="contact-text">
+                        <strong>0851-1770-4112</strong>
+                        <span>Hubungi Wa Kami</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="contact-text">
+                        <strong>karawang@lp3i.id</strong>
+                        <span>Email Resmi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="mainNav">
+        <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="https://www.google.com/maps/place/LP3I+Karawang/@-6.2995622,107.2856211,3a,75y,264.26h,95.07t/data=!3m7!1e1!3m5!1su7x47dS9enRmU-zWr47sTw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-5.074011886356928%26panoid%3Du7x47dS9enRmU-zWr47sTw%26yaw%3D264.26469794857564!7i16384!8i8192!4m14!1m7!3m6!1s0x2e699d5eb7f4db0b:0x551b56aa7299222a!2sLP3I+Karawang!8m2!3d-6.2995349!4d107.2853592!16s%2Fg%2F1pxw3x29_!3m5!1s0x2e699d5eb7f4db0b:0x551b56aa7299222a!8m2!3d-6.2995349!4d107.2853592!16s%2Fg%2F1pxw3x29_?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D">Map</a></li>
-                <li class="dropdown">
-                    <a href="#profil">Profil</a>
+                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li class="dropdown">
+                        <a href="{{ route('sambutan') }}">Profil</a>
                     <div class="dropdown-content">
-                        <a href="/sambutan">Sambutan</a>
-                        <a href="/sejarah">Sejarah</a>
-                        {{-- <a href="#prestasi">Prestasi</a> --}}
-                        <a href="/struktur">Struktur Organisasi</a>
+                            <a href="{{ route('sambutan') }}">Sambutan</a>
+                            <a href="{{ route('sejarah') }}">Sejarah & Visi Misi</a>
+                            <a href="{{ route('struktur') }}">Struktur Organisasi</a>
                     </div>
                 </li>
-
-                <li class="dropdown">
-                    <a href="#programs">Bidang</a>
+                    <li class="dropdown">
+                        <a href="{{ route('ais') }}">Akademik</a>
                     <div class="dropdown-content">
-                        <a href="/ais">Accounting Information System</a>
-						<a href="/ase">Application Software Engineering</a>
-						<a href="/oaa">Office Administration automatization</a>
-                        {{-- <a href="#teknik-informatika">Teknik Informatika</a> --}}
-                        {{-- <a href="#manajemen-bisnis">Manajemen Bisnis</a> --}}
+                            <a href="{{ route('ais') }}" class="akademik-item"><span class="ak-prefix">AIS</span><span class="ak-prefix">Accounting Information System</span></a>
+                            <a href="{{ route('ase') }}" class="akademik-item"><span class="ak-prefix">ASE</span><span class="ak-prefix">Application Software Engineering</span></a>
+                            <a href="{{ route('oaa') }}" class="akademik-item"><span class="ak-prefix">OAA</span><span class="ak-prefix">Office Administration</span></a>
                     </div>
                 </li>
-
-                    <!-- <a href="{{ route('mahasiswa.create') }}">Pendaftaran</a>
-                    <div class="dropdown-content">
-                        <a href="{{ route('mahasiswa.create') }}">Form Pendaftaran</a>
-                    </div>
-                </li> -->
-
-
-                <li class="dropdown">
-                    <a href="#">E |</a>
-                    <div class="dropdown-content">
-                        <a href="#akademik" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Akademik</span></a>
-                        <a href="#management" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Management</span></a>
-                        <a href="#student" class="akademik-item"><span class="ak-prefix">E|</span><span class="ak-text">Student</span></a>
-                    </div>
-                </li>
-                {{-- <li class="dropdown">
-                    <a href="#dosen">Dosen</a>
-                    <div class="dropdown-content">
-                        <a href="#profil-dosen">Profil Dosen</a>
-                        <a href="#penelitian">Penelitian</a>
-                        <a href="#publikasi">Publikasi</a>
-                    </div>
-                </li> --}}
-                <li class="dropdown">
-                    <a href="#pusat-karir">Pusat Karir</a>
-                    <div class="dropdown-content">
-                        <a href="{{ route('pedoman.download') }}" target="_blank" rel="noopener noreferrer">Download Pedoman Kerja</a>
-                        <a href="/penempatan">Bukti Penempatan kerja</a>
-                    </div>
-                </li>
-                <li><a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-clipboard-check"></i> Daftar</a></li>
-                <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                
+                    <li><a href="{{ route('penempatan') }}">Pusat Karir</a></li>
             </ul>
-        </nav>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="carousel-container">
-            @foreach($carouselData as $index => $slide)
+            <div class="nav-auth">
+                <a href="{{ route('pendaftar.login') }}" class="login-btn">Login</a>
+                <a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-user-plus"></i> Daftar Sekarang</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="carousel-container">
+        @foreach($carouselData as $index => $item)
+           <div class="carousel-slide {{ $index == 0 ? 'active' : '' }}" 
+               style="background-image: url('{{ asset(isset($item['image']) && $item['image'] ? $item['image'] : 'storage/image/default-hero.jpg') }}')">
+        </div>
+        @endforeach
+    </div>
+    <div class="hero-content">
+        <h1>Masa Depan Cerah Dimulai Dari Sini</h1>
+        <p>Kuliah Cepat Kerja di Politeknik LP3I Kampus Karawang</p>
+        {{-- <a href="{{ url('/#programs') }}" class="cta-button">Jelajahi Program</a> --}}
+    </div>
+</section>
+
+<section class="reasons" id="alasan">
+    <div class="container">
+        <h2 class="section-title">Mengapa Memilih LP3I Karawang?</h2>
+        <div class="reasons-grid">
+            <div class="reason-card">
+                <i class="fas fa-rocket"></i>
+                <h4>Kuliah Cepat Kerja</h4>
+                <p>Pembelajaran praktis yang mempersiapkan karier.</p>
+            </div>
+            <div class="reason-card">
+                <i class="fas fa-award"></i>
+                <h4>Program Terakreditasi</h4>
+                <p>Program studi dengan akreditasi dan kurikulum relevan.</p>
+            </div>
+            <div class="reason-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h4>Dosen Profesional</h4>
+                <p>Tenaga pengajar berpengalaman dari industri.</p>
+            </div>
+            <div class="reason-card">
+                <i class="fas fa-briefcase"></i>
+                <h4>Pusat Karir &amp; Magang</h4>
+                <p>Dukungan penempatan kerja dan magang untuk mahasiswa.</p>
+            </div>
+        </div>
+    
+        <div class="video-block">
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/2dmy9PbQpz0" title="Video profil LP3I Karawang" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-caption">Tonton video profil singkat LP3I Karawang.</div>
+        </div>
+    </div>
+</section>
+<!-- Kerjasama Perusahaan -->
+<section class="partners" id="partners">
+    <div class="container">
+        <div class="heading">
+            <div class="accent"></div>
+            <h2>Mitra Perusahaan<br>
+            Menerima Lulusan Kami!</h2>
+        </div>
+        <p class="lead">Politeknik LP3I telah melakukan kerjasama untuk pelaksanaan Tri Darma Perguruan Tinggi dengan Dunia Usaha dan Dunia Industri (DUDI) baik dari perusahaan swasta dan pemerintah dengan level wilayah Provinsi, Nasional dan Internasional.</p>
+
+            <div class="partners-hero">
+                {{-- Use a single wide partner image (recommended size: 1920x1080). Place the image at: public/storage/image/partners/partners-wide.jpg --}}
+                <img src="{{ asset('storage/image/apiliasi.png') }}" alt="Kerjasama Perusahaan">
+            </div>
+    </div>
+</section>
+
+<section class="news">
+    <div class="container">
+        <h2 class="section-title">Berita Terkini</h2>
+        <div class="news-grid">
+            @foreach($newsData as $news)
                 @php
-                    $slideNum = $index + 1;
-                    $imagePath = !empty($slide['image']) ? $slide['image'] : '';
+                    $newsImage = null;
+                    // prefer explicit image path
+                    if (!empty($news['image']) && file_exists(public_path($news['image']))) {
+                        $newsImage = asset($news['image']);
+                    } elseif (!empty($news['image']) && file_exists(public_path('storage/' . ltrim($news['image'], '/')))) {
+                        $newsImage = asset('storage/' . ltrim($news['image'], '/'));
+                    } elseif (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
+                        $newsImage = asset($news['image_path']);
+                    } elseif (!empty($news['image_path']) && file_exists(public_path('storage/' . ltrim($news['image_path'], '/')))) {
+                        $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
+                    }
+                    // fallback to an existing image in public/storage/image
+                    if (!$newsImage) {
+                        $newsImage = asset('storage/image/landingPage1.png');
+                    }
+                
+                    $newsUrl = $news['link'] ?? (isset($news['slug']) ? url('/news/' . $news['slug']) : (isset($news['id']) ? url('/news/' . $news['id']) : '#'));
                 @endphp
 
-                @php
-                    // Normalize slide image path: try public path first, then storage (public disk)
-                    $slideImageUrl = null;
-                    if (!empty($imagePath) && file_exists(public_path($imagePath))) {
-                        $slideImageUrl = asset($imagePath);
-                    } elseif (!empty($imagePath) && file_exists(public_path('storage/' . ltrim($imagePath, '/')))) {
-                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
-                    } elseif (!empty($imagePath) && file_exists(storage_path('app/public/' . ltrim($imagePath, '/')))) {
-                        // If the file exists in storage/app/public, ensure it will be served from public/storage
-                        $slideImageUrl = asset('storage/' . ltrim($imagePath, '/'));
-                    }
-                @endphp
-                @if(!empty($slideImageUrl))
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="url('{{ $slideImageUrl }}')">
+                <a href="{{ $newsUrl }}" class="news-card" aria-label="{{ $news['title'] ?? 'Berita' }}">
+                    <img src="{{ $newsImage }}" class="news-image" alt="{{ $news['title'] ?? 'Berita' }}">
+                    <div class="news-content">
+                    <span class="news-category">{{ $news['category'] ?? '' }}</span>
+                    <h3>{{ $news['title'] ?? '' }}</h3>
+                    <p class="news-excerpt">{{ Str::limit($news['excerpt'] ?? '', 100) }}</p>
                     </div>
-                @else
-                    @php
-                        $gradients = [
-                            "linear-gradient(rgba(30, 60, 114, 0.8), rgba(42, 82, 152, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f0f8ff\" width=\"1200\" height=\"600\"/><circle fill=\"%23e6f3ff\" cx=\"200\" cy=\"150\" r=\"80\"/><circle fill=\"%23d9edff\" cx=\"800\" cy=\"400\" r=\"120\"/><circle fill=\"%23cce7ff\" cx=\"1000\" cy=\"200\" r=\"60\"/></svg>')",
-                            "linear-gradient(rgba(42, 82, 152, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23e8f4fd\" width=\"1200\" height=\"600\"/><polygon fill=\"%23d1e7fc\" points=\"0,0 400,200 0,400\"/><polygon fill=\"%23b8d9fb\" points=\"800,0 1200,0 1200,300\"/><circle fill=\"%239fc9f9\" cx=\"600\" cy=\"300\" r=\"100\"/></svg>')",
-                            "linear-gradient(rgba(74, 144, 226, 0.8), rgba(30, 60, 114, 0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%23f5f9ff\" width=\"1200\" height=\"600\"/><rect fill=\"%23e1f0ff\" x=\"100\" y=\"100\" width=\"200\" height=\"150\" rx=\"20\"/><rect fill=\"%23cce7ff\" x=\"900\" y=\"350\" width=\"250\" height=\"180\" rx=\"25\"/><circle fill=\"%23b3ddff\" cx=\"500\" cy=\"400\" r=\"90\"/></svg>')"
-                        ];
-                        $gradientIndex = $index % count($gradients);
-                    @endphp
-                    <div class="carousel-slide slide-{{ $slideNum }} {{ $index === 0 ? 'active' : '' }}" data-bg="{{ $gradients[$gradientIndex] }}">
-                    </div>
-                @endif
+                </a>
             @endforeach
         </div>
-
-        <button class="carousel-nav prev">‹</button>
-        <button class="carousel-nav next">›</button>
-
-        @php
-            // Decide what to show in the hero content. We always render the
-            // slide backgrounds, but if the first slide lacks human-friendly
-            // title/subtitle/button, show the default hero copy on top of the
-            // background so the page doesn't display the raw filename.
-            $firstSlide = (!empty($carouselData) && isset($carouselData[0])) ? $carouselData[0] : null;
-            $hasReadableContent = false;
-            if ($firstSlide) {
-                $t = trim((string)($firstSlide['title'] ?? ''));
-                $s = trim((string)($firstSlide['subtitle'] ?? ''));
-                $b = trim((string)($firstSlide['button'] ?? ''));
-
-                $looksLikeFilename = false;
-                if ($t !== '') {
-                    if (stripos($t, 'screenshot') !== false) {
-                        $looksLikeFilename = true;
-                    }
-                    if (preg_match('/\d{4,}/', $t) && strpos($t, ' ') === false) {
-                        $looksLikeFilename = true;
-                    }
-                    if (preg_match('/^[A-Za-z0-9_\-]+$/', $t) && preg_match('/\d/', $t) && strpos($t, ' ') === false) {
-                        $looksLikeFilename = true;
-                    }
-                }
-
-                if (($t !== '' && !$looksLikeFilename) || $s !== '' || $b !== '') {
-                    $hasReadableContent = true;
-                }
-            }
-        @endphp
-
-        <div class="carousel-content">
-            <div class="hero-content" id="slide-content">
-                @if($hasReadableContent)
-                    <h1>{{ $firstSlide['title'] ?? '' }}</h1>
-                    <p>{{ $firstSlide['subtitle'] ?? '' }}</p>
-                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">{{ !empty($firstSlide['button']) ? $firstSlide['button'] : 'DAFTAR' }}</a>
-                @else
-                    <h1>Kembangkan Karirmu bersama LP3I Karawang</h1>
-                    <p>Praktik nyata. Kurikulum up-to-date. Lulusan siap kerja.</p>
-                    <a href="{{ route('mahasiswa.create') }}" class="cta-button">Daftar Sekarang</a>
-                @endif
-            </div>
+        <div style="text-align:center; margin-top:1.75rem;">
+            <a href="{{ url('/news') }}" class="see-all-btn">Lihat Semua Berita </a>
         </div>
-        
-        <div class="carousel-indicators">
-            @foreach($carouselData as $index => $slide)
-                <div class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
-            @endforeach
-        </div>
-    </section>
+    </div>
+</section>
+<script>
+    // Animasi Scroll Header
+    window.addEventListener('scroll', function() {
+        const nav = document.getElementById('mainNav');
+        if (window.scrollY > 60) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
 
-    <!-- Registration CTA Banner -->
-    <section class="registration-banner" id="pendaftaran">
-        <h3><i class="fas fa-graduation-cap"></i> Bergabunglah dengan LP3I Karawang</h3>
-        <p>Raih masa depan cerah bersama program studi unggulan kami. Daftar sekarang dan dapatkan kesempatan untuk berkembang dengan kurikulum terdepan dan fasilitas modern.</p>
-        <a href="{{ route('mahasiswa.create') }}" class="register-btn">
-            <i class="fas fa-sign-in-alt"></i> Daftar Online Sekarang
-        </a>
-    </section>
+    // Carousel Logic
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    function nextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }
+    setInterval(nextSlide, 5000);
 
-    <!-- News Section -->
-    <section class="news" id="news">
-        <div class="container">
-            <h2 class="section-title">Berita Terbaru</h2>
-            
-            @if(empty($newsData))
-                <div style="text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-newspaper" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                    <h3>Belum Ada Berita</h3>
-                    <p>Berita terbaru akan ditampilkan di sini.</p>
-                </div>
-            @else
-                <div class="news-grid">
-                    @foreach($newsData as $news)
-                        <div class="news-card" data-url="{{ route('news.show', $news['id']) }}" style="cursor: pointer;">
-                                            @php
-                                                $newsImage = null;
-                                                if (!empty($news['image_path']) && file_exists(public_path($news['image_path']))) {
-                                                    $newsImage = asset($news['image_path']);
-                                                } elseif (!empty($news['image_path']) && file_exists(public_path('storage/' . ltrim($news['image_path'], '/')))) {
-                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
-                                                } elseif (!empty($news['image_path']) && file_exists(storage_path('app/public/' . ltrim($news['image_path'], '/')))) {
-                                                    $newsImage = asset('storage/' . ltrim($news['image_path'], '/'));
-                                                }
-                                            @endphp
-                                            @if($newsImage)
-                                                <img src="{{ $newsImage }}" alt="{{ $news['title'] }}" class="news-image">
-                            @else
-                                <div class="news-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                                    <i class="fas fa-newspaper"></i>
-                                </div>
-                            @endif
-                            
-                            <div class="news-content">
-                                <span class="news-category">{{ $news['category'] }}</span>
-                                <h3>{{ $news['title'] }}</h3>
-                                <p class="news-excerpt">
-                                    {{ $news['excerpt'] ?: (strlen($news['content']) > 150 ? substr($news['content'], 0, 150) . '...' : $news['content']) }}
-                                </p>
-                                <div class="news-meta">
-                                    <div class="news-date">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        {{ date('d M Y', strtotime($news['created_at'])) }}
-                                    </div>
-                                    <div class="news-author">
-                                        <i class="fas fa-user"></i>
-                                        {{ $news['author'] }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                
-                <div class="view-all-news">
-                    <a href="/news" class="btn">Lihat Semua Berita</a>
-                </div>
-            @endif
-        </div>
-    </section>
-
-    <!-- Programs Section -->
-    <section class="programs" id="programs">
-        <div class="container">
-            <h2 class="section-title">Bidang Keahlian Unggulan</h2>
-            <div class="programs-grid">
-            <div class="program-card">
-                    <div class="program-icon">
-                        <i class="fas fa-calculator" ></i>
-                    </div>
-                    <a href="/ais">
-                    <h3>Accounting Information System</h3>
-                    </a>
-                    <p>Program studi yang menghasilkan tenaga ahli akuntansi yang kompeten dan siap kerja di berbagai sektor industri dan pemerintahan.</p>
-                </div>
-                    
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <a href="/ase">
-                    <h3>Application Software Engineering</h3>
-                    </a>
-                    <p>Program studi yang mempersiapkan mahasiswa menjadi programmer dan developer handal dengan kurikulum yang selalu update mengikuti perkembangan teknologi.</p>
-                </div>
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <a href="/oaa">
-                    <h3>Office Administration automatization</h3>
-                    </a>
-                    <p>Membekali mahasiswa dengan kemampuan manajemen modern dan kewirausahaan untuk menghadapi tantangan dunia bisnis yang dinamis.</p>
-                </div>
-                
-                <!-- <div class="program-card">
-                    <div class="program-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <h3>Marketing Digital</h3>
-                    <p>Menyiapkan mahasiswa menjadi ahli pemasaran digital yang mampu memanfaatkan teknologi untuk strategi pemasaran modern.</p>
-                </div>
-            </div>
-        </div> -->
-    </section>
-
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>Tentang LP3I Karawang</h2>
-                    <p>Politeknik LP3I Kampus Karawang adalah institusi pendidikan vokasi yang berkomitmen menghasilkan lulusan berkualitas dan siap kerja. Dengan pengalaman puluhan tahun, kami terus berinovasi dalam memberikan pendidikan terbaik.</p>
-                    <p>Kampus kami dilengkapi dengan fasilitas modern dan tenaga pengajar yang berpengalaman di bidangnya masing-masing. Kami menjalin kerjasama dengan berbagai industri untuk memastikan lulusan kami dapat langsung berkarya di dunia kerja.</p>
-                </div>
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">25+</div>
-                        <div class="stat-label">Tahun Pengalaman</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">5000+</div>
-                        <div class="stat-label">Alumni Sukses</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">95%</div>
-                        <div class="stat-label">Tingkat Kelulusan</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">200+</div>
-                        <div class="stat-label">Mitra Industri</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="banner">
-            <img src="{{ asset('storage/image/apiliasi.png') }}" alt="Sejarah LP3I Karawang">
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Kontak Kami</h3>
-                <p><i class="fas fa-map-marker-alt"></i> Jl. Raya Karawang, Karawang Barat, Kabupaten Karawang, Jawa Barat</p>
-                <p><i class="fas fa-phone"></i> (0267) 123-4567</p>
-                <p><i class="fas fa-envelope"></i> info@lp3ikarawang.ac.id</p>
-            </div>
-            <div class="footer-section">
-                <h3>Program Studi</h3>
-                <a href="#">Akuntansi</a>
-                <a href="#">Teknik Informatika</a>
-                <a href="#">Manajemen Bisnis</a>
-                
-            </div>
-            <div class="footer-section">
-                <h3>Layanan</h3>
-                <a href="#">Pendaftaran Online</a>
-                <a href="#">Beasiswa</a>
-                <a href="#">Karir Center</a>
-                <a href="#">Alumni Network</a>
-            </div>
-            <div class="footer-section">
-                <h3>Ikuti Kami</h3>
-                <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
-                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-                <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
-                <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 LP3I College Karawang.</p>
-        </div>
-    </footer>
-
-    <script id="slide-data" type="application/json">{!! json_encode($carouselData, JSON_UNESCAPED_UNICODE) !!}</script>
-
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add scroll effect to header
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+    // Animasi muncul saat scroll (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
             }
         });
-
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-            // Close all dropdowns when main menu is toggled
-            document.querySelectorAll('.dropdown-content').forEach(content => {
-                content.classList.remove('active');
-            });
-        });
-
-        // Mobile dropdown toggle
-        document.querySelectorAll('.nav-links .dropdown > a').forEach(dropdownToggle => {
-            dropdownToggle.addEventListener('click', function(e) {
-                // Only apply this behavior on mobile
-                if (window.innerWidth <= 768) {
-                    e.preventDefault(); // Prevent default link behavior
-                    const dropdownContent = this.nextElementSibling;
-                    if (dropdownContent && dropdownContent.classList.contains('dropdown-content')) {
-                        // Close other open dropdowns
-                        document.querySelectorAll('.dropdown-content.active').forEach(openDropdown => {
-                            if (openDropdown !== dropdownContent) {
-                                openDropdown.classList.remove('active');
-                            }
-                        });
-                        dropdownContent.classList.toggle('active');
-                    }
-                }
-            });
-        });
-
-        // Carousel functionality
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        // Apply `data-bg` attributes to inline style to avoid editor/linters
-        slides.forEach(s => {
-            const bg = s.getAttribute('data-bg');
-            if (bg) s.style.background = bg;
-        });
-        // Apply consistent background sizing to all slides
-        slides.forEach(s => {
-            s.style.backgroundSize = 'cover';
-            s.style.backgroundPosition = 'center';
-            s.style.backgroundRepeat = 'no-repeat';
-        });
-        // On small screens, nudge the background position vertically so focal areas stay visible
-        function adjustSlideForMobile() {
-            if (window.innerWidth <= 768) {
-                // nudge backgrounds so faces/focal points are higher on small screens
-                slides.forEach(s => { s.style.backgroundPosition = 'center 30%'; });
-            } else {
-                slides.forEach(s => { s.style.backgroundPosition = 'center center'; });
-            }
-        }
-        // Run on load and resize
-        adjustSlideForMobile();
-        window.addEventListener('resize', adjustSlideForMobile);
-        const indicators = document.querySelectorAll('.indicator');
-        const slideContent = document.getElementById('slide-content');
-        
-        // Touch/Swipe support for mobile
-        let startX = 0;
-        let endX = 0;
-        let isTouch = false;
-        
-    // Slide data generated from server-side carouselData (read from JSON script tag)
-    const slideData = JSON.parse(document.getElementById('slide-data').textContent || '[]');
-    // URL to redirect when CTA is clicked (Mahasiswa create)
-    const MAHASISWA_CREATE_URL = "{{ route('mahasiswa.create') }}";
-
-        function updateSlideContent(index) {
-            if (slideData.length === 0) return;
-
-            const data = slideData[index % slideData.length];
-
-            // Determine if the slide has human-friendly content. If the
-            // title contains letters (not just numbers) or subtitle/button is
-            // present, we'll replace the hero content. Otherwise leave the
-            // default slogan in place so filenames or numeric titles aren't
-            // shown to users.
-            const hasReadableTitle = typeof data.title === 'string' && /[A-Za-z\p{L}]/u.test(data.title);
-            const hasSubtitle = typeof data.subtitle === 'string' && data.subtitle.trim() !== '';
-            const hasButton = typeof data.button === 'string' && data.button.trim() !== '';
-
-            if (hasReadableTitle || hasSubtitle || hasButton) {
-                slideContent.innerHTML = `
-                    <h1>${data.title}</h1>
-                    <p>${data.subtitle}</p>
-                    <a href="${MAHASISWA_CREATE_URL}" class="cta-button">${data.button || 'DAFTAR'}</a>
-                `;
-            }
-            // otherwise keep the existing hero content (slogan/default)
-        }
-
-        function showSlide(index) {
-            if (slideData.length === 0) return;
-            
-            slides.forEach(slide => slide.classList.remove('active'));
-            indicators.forEach(indicator => indicator.classList.remove('active'));
-            
-            const slideIndex = index % slideData.length;
-            const indicatorIndex = index % indicators.length;
-            
-            slides[slideIndex % slides.length].classList.add('active');
-            indicators[indicatorIndex].classList.add('active');
-            updateSlideContent(slideIndex);
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            if (slideData.length === 0) return;
-            currentSlide = (currentSlide + 1) % slideData.length;
-            showSlide(currentSlide);
-        }
-
-        function prevSlide() {
-            if (slideData.length === 0) return;
-            currentSlide = (currentSlide - 1 + slideData.length) % slideData.length;
-            showSlide(currentSlide);
-        }
-
-        // Auto-slide every 5 seconds
-        setInterval(nextSlide, 5000);
-
-        // Navigation controls
-        document.querySelector('.carousel-nav.next').addEventListener('click', nextSlide);
-        document.querySelector('.carousel-nav.prev').addEventListener('click', prevSlide);
-
-        // Indicator controls
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => showSlide(index));
-        });
-
-        // Touch/Swipe event handlers
-        const heroSection = document.querySelector('.hero');
-        
-        heroSection.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            isTouch = true;
-        });
-        
-        heroSection.addEventListener('touchmove', (e) => {
-            if (!isTouch) return;
-            e.preventDefault();
-        });
-        
-        heroSection.addEventListener('touchend', (e) => {
-            if (!isTouch) return;
-            endX = e.changedTouches[0].clientX;
-            handleSwipe();
-            isTouch = false;
-        });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = startX - endX;
-            
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    // Swipe left - next slide
-                    nextSlide();
-                } else {
-                    // Swipe right - previous slide
-                    prevSlide();
-                }
-            }
-        }
-
-        // Initialize carousel with PHP data
-        updateSlideContent(0);
-        showSlide(0);
-
-        // Scroll animation for news section
-        function animateOnScroll() {
-            const elements = document.querySelectorAll('.news-card, .section-title, .program-card');
-            
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('animate');
-                }
-            });
-        }
-
-        // Initial check for elements already in view
-        animateOnScroll();
-
-        // Listen for scroll events
-        window.addEventListener('scroll', animateOnScroll);
-
-        // Add stagger animation for news cards
-        function staggerNewsCards() {
-            const newsCards = document.querySelectorAll('.news-card');
-            newsCards.forEach((card, index) => {
-                card.style.animationDelay = `${index * 0.2}s`;
-                // Add click handler for news card navigation
-                card.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    if (url) {
-                        window.location.href = url;
-                    }
-                });
-            });
-        }
-
-        // Initialize stagger animation
-        staggerNewsCards();
-    </script>
+    });
+    document.querySelectorAll('.news-card').forEach((card) => observer.observe(card));
+</script>
 </body>
 </html>

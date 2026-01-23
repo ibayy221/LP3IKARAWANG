@@ -36,7 +36,7 @@
             <div class="label">Nama</div><div>{{ $m->nama_mhs }}</div>
             <div class="label">Email</div><div>{{ $m->email ?? '-' }}</div>
             <div class="label">No HP</div><div>{{ $m->no_hp ?? '-' }}</div>
-            <div class="label">Bidang Keahlian</div><div>{{ $m->jurusan ?? '-' }}</div>
+            <div class="label">Bidang Keahlian</div><div>{{ \App\Helpers\JurusanHelper::getFormat($m->jurusan ?? null) }}</div>
             <div class="label">Jenis Kelas</div><div>{{ $m->jenis_kelas ?? '-' }}</div>
             <div class="label">Asal Sekolah</div><div>{{ $m->asal_sekolah ?? '-' }}</div>
             <div class="label">Status Verifikasi</div>

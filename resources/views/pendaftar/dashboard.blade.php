@@ -16,7 +16,6 @@
     .btn-basic{transition:transform .18s ease,box-shadow .18s ease}
     .btn-basic:hover{transform:translateY(-3px);box-shadow:0 12px 20px rgba(0,0,0,0.12)}
   </style>
-  </style>
 </head>
 <body class="text-slate-800" style="background:var(--basic);">
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
@@ -126,7 +125,7 @@
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
               <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nomor NIPD</dt><dd class="font-medium mt-1">{{ $calon->nipd ?? ($calon->id ?? '-') }}</dd></div>
               <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nama</dt><dd class="font-medium mt-1">{{ $calon->nama_mhs ?? '-' }}</dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Bidang Keahlian</dt><dd class="font-medium mt-1">{{ $calon->jurusan ?? '-' }}</dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Bidang Keahlian</dt><dd class="font-medium mt-1">{{ \App\Helpers\JurusanHelper::getFormat($calon->jurusan ?? null) }}</dd></div>
               {{-- Payment method and created date removed per request --}}
             </dl>
           </div>
@@ -139,6 +138,10 @@
               @else
                 <a href="{{ route('pendaftar.receipt') }}" class="block text-center w-full btn-basic text-white px-4 py-2 rounded-md font-semibold" target="_blank">Download Kuitansi</a>
               @endif
+              <a href="{{ url('/') }}" class="block text-center w-full bg-slate-400 hover:bg-slate-500 text-white px-4 py-2 rounded-md font-semibold transition" style="display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1v-10"/><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 21v-6a1 1 0 011-1h4a1 1 0 011 1v6"/></svg>
+                Kembali ke Home
+              </a>
             </div>
           </aside>
         </div>

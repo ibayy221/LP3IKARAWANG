@@ -6,16 +6,18 @@
   <title>Edit Biodata</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+
     :root{--basic:#004269;--adv:#40826D}
     body{background:var(--basic);}
-    .card-adv{border:1px solid var(--adv);box-shadow:0 6px 18px rgba(0,0,0,0.08);background:#fff;color:#0f172a}
-    .card-adv .field-box{background:#fff;color:#0f172a}
-    .card-adv label{color:#475569}
+    .card-adv{border:1px solid var(--adv);box-shadow:0 6px 18px rgba(11, 3, 249, 0.618);background:#fff;color:#0e025a}
+    .card-adv .field-box{background:#fff;color:#0000ff}
+    .card-adv label{color:#023c8e}
     .btn-basic{background:linear-gradient(90deg,var(--basic),#009DA5);box-shadow:0 6px 12px rgba(0,0,0,0.12)}
-    input, select, textarea { border-width: 2px !important; border-color: rgba(15,23,42,0.08) !important; }
+    input, select, textarea { border-width: 2px !important; border-color: rgba(3, 51, 164, 0.481) !important; }
   </style>
 </head>
 <body class="text-slate-800">
+  
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <aside class="bg-white rounded-xl border p-5 shadow-sm sticky top-6" >

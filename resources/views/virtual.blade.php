@@ -1,4 +1,4 @@
-{{-- <!doctype html>
+<!doctype html>
 <html lang="id">
 <head>
     <meta charset="utf-8">
@@ -53,4 +53,4 @@
         <p class="note">Catatan: ini menampilkan Google Street View untuk lokasi LP3I Karawang. Jika iframe kosong karena kebijakan, klik tombol "Buka di Google Maps".</p>
     </div>
 </body>
-</html> --}}
+</html>

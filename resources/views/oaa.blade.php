@@ -743,11 +743,17 @@
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="{{ asset('storage/image/OAA2.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="{{ asset('storage/image/OAA3.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
 					{{-- <div class="image-stack"> --}}
 						{{-- <img class="program-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'">
 						<div class="gallery">

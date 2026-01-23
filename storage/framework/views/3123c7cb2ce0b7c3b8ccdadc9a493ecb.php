@@ -221,12 +221,27 @@
         </div>
 
         <article class="content">
-            <h1>Sejarah Singkat LP3I Karawang</h1>
+            <h1>Sejarah Singkat LP3I College Karawang</h1>
             <p>
                 LP3I College Kampus Karawang berdiri dengan visi untuk menghadirkan pendidikan vokasi yang relevan dengan kebutuhan industri. Sejak awal, institusi ini fokus pada pengembangan keterampilan praktis dan kolaborasi dengan perusahaan lokal untuk memastikan lulusan siap kerja.
             </p>
             <p>
                 Perjalanan kami dimulai dengan beberapa program studi unggulan dan terus berkembang seiring waktu. Komitmen terhadap kualitas pengajaran dan fasilitas modern menjadi pilar utama dalam mengembangkan sumber daya manusia yang kompeten.
+            </p>
+            
+            <h1>Visi</h1>
+            <p>
+                Menjadikan lembaga pendidikan vocasi terbaik dan mencetak lulusan berkualitas, berakhlak, adaptif, dan kompeten.
+            </p>
+            <h1>Misi</h1>
+            <p>
+                - Menjadi lembaga pendidikan vokasi terbaik di wilayah PURWASUKA " Purwakarta, Subang, dan Karawang." <br>
+                - Mencetak lulusan yang beretika, sopan dan santun. <br>
+                - Membentuk pribadi yang memeiliki pengetahuan, keterampilan serta berjiwa wirausaha untuk kemajuan bangsa indonesia. <br>
+                - Membentuk lulusan yang kompeten, profesional serta mampu bersaing di dunia usaha dan industri. <br>
+                - Memiliki jaringan terbesar di jawa barat. <br>
+                - Memberikan kesejahtraan dan rasa tentram bagi kariawan dan keluarga. <br>
+                - Memiliki sumbar daya manusia yang berahlak, adaptif dan kompeten.
             </p>
         </article>
     </main>

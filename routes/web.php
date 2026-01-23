@@ -7,6 +7,10 @@ use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\Admin\PenempatanController;
+use App\Http\Controllers\StrukturOrganisasiController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Models\Penempatan;
 
 use App\Http\Middleware\EnsureAdmin;
 
@@ -24,9 +28,15 @@ Route::view('/oaa', 'oaa')->name('oaa');
 Route::view('/ais', 'ais')->name('ais');
 // ASE page under `resources/views/pendaftar/ase.blade.php`
 Route::view('/ase', 'ase')->name('ase');
-Route::view('/penempatan', 'penempatan')->name('penempatan');
+Route::get('/penempatan', function(){
+    $items = \App\Models\Penempatan::orderBy('created_at','desc')->get();
+    return view('penempatan', ['images' => $items]);
+})->name('penempatan');
 // Virtual campus / tour page
 Route::view('/virtual', 'virtual')->name('virtual');
+Route::view('/student', 'student')->name('student');
+Route::view('/akademik', 'akademik')->name('akademik');
+Route::view('/lecture', 'lecture')->name('lecture');
 
 // Pedoman download: serve local PDF as an attachment when available,
 // otherwise redirect to the external page.
@@ -55,6 +65,14 @@ Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
     Route::get('/login', [PendaftarAuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [PendaftarAuthController::class, 'login'])->name('login.post');
     Route::post('/logout', [PendaftarAuthController::class, 'logout'])->name('logout');
+
+    // Forgot Password Routes
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetCode'])->name('send-reset-code');
+    Route::get('/verify-code', [ForgotPasswordController::class, 'showVerifyForm'])->name('verify-code');
+    Route::post('/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('verify-code-submit');
+    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('reset-password');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'updatePassword'])->name('update-password');
 
     Route::get('/dashboard', [PendaftarDashboardController::class, 'dashboard'])->middleware(\App\Http\Middleware\EnsureApplicant::class)->name('dashboard');
         Route::post('/payment/mark-paid', [PendaftarDashboardController::class, 'markPaid'])->middleware(\App\Http\Middleware\EnsureApplicant::class)->name('payment.markPaid');
@@ -149,6 +167,27 @@ Route::middleware([EnsureAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin.php', [AdminController::class, 'index']);
     Route::post('/admin/action', [AdminController::class, 'handleAction'])->name('admin.action');
+    
+    // Struktur Organisasi management
+    Route::get('/admin/struktur-organisasi', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
+    Route::get('/admin/struktur-organisasi/create', [StrukturOrganisasiController::class, 'create'])->name('struktur-organisasi.create');
+    Route::post('/admin/struktur-organisasi', [StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
+    Route::get('/admin/struktur-organisasi/{strukturOrganisasi}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur-organisasi.edit');
+    Route::put('/admin/struktur-organisasi/{strukturOrganisasi}', [StrukturOrganisasiController::class, 'update'])->name('struktur-organisasi.update');
+    Route::delete('/admin/struktur-organisasi/{strukturOrganisasi}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
+    
+    // Penempatan management
+    Route::get('/admin/penempatan', [PenempatanController::class, 'index'])->name('admin.penempatan.index');
+    Route::get('/admin/penempatan/create', [PenempatanController::class, 'create'])->name('admin.penempatan.create');
+    Route::post('/admin/penempatan', [PenempatanController::class, 'store'])->name('admin.penempatan.store');
+    Route::get('/admin/penempatan/{penempatan}/edit', [PenempatanController::class, 'edit'])->name('admin.penempatan.edit');
+    Route::put('/admin/penempatan/{penempatan}', [PenempatanController::class, 'update'])->name('admin.penempatan.update');
+    Route::delete('/admin/penempatan/{penempatan}', [PenempatanController::class, 'destroy'])->name('admin.penempatan.destroy');
+    // AJAX endpoints for inline admin panel
+    Route::get('/admin/penempatan/json', [PenempatanController::class, 'jsonIndex'])->name('admin.penempatan.json');
+    Route::post('/admin/penempatan/ajax', [PenempatanController::class, 'ajaxStore'])->name('admin.penempatan.ajax.store');
+    Route::post('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxUpdate'])->name('admin.penempatan.ajax.update');
+    Route::delete('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxDestroy'])->name('admin.penempatan.ajax.destroy');
 });
 
 // Marketing (Smart Presenter) - separate from Admin CMS

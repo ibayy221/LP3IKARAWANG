@@ -722,11 +722,17 @@
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="<?php echo e(asset('storage/image/ASE.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/ASE.png')); ?>'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="<?php echo e(asset('storage/image/ASE2.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/ASE.png')); ?>'">
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="<?php echo e(asset('storage/image/ASE.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/ASE.png')); ?>'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="<?php echo e(asset('storage/image/ASE3.jpg')); ?>" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/ASE.png')); ?>'">
 					
 						
 					

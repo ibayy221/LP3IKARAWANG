@@ -613,7 +613,7 @@
     <main class="container">
         <section class="hero">
             <div class="box-avatar">
-                <img src="{{ asset('storage/image/Pemimpin.jpg') }}" alt="Nama Pemimpin">
+                <img src="{{ asset('storage/image/directur.jpg') }}" alt="Nama Pemimpin">
             </div>
             <div class="leader">
                 <h1>Aceng Ajat, S.T., M.M.</h1>

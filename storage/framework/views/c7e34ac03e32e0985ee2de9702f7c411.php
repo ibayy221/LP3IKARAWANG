@@ -36,7 +36,7 @@
 <body>
   <div class="card">
     <div class="logo-wrap">
-      <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/landingPage1.png')); ?>'" />
+          <img src="<?php echo e(asset('storage/image/LOGO_LP3I_BLUE.png')); ?>" alt="LP3I Karawang">
     </div>
     <h2 class="login-title">LOGIN</h2>
     <p class="lead">Masuk untuk mengelola pendaftaran dan melihat status Anda.</p>
@@ -53,7 +53,7 @@
       <div style="margin:.2rem 0;text-align:left">
         <label class="form-label">Password</label>
         <div class="input-wrap"><input type="password" name="password" required class="form-control" placeholder="Masukkan password"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:6px"><a href="#" class="forgot">Lupa password?</a></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:6px"><a href="<?php echo e(route('pendaftar.forgot-password')); ?>" class="forgot">Lupa password?</a></div>
       </div>
       <div style="text-align:center">
         <button class="btn-primary" type="submit">Login</button>

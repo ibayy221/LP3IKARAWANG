@@ -745,11 +745,17 @@
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="{{ asset('storage/image/ASE2.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
                     <br>
                     <br>
                     <br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
+                     <br>
+                    <br>
+                    <br>
+                    <img class="program-img" src="{{ asset('storage/image/ASE3.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
 					{{-- <div class="image-stack"> --}}
 						{{-- <img class="program-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'">
 						<div class="gallery">
