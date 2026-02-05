@@ -60,8 +60,8 @@
         .header-contact { display: flex; gap: 30px; }
         .contact-item { display: flex; align-items: center; gap: 10px; }
         .contact-item i { font-size: 1.9rem; color: #00a8e8; }
-        .contact-text strong { display: block; font-size: 0.85rem; }
-        .contact-text span { font-size: 0.75rem; opacity: 0.8; }
+        .contact-text strong { display: block; font-size: 0.85rem; margin-bottom: 2px; }
+        .contact-text span { font-size: 0.75rem; opacity: 0.8; display: block; }
 
         /* Layer 3: Nav Utama (Putih & Sticky saat scroll) */
         nav { 
@@ -84,20 +84,63 @@
             display: block; 
             font-size: 0.9rem; 
             font-weight: 600; 
+            position: relative;
+            transition: color 0.3s ease;
         }
-        .nav-links a:hover { color: #1e3c72; background: #f8f9fa; }
+        .nav-links a:hover { 
+            color: #1e3c72; 
+            background: transparent;
+        }
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #009da5, #1e3c72);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover:after {
+            width: 70%;
+        }
 
         /* Mempertahankan Dropdown & Item Akademik (AK|MI) kamu */
         .dropdown { position: relative; }
         .dropdown-content {
             position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-            background: #043158; min-width: 220px; display: none; z-index: 1000;
+            background: linear-gradient(135deg, #043158 0%, #1a5a6f 100%); 
+            min-width: 240px; 
+            display: none; 
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            animation: dropdownSlide 0.3s ease;
+        }
+        @keyframes dropdownSlide {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         .dropdown:hover .dropdown-content { display: block; }
-        .dropdown-content a { color: white !important; font-size: 0.85rem; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .dropdown-content a.akademik-item { display: flex; gap: 8px; }
-        .dropdown-content a.akademik-item .ak-prefix { color: #fff; font-weight: 700; }
-        .dropdown-content a.akademik-item .ak-text { color: #e63946; font-weight: 600; }
+        .dropdown-content a { 
+            color: white !important; 
+            font-size: 0.85rem; 
+            padding: 12px 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.25s ease;
+            display: block;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { 
+            background: rgba(255,255,255,0.1);
+            padding-left: 24px;
+        }
+        .dropdown-content a.akademik-item { display: flex; gap: 12px; flex-direction: column; }
+        .dropdown-content a.akademik-item .ak-prefix { color: #fff; font-weight: 700; font-size: 0.8rem; }
+        .dropdown-content a.akademik-item .ak-prefix:first-child { color: #00d4ff; font-weight: 800; letter-spacing: 0.5px; }
+        .dropdown-content a.akademik-item .ak-prefix:last-child { color: #b0e0e6; font-size: 0.75rem; font-weight: 500; }
 
         /* Mempertahankan style Button & Animasi Pulse kamu */
         .register-btn {
@@ -240,6 +283,13 @@
                         <strong>karawang@lp3i.id</strong>
                         <span>Email Resmi</span>
                     </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-instagram"></i>
+                    <a href="https://www.instagram.com/lp3ikarawang" target="_blank" class="contact-text" style="text-decoration: none; color: inherit;">
+                        <strong>@lp3ikarawang</strong>
+                        <span>Follow Instagram</span>
+                    </a>
                 </div>
             </div>
         </div>
