@@ -23,11 +23,6 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="wrap">
-            <strong>Virtual Campus</strong>
-        </div>
-    </header>
 
     <div class="wrap">
         <div class="hero">

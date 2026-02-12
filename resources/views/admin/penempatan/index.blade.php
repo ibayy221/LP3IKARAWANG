@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin - Penempatan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>body{font-family:'Poppins',sans-serif;padding:1.25rem;background:#f4f6f8} .wrap{max-width:1100px;margin:0 auto} .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem} .card{background:#fff;padding:0.75rem;border-radius:8px;border:1px solid #e6eef2} img{max-width:100%;height:auto;border-radius:6px} .actions{display:flex;gap:.5rem;margin-top:.5rem}</style>
+  <style>
+    body{font-family:'Poppins',sans-serif;padding:1.25rem;background:#f4f6f8}
+    .wrap{max-width:1100px;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .card{background:#fff;padding:0.75rem;border-radius:8px;border:1px solid #e6eef2}
+    img{max-width:100%;height:auto;border-radius:6px}
+    .actions{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){body{padding:.75rem}.grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
   <div class="wrap">

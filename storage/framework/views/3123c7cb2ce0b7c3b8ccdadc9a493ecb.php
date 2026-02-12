@@ -135,80 +135,8 @@
     </style>
 </head>
 <body>
-    <header>
-    <div class="topbar">
-        <div class="container">
-            <div class="topbar-left"><a href="<?php echo e(route('virtual')); ?>">Virtual</a></div>
-            <div class="topbar-right">
-                <a href="<?php echo e(route('student')); ?>">E | Student</a>
-                <a href="<?php echo e(route('akademik')); ?>">E | Akademik</a>
-                <a href="<?php echo e(route('lecture')); ?>">E | Lecture</a>
-            </div>
-        </div>
-    </div>
+    <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-    <div class="mid-header">
-        <div class="container">
-            <div class="logo">
-                <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang">
-                <img src="<?php echo e(asset('storage/image/global.png')); ?>" alt="Global">
-            </div>
-            <div class="header-contact">
-                <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <div class="contact-text">
-                        <strong>0851-1770-4112</strong>
-                        <span>Hubungi Wa Kami</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <div class="contact-text">
-                        <strong>karawang@lp3i.id</strong>
-                        <span>Email Resmi</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fab fa-instagram"></i>
-                    <a href="https://www.instagram.com/lp3ikarawang" target="_blank" class="contact-text" style="text-decoration: none; color: inherit;">
-                        <strong>@lp3ikarawang</strong>
-                        <span>Follow Instagram</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <nav id="mainNav">
-        <div class="nav-container">
-            <ul class="nav-links">
-                <li><a href="<?php echo e(url('/')); ?>">Home</a></li>
-                <li class="dropdown">
-                    <a href="<?php echo e(route('sambutan')); ?>">Profil</a>
-                    <div class="dropdown-content">
-                        <a href="<?php echo e(route('sambutan')); ?>">Sambutan</a>
-                        <a href="<?php echo e(route('sejarah')); ?>">Sejarah & Visi Misi</a>
-                        <a href="<?php echo e(route('struktur')); ?>">Struktur Organisasi</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="<?php echo e(route('ais')); ?>">Akademik</a>
-                    <div class="dropdown-content">
-                        <a href="<?php echo e(route('ais')); ?>" class="akademik-item"><span class="ak-prefix">AIS</span><span class="ak-prefix">Accounting Information System</span></a>
-                        <a href="<?php echo e(route('ase')); ?>" class="akademik-item"><span class="ak-prefix">ASE</span><span class="ak-prefix">Application Software Engineering</span></a>
-                        <a href="<?php echo e(route('oaa')); ?>" class="akademik-item"><span class="ak-prefix">OAA</span><span class="ak-prefix">Office Administration</span></a>
-                    </div>
-                </li>
-                <li><a href="<?php echo e(route('penempatan')); ?>">Pusat Karir</a></li>
-            </ul>
-
-            <div class="nav-auth">
-                <a href="<?php echo e(route('pendaftar.login')); ?>" class="login-btn">Login</a>
-                <a href="<?php echo e(route('mahasiswa.create')); ?>" class="register-btn"><i class="fas fa-user-plus"></i> Daftar Sekarang</a>
-            </div>
-        </div>
-    </nav>
-</header>
 
     <main class="container">
         <div class="banner">

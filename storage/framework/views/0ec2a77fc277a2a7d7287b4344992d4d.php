@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,70 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root{--basic:#004269;--adv:#40826D;--muted:#6b7280}
-        html { font-family: 'Poppins', sans-serif; }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: #0f172a;
-            background: linear-gradient(180deg,var(--basic) 0%, rgba(0,66,105,0.10) 30%, #f6f9fc 100%);
-        }
-
-        /* Header 3 Layer */
-        header { width: 100%; z-index: 1000; position: relative; }
-
-        .topbar { background: #009da5; color: white; padding: 6px 0; font-size: 0.95rem; font-weight: 600; }
-        .topbar .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
-        .topbar-left, .topbar-right { display:flex; align-items:center; gap:1rem; }
-        .topbar a { color: white; text-decoration: none; display:inline-flex; align-items:center; gap:0.5rem; padding:4px 8px; border-radius:6px; }
-        .topbar a:hover { background: rgba(255,255,255,0.08); }
-        .topbar a i { font-size:0.95rem; }
-        @media (max-width: 768px) {
-            .topbar .container { flex-direction: column; align-items: flex-start; gap:8px; }
-            .topbar-right { justify-content: flex-start; }
-        }
-
-        .mid-header { background: #1e3c72; padding: 15px 0; color: white; }
-        .mid-header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
-        .logo img { max-height: 55px; width: auto; object-fit: contain; }
-        .header-contact { display: flex; gap: 30px; }
-        .contact-item { display: flex; align-items: center; gap: 10px; }
-        .contact-item i { font-size: 1.9rem; color: #00a8e8; }
-        .contact-text strong { display: block; font-size: 0.85rem; margin-bottom: 2px; }
-        .contact-text span { font-size: 0.75rem; opacity: 0.8; display: block; }
-
-        nav { 
-            background: white; 
-            border-bottom: 1px solid #eee; 
-            position: sticky; 
-            top: 0; 
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        nav.scrolled { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
-
-        .nav-links { display: flex; list-style: none; align-items: center; }
-        .nav-links a { 
-            color: #333; 
-            text-decoration: none; 
-            padding: 1rem 1.2rem; 
-            display: block; 
-            font-size: 0.9rem; 
-            font-weight: 600; 
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        .nav-links a:hover { 
-            color: #1e3c72; 
-            background: transparent;
-        }
         .nav-links a:after {
             content: '';
             position: absolute;
@@ -429,80 +365,7 @@
 </head>
 <body>
 
-<header>
-    <div class="topbar">
-        <div class="container">
-            <div class="topbar-left"><a href="<?php echo e(route('virtual')); ?>">Virtual</a></div>
-            <div class="topbar-right">
-                <a href="<?php echo e(route('student')); ?>">E | Student</a>
-                <a href="<?php echo e(route('akademik')); ?>">E | Akademik</a>
-                <a href="<?php echo e(route('lecture')); ?>">E | Lecture</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="mid-header">
-        <div class="container">
-            <div class="logo">
-                <img src="<?php echo e(asset('storage/image/LOGO_LP3I.png')); ?>" alt="LP3I Karawang">
-                <img src="<?php echo e(asset('storage/image/global.png')); ?>" alt="Global">
-            </div>
-            <div class="header-contact">
-                <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <div class="contact-text">
-                        <strong>0851-1770-4112</strong>
-                        <span>Hubungi Wa Kami</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <div class="contact-text">
-                        <strong>karawang@lp3i.id</strong>
-                        <span>Email Resmi</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fab fa-instagram"></i>
-                    <a href="https://www.instagram.com/lp3ikarawang" target="_blank" class="contact-text" style="text-decoration: none; color: inherit;">
-                        <strong>@lp3ikarawang</strong>
-                        <span>Follow Instagram</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <nav id="mainNav">
-        <div class="nav-container">
-            <ul class="nav-links">
-                <li><a href="<?php echo e(url('/')); ?>">Home</a></li>
-                <li class="dropdown">
-                    <a href="<?php echo e(route('sambutan')); ?>">Profil</a>
-                    <div class="dropdown-content">
-                        <a href="<?php echo e(route('sambutan')); ?>">Sambutan</a>
-                        <a href="<?php echo e(route('sejarah')); ?>">Sejarah & Visi Misi</a>
-                        <a href="<?php echo e(route('struktur')); ?>">Struktur Organisasi</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="<?php echo e(route('ais')); ?>">Akademik</a>
-                    <div class="dropdown-content">
-                        <a href="<?php echo e(route('ais')); ?>" class="akademik-item"><span class="ak-prefix">AIS</span><span class="ak-prefix">Accounting Information System</span></a>
-                        <a href="<?php echo e(route('ase')); ?>" class="akademik-item"><span class="ak-prefix">ASE</span><span class="ak-prefix">Application Software Engineering</span></a>
-                        <a href="<?php echo e(route('oaa')); ?>" class="akademik-item"><span class="ak-prefix">OAA</span><span class="ak-prefix">Office Administration</span></a>
-                    </div>
-                </li>
-                <li><a href="<?php echo e(route('penempatan')); ?>">Pusat Karir</a></li>
-            </ul>
-            <div class="nav-auth">
-                <a href="<?php echo e(route('pendaftar.login')); ?>" class="login-btn">Login</a>
-                <a href="<?php echo e(route('mahasiswa.create')); ?>" class="register-btn"><i class="fas fa-user-plus"></i> Daftar Sekarang</a>
-            </div>
-        </div>
-    </nav>
-</header>
-
+<?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <main class="container">
         <section class="hero">
             <div class="box-avatar">

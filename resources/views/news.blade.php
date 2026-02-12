@@ -50,10 +50,8 @@ $showDetail = $currentNews !== null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $showDetail ? htmlspecialchars($currentNews['title']) . ' - ' : '' ?>Berita - LP3I Karawang</title>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --primary: #1e3c72;
@@ -322,21 +320,7 @@ $showDetail = $currentNews !== null;
 </head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="<?= asset('storage/image/LOGO_LP3I.png') ?>" alt="Logo">
-                <img src="<?= asset('storage/image/global.png') ?>" alt="Logo">
-            </div>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/news">Berita</a></li>
-                <li><a href="#">Program</a></li>
-                <li><a href="#">Kontak</a></li>
-            </ul>
-            <button class="mobile-menu-toggle" style="background:none; border:none; color:white; font-size:1.5rem; display:none;">☰</button>
-        </nav>
-    </header>
+        @include('partials.header')
 
     <div class="container">
         <?php if ($showDetail): ?>

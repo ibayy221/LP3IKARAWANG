@@ -9,18 +9,26 @@
         :root{--brand-dark:#004269;--brand-accent:#0b7280}
         *{box-sizing:border-box}
         body{margin:0;background:transparent}
-        .wrap{max-width:1100px;margin:140px auto;padding:1rem}
-        .grid{display:flex;gap:2rem;align-items:flex-start}
-        .content{flex:1}
-        .aside{margin-top: 30px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-        .card{background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:16px;padding:2.5rem;box-shadow:0 18px 50px rgba(15,23,42,0.08);border:1px solid rgba(2,6,23,0.04)}
+        .wrap{max-width:1100px;margin:0 auto;padding:1.5rem}
+        .card{background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:16px;padding:2.25rem;box-shadow:0 18px 50px rgba(15,23,42,0.08);border:1px solid rgba(2,6,23,0.04)}
+        .article{column-count:2;column-gap:2.5rem;column-rule:1px solid rgba(2,6,23,0.06)}
+        .article > *{break-inside:avoid}
         h1{margin:0 0 0.8rem 0;color:var(--brand-dark);font-size:1.8rem}
+        h1{column-span:all}
         h2{color:var(--brand-dark);font-size:1.15rem;margin:1.25rem 0 0.6rem}
+        h3{color:var(--brand-dark);font-size:1rem;margin:1rem 0 0.4rem}
         p{margin:0 0 0.8rem 0;color:#16383a}
+        p{line-height:1.7;text-align:justify}
         ul{margin:0 0 0.8rem 1.1rem;color:#16383a}
         .prospects li{margin:0.45rem 0}
-        img.program-img{width:100%;max-width:420px;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,0.08);object-fit:cover}
-        @media (max-width:900px){.grid{flex-direction:column}.aside{order:2}.content{order:1}.img.program-img{width:70%}}
+        figure{margin:0 0 1.2rem 0}
+        figure .article-img{width:100%;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,0.08);object-fit:cover;display:block}
+        figure figcaption{margin-top:0.5rem;font-size:0.85rem;color:#445;opacity:0.85}
+        @media (max-width:900px){
+            .card{padding:1.5rem}
+            .article{column-count:1;column-rule:none}
+            p{text-align:left}
+        }
     </style>
 </head>
 <body>
@@ -28,109 +36,111 @@
 
     <div class="wrap">
         <div class="card">
-            <div class="grid">
-                <div class="content">
-                    <h1>D3 Application Software Engineering</h1>
+            <div class="article">
+                <h1>D3 Application Software Engineering</h1>
 
-                    <h2>Peminatan</h2>
-                    <p>1. Informatika Komputer</p>
-                    <p>2. Komputer Bisnis Manajemen</p>
-                    <p>3. Sistem Informasi Akuntansi</p>
+                <h2>Peminatan</h2>
+                <p>Digital Marketing, Marketing Administration</p>
 
-                    <h2>Profil Lulusan</h2>
-                    <p>Ahli Madya yang mampu melakukan pembangunan perangkat lunak aplikasi dengan menerapkan standar pengembangan perangkat lunak berbasis objek dan terstruktur dalam bentuk produk aplikasi dengan antarmuka yang sesuai standar user experience yang baik dan dapat mendokumentasikannya untuk digunakan pada perusahaan industri dan jasa.</p>
+                <h2>Profil Lulusan</h2>
+                <p>Menjadi tenaga Madya Profesional yang memiliki kemampuan di bidang manajemen pemasaran serta mampu menerapkan ilmu pemasaran produk baik barang maupun jasa serta mewujudkan lulusan pemasaran digital yang unggul dan berdaya saing pada tahun 2031.</p>
 
-                    <h2>Kompetensi</h2>
-                    <ul>
-                        <li>Mampu merancang dan mengembangkan sistem informasi berbasis desktop dan web.</li>
-                        <li>Mampu menerapkan prinsip-prinsip pemrograman berorientasi objek dan terstruktur.</li>
-                        <li>Mampu merancang dan mengoptimalkan basis data.</li>
-                        <li>Mampu menerapkan teknologi terkini dalam pengembangan aplikasi.</li>
-                    </ul>
+                <figure>
+                    <img class="article-img" src="{{ asset('storage/image/ASE.jpg') }}" alt="Program ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
+                    <figcaption>Suasana perkuliahan dan praktik pengembangan aplikasi.</figcaption>
+                </figure>
 
-                    <h2>Prospek Karir</h2>
-                    <ul class="prospects">
-                        <li>Programmer/Software Developer</li>
-                        <li>Web Developer</li>
-                        <li>Database Administrator</li>
-                        <li>Quality Assurance Engineer</li>
-                        <li>System Analyst</li>
-                    </ul>
-                </div>
-                <div class="aside">
-                    <img class="program-img" src="{{ asset('storage/image/ASE.jpg') }}" alt="Program ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-                    <br><br><br><br><br><br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE2.jpg') }}" alt="Program ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-                    <br><br><br><br><br><br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE3.jpg') }}" alt="Program ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-                </div>
+                <h2>Kompetensi</h2>
+                <ul>
+                    <li>Mampu melakukan kegiatan menjual (selling skills) melalui proses menjual yang benar.</li>
+                    <li>Mampu melakukan pelayanan pelanggan (customer service) dengan konsep pelayanan prima.</li>
+                    <li>Mampu melakukan komunikasi bisnis dengan para stakeholder.</li>
+                    <li>Mampu melakukan promosi, periklanan, dan riset pemasaran.</li>
+                    <li>Mampu menerapkan pemasaran online dan penggunaan aplikasi digital untuk pemasaran.</li>
+                </ul>
+
+                <figure>
+                    <img class="article-img" src="{{ asset('storage/image/ASE2.jpg') }}" alt="Kegiatan akademik ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
+                    <figcaption>Kolaborasi mahasiswa dalam proyek dan studi kasus.</figcaption>
+                </figure>
+
+                <h2>Capaian Pembelajaran Lulusan (CPL)</h2>
+                <h3>A. Aspek Sikap</h3>
+                <ul>
+                    <li>Bertaqwa kepada Tuhan Yang Maha Esa dan menunjukkan sikap religius.</li>
+                    <li>Menjunjung tinggi nilai kemanusiaan, etika, dan moral dalam bekerja.</li>
+                    <li>Berkontribusi dalam peningkatan mutu kehidupan bermasyarakat dan berbangsa.</li>
+                </ul>
+
+                <h3>B. Aspek Keterampilan Umum (D3/Level 5)</h3>
+                <ul>
+                    <li>Mampu menunjukkan kinerja optimal sesuai bidang keahlian dan menyusun laporan kinerja.</li>
+                    <li>Mampu bekerja di bawah tekanan dengan orientasi pencapaian target dan bekerja sama tim.</li>
+                    <li>Mampu melakukan supervisi dan pengembangan kompetensi kerja.</li>
+                </ul>
+
+                <h3>C. Pengetahuan Umum (D3/Level 5)</h3>
+                <ul>
+                    <li>Menguasai konsep dasar Ilmu Ekonomi dan Manajemen Pemasaran.</li>
+                    <li>Menguasai prinsip selling, customer service, promosi, public relations, e-commerce, dan perencanaan pemasaran.</li>
+                    <li>Menguasai manajemen ritel, strategi pemasaran, perilaku konsumen, dan aplikasi komputer untuk pemasaran.</li>
+                </ul>
+
+                <h3>D. Keterampilan Khusus</h3>
+                <ul>
+                    <li>Mampu menerapkan pemasaran online, riset pemasaran, dan kebijakan pemasaran berbasis data.</li>
+                    <li>Mampu berwirausaha dan mengoperasikan aplikasi pemasaran digital.</li>
+                    <li>Mampu melakukan perencanaan anggaran dan komunikasi bisnis lintas budaya.</li>
+                </ul>
+
+                <h2>Pilihan Peminatan / Konsentrasi</h2>
+                <ul>
+                    <li>Digital Marketing</li>
+                    <li>Marketing Administration</li>
+                </ul>
+
+                <figure>
+                    <img class="article-img" src="{{ asset('storage/image/ASE3.jpg') }}" alt="Aktivitas mahasiswa ASE" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
+                    <figcaption>Praktik komunikasi tim dan penyusunan solusi.</figcaption>
+                </figure>
+
+                <h2>Prospek Karir / Posisi Jabatan</h2>
+                <ul class="prospects">
+                    <li>Marketing officer / staf Pemasaran</li>
+                    <li>Marketing Analyst</li>
+                    <li>Social Media Marketing</li>
+                    <li>Entrepreneur</li>
+                    <li>Supervisi Retail</li>
+                    <li>Retail consultant</li>
+                    <li>Admin Marketing</li>
+                    <li>Graphic Designer</li>
+                    <li>Photographer & video editor</li>
+                </ul>
+
+                <h2>Visi</h2>
+                <p>Pada tahun 2031 di tingkat Nasional menjadi program studi vokasi Manajemen Pemasaran yang unggul dan kompeten dalam bidang Pemasaran Digital.</p>
+
+                <h2>Misi</h2>
+                <ul>
+                    <li>Menyelenggarakan pendidikan berbasis vokasi dan link-and-match dengan industri.</li>
+                    <li>Menciptakan SDM profesional, berkarakter, dan berkompeten di bidang Digital Marketing.</li>
+                    <li>Melaksanakan penelitian terapan dan pengabdian kepada masyarakat.</li>
+                    <li>Menjalin kerjasama dengan industri, pemerintah, dan perguruan tinggi.</li>
+                    <li>Menyelenggarakan pendidikan terintegrasi berbasis teknologi informasi.</li>
+                    <li>Melaksanakan kegiatan sosial, kemanusiaan, dan keagamaan.</li>
+                </ul>
+
+                <h2>Tujuan</h2>
+                <ul>
+                    <li>Mewujudkan kerjasama dengan perusahaan untuk merancang kurikulum berbasis industri.</li>
+                    <li>Menghasilkan lulusan profesional madya di bidang pemasaran berbasis TI.</li>
+                    <li>Menerapkan link-and-match melalui dosen profesional, sertifikasi, dan magang industri.</li>
+                    <li>Menghasilkan penelitian terapan yang tepat guna di bidang pemasaran.</li>
+                    <li>Menciptakan komunikasi dinamis antara dunia kerja dan industri untuk penyerapan lulusan.</li>
+                </ul>
             </div>
         </div>
     </div>
-</body>
-</html>
-						<li>Marketing officer / staf Pemasaran</li>
-						<li>Marketing Analyst</li>
-						<li>Social Media Marketing</li>
-						<li>Entrepreneur</li>
-						<li>Supervisi Retail</li>
-						<li>Retail consultant</li>
-						<li>Admin Marketing</li>
-						<li>Graphic Designer</li>
-						<li>Photographer & video editor</li>
-					</ul>
-
-					<h2>Visi</h2>
-					<p>Pada tahun 2031 menjadi Program Studi yang terkemuka di Tingkat Asia dalam bidang informatika kompeten dan berkarakter.</p>
-
-					<h2>Misi</h2>
-					<ul>
-						<li>Menyelenggarakan pendidikan vokasi manajemen informatika bidang programming dan multimedia yang berkualitas sesuai dengan kebutuhan dunia industri.</li>
-						<li>Menyelenggarakan penelitian dan publikasi jurnal ilmiah di bidang teknologi informasi dan komunikasi yang bermanfaat bagi pengembangan ilmu pengetahuan dan teknologi.</li>
-						<li>Melaksanakan kegiatan pengabdian kepada masyarakat yang dapat meningkatkan kesejahteraan masyarakat.</li>
-						<li>Meningkatkan kompetensi tenaga pendidik dan tenaga kependidikan untuk memberikan kualitas pelayanan yang terbaik.</li>
-						<li>Mengembangkan infrastruktur yang memadai untuk mendukung proses pembelajaran.</li>
-						<li>Menjalin kemitraan dan kerjasama dengan dunia usaha dan industri untuk kepentingan program magang dan kerja serta pengembangan kurikulum.</li>
-					</ul>
-
-					<h2>Tujuan</h2>
-					<ul>
-						<li>Menghasilkan lulusan ahli madya di bidang Keuangan, Perbankan, serta Koperasi dan UMKM yang dinamis dan tanggap terhadap kemajuan teknologi berlandaskan akhlakul karimah dan budi pekerti luhur.</li>
-						<li>Melaksanakan proses belajar mengajar dengan pendekatan penelitian terapan serta peningkatan pelayanan kepada masyarakat.</li>
-						<li>Melahirkan tenaga ahli berkualitas yang siap kerja sesuai dengan kebutuhan dunia usaha dan dunia industri.</li>
-						<li>Menghasilkan penelitian unggulan yang berguna bagi masyaraat luas dalam bidang Keuangan, Perbankan serta koperasi dan UMKM.</li>
-						{{-- <li>Menciptakan komunikasi dinamis antara dunia kerja dan industri untuk penyerapan lulusan.</li> --}}
-					</ul>
-
-				</div>
-				<div class="aside">
-					<img class="program-img" src="{{ asset('storage/image/ASE.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-                    <br>
-                    <br>
-                    <br>
-                     <br>
-                    <br>
-                    <br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE2.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-                    <br>
-                    <br>
-                    <br>
-                     <br>
-                    <br>
-                    <br>
-                    <img class="program-img" src="{{ asset('storage/image/ASE3.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/ASE.png') }}'">
-					{{-- <div class="image-stack"> --}}
-						{{-- <img class="program-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/landingPage1.png') }}'">
-						<div class="gallery">
-							<img class="thumbnail" src="{{ asset('storage/image/OAA.jpg') }}" alt="OAA foto 1" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
-							<img class="thumbnail" src="{{ asset('storage/image/OAA.jpg') }}" alt="OAA foto 2" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
-							<img class="thumbnail" src="{{ asset('storage/image/OAA.jpg') }}" alt="OAA foto 3" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
-						</div> --}}
-					{{-- </div> --}}
-				</div>
-			</div>
-		</div>
-	</div>
 </body>
 </html>
 

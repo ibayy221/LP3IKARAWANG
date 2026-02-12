@@ -17,9 +17,12 @@
       body.registration-bg {
         background: #004269; /* match input background */
         min-height: 100vh;
-        padding-top: 72px; /* avoid fixed header overlap */
+        padding-top: 190px;
         color: #111827;
         font-family: 'Poppins', sans-serif;
+      }
+      @media (max-width: 768px) {
+        body.registration-bg { padding-top: 210px; }
       }
 
       /* Limit the registration container width so it doesn't reach the navbar edges */
@@ -238,19 +241,6 @@
         .elegant-form .form-control, .elegant-form .form-select { height:44px; }
       }
     </style>
-    <style>
-      /* Header — match landing styles */
-      header { background: rgba(30, 60, 114, 0.12); -webkit-backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.5rem 0; position: fixed; top:0; z-index: 1000; width:100%; }
-      nav { display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto; padding:0 1rem; }
-      .logo img { height:48px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08)); }
-      .nav-links { list-style: none; display:flex; gap: 0; align-items:center; }
-      .nav-links li { position: relative; }
-      .nav-links a { color: #ffffff; text-decoration:none; padding: 0.6rem 1.2rem; font-weight:500; border-radius: 8px; display:block; }
-      .nav-links a:hover { background: rgba(0,0,0,0.03); }
-      .mobile-menu-toggle { display:none; }
-      @media (max-width:768px){ .mobile-menu-toggle { display:block; } .nav-links { display:none; } .nav-links.active{ display:flex; flex-direction:column; gap:0; width:100%; }
-      }
-    </style>
     <!-- Alerts style moved inside a proper style block above -->
     <style>
       /* Inline elegant form styles for registration page */
@@ -279,24 +269,7 @@
     </style>
   </head>
   <body class="registration-bg">
-    <!-- Header (simple variant to match site nav) -->
-    <header>
-      <nav>
-        <div class="logo" style="display:flex;align-items:center;gap:8px;">
-          <a href="/">
-            <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang" style="height:48px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.08));">
-          </a>
-          <img src="{{ asset('storage/image/global.png') }}" alt="Global Mandiri" style="height:36px;opacity:0.95;margin-left:6px;">
-        </div>
-        <button class="mobile-menu-toggle">☰</button>
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="#contact">Kontak</a></li>
-         <li><a href="/pendaftar/login" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-
-        </ul>
-      </nav>
-    </header>
+    @include('partials.header')
     <div class="container registration-container py-5">
       <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -435,13 +408,6 @@
     <script>
       // initialize Tom Select for the new Jenis Kelas dropdown
       new TomSelect('#jenis_kelas', { create: false, placeholder: 'Pilih jenis kelas...' });
-
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-          const navLinks = document.querySelector('.nav-links');
-          navLinks.classList.toggle('active');
-        });
-
     </script>
   </body>
 </html>

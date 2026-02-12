@@ -17,7 +17,9 @@
         body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #333; }
 
         /* --- MODIFIKASI HEADER 3 LAYER (PERMINTAAN DOSEN) --- */
-        header { width: 100%; z-index: 1000; position: relative; }
+        header { width: 100%; z-index: 1200; position: fixed; top: 0; left: 0; right: 0; }
+        body { padding-top: 190px; }
+        @media (max-width: 768px) { body { padding-top: 210px; } }
 
         /* Site header (assistant navbar) - minimal rules to preserve your layout but keep assistant look */
         .site-header { width: 100%; position: relative; z-index: 1100; }
@@ -67,13 +69,17 @@
         nav { 
             background: white; 
             border-bottom: 1px solid #eee; 
-            position: sticky; 
-            top: 0; 
+            position: relative; 
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 1200;
         }
         nav.scrolled { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; position: relative; }
+        .nav-menu { display: flex; align-items: center; gap: 12px; }
+        .nav-toggle { display: none; border: 0; background: transparent; padding: 10px; cursor: pointer; align-items: center; gap: 10px; }
+        .nav-toggle .bar { display: block; width: 22px; height: 2px; background: #1e3c72; margin: 4px 0; border-radius: 2px; transition: transform 0.2s ease; }
+        .nav-toggle-label { font-size: 0.9rem; font-weight: 700; color: #1e3c72; letter-spacing: 0.3px; }
 
         /* Mempertahankan style Nav-Links kamu */
         .nav-links { display: flex; list-style: none; align-items: center; }
@@ -240,6 +246,46 @@
         .see-all-btn { display: inline-block; background: #1e3c72; color: #fff; padding: 0.6rem 1.1rem; border-radius: 18px; text-decoration: none; font-weight:700; box-shadow: 0 8px 20px rgba(30,60,114,0.12); }
         .see-all-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
+        @media (max-width: 900px) {
+            nav { border-top: 1px solid #e6e9ef; }
+            .nav-container { min-height: 56px; }
+            .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+            .nav-toggle { margin-left: auto; }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #ffffff;
+                border-bottom: 1px solid #eee;
+                box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+                padding: 0.75rem 1rem 1rem;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                z-index: 1200;
+            }
+            nav.nav-open .nav-menu { display: flex; }
+            .nav-links { flex-direction: column; align-items: stretch; width: 100%; }
+            .nav-links a { padding: 0.85rem 0.75rem; font-size: 0.9rem; border-radius: 8px; }
+            .nav-links a:hover { background: #f4f7fb; }
+            .nav-auth { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+            .login-btn, .register-btn { padding: 0.55rem 0.9rem !important; font-size: 0.85rem !important; }
+            .dropdown-content {
+                position: static;
+                transform: none;
+                min-width: 0;
+                box-shadow: none;
+                background: #f6f8fb;
+                border-radius: 10px;
+                margin: 6px 0 0;
+            }
+            .dropdown-content a { color: #1e3c72 !important; padding: 10px 14px; }
+            .dropdown:hover .dropdown-content { display: none; }
+            .dropdown.open > .dropdown-content { display: block; }
+        }
+
         @media (max-width: 768px) {
             .top-bar, .header-contact { display: none; }
             .news-grid { grid-template-columns: 1fr; }
@@ -249,82 +295,7 @@
 </head>
 <body>
 
-<header>
-    <!-- legacy top-bar removed; using assistant topbar below -->
-        <div class="topbar">
-            <div class="container">
-                <div class="topbar-left"><a href="{{ route('virtual') }}"> Virtual</a></div>
-                <div class="topbar-right">
-                    <a href="{{ route('student') }}">E | Student</a>
-                    <a href="{{ route('akademik') }}">E | Akademik</a>
-                    <a href="{{ route('lecture') }}">E | Lecture</a>
-                </div>
-            </div>
-        </div>
-
-    <div class="mid-header">
-        <div class="container">
-            <div class="logo">
-                
-                <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang">
-                <img src="{{ asset('storage/image/global.png') }}" alt="Global">
-            </div>
-            <div class="header-contact">
-                <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <div class="contact-text">
-                        <strong>0851-1770-4112</strong>
-                        <span>Hubungi Wa Kami</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <div class="contact-text">
-                        <strong>karawang@lp3i.id</strong>
-                        <span>Email Resmi</span>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <i class="fab fa-instagram"></i>
-                    <a href="https://www.instagram.com/lp3ikarawang" target="_blank" class="contact-text" style="text-decoration: none; color: inherit;">
-                        <strong>@lp3ikarawang</strong>
-                        <span>Follow Instagram</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <nav id="mainNav">
-        <div class="nav-container">
-            <ul class="nav-links">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li class="dropdown">
-                        <a href="{{ route('sambutan') }}">Profil</a>
-                    <div class="dropdown-content">
-                            <a href="{{ route('sambutan') }}">Sambutan</a>
-                            <a href="{{ route('sejarah') }}">Sejarah & Visi Misi</a>
-                            <a href="{{ route('struktur') }}">Struktur Organisasi</a>
-                    </div>
-                </li>
-                    <li class="dropdown">
-                        <a href="{{ route('ais') }}">Akademik</a>
-                    <div class="dropdown-content">
-                            <a href="{{ route('ais') }}" class="akademik-item"><span class="ak-prefix">AIS</span><span class="ak-prefix">Accounting Information System</span></a>
-                            <a href="{{ route('ase') }}" class="akademik-item"><span class="ak-prefix">ASE</span><span class="ak-prefix">Application Software Engineering</span></a>
-                            <a href="{{ route('oaa') }}" class="akademik-item"><span class="ak-prefix">OAA</span><span class="ak-prefix">Office Administration</span></a>
-                    </div>
-                </li>
-                    <li><a href="{{ route('penempatan') }}">Pusat Karir</a></li>
-            </ul>
-
-            <div class="nav-auth">
-                <a href="{{ route('pendaftar.login') }}" class="login-btn">Login</a>
-                <a href="{{ route('mahasiswa.create') }}" class="register-btn"><i class="fas fa-user-plus"></i> Daftar Sekarang</a>
-            </div>
-        </div>
-    </nav>
-</header>
+@include('partials.header')
 
 <section class="hero">
     <div class="carousel-container">

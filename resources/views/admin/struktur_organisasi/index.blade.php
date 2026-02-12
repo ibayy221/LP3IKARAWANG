@@ -147,6 +147,17 @@
             gap: 0.5rem;
         }
 
+        @media (max-width: 900px) {
+            .page-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .table-container { overflow-x: auto; }
+            .table { min-width: 720px; }
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 1.25rem; }
+            .actions { flex-wrap: wrap; }
+        }
+
         .actions a, .actions button {
             padding: 0.5rem 0.75rem;
             font-size: 0.85rem;

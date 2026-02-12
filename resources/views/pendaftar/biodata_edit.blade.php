@@ -17,7 +17,7 @@
   </style>
 </head>
 <body class="text-slate-800">
-  
+  @include('partials.header')
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <aside class="bg-white rounded-xl border p-5 shadow-sm sticky top-6" >

@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root{--basic:#004269;--adv:#40826D;--muted:#6b7280}
-    body{font-family:'Poppins',Arial,sans-serif;padding:2rem;background:linear-gradient(180deg,var(--basic) 0%, rgba(0,66,105,0.14) 28%, rgba(64,130,109,0.03) 48%, #f6f9fc 100%);color:#0f172a}
+    body{font-family:'Poppins',Arial,sans-serif;padding:calc(190px + 2rem) 2rem 2rem;background:linear-gradient(180deg,var(--basic) 0%, rgba(0,66,105,0.14) 28%, rgba(64,130,109,0.03) 48%, #f6f9fc 100%);color:#0f172a}
     .container{max-width:920px;margin:0 auto}
     /* prominent top banner to make page feel indigo-dominant */
     .heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding:1rem;border-radius:12px;background:linear-gradient(90deg,var(--basic),var(--adv));color:#fff;box-shadow:0 12px 36px rgba(2,6,23,0.12)}
@@ -31,10 +31,11 @@
     .form-grid label{display:block;padding:.65rem 0;border-bottom:2px solid rgba(2,6,23,0.06);color:#13323f}
     .form-grid label:last-child{border-bottom:none}
     #uploadMessage{padding:.6rem;border-radius:8px}
-    @media (max-width:800px){body{padding:1rem}.heading{flex-direction:column;align-items:flex-start;gap:.6rem}}
+    @media (max-width:800px){body{padding:calc(210px + 1rem) 1rem 1rem}.heading{flex-direction:column;align-items:flex-start;gap:.6rem}}
   </style>
 </head>
 <body>
+  @include('partials.header')
   <div class="container">
     <div class="heading">
       <div>
