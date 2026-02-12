@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Marketing;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\Storage;
 
 class MarketingPendaftarController extends Controller
 {
@@ -57,6 +58,7 @@ class MarketingPendaftarController extends Controller
         $jurusans = Mahasiswa::select('jurusan')
             ->whereNotNull('jurusan')
             ->where('jurusan', '<>', '')
+            ->where('jurusan', '<>', 'OAA')
             ->distinct()
             ->orderBy('jurusan')
             ->pluck('jurusan')
@@ -84,13 +86,13 @@ class MarketingPendaftarController extends Controller
             $query->where('jurusan', $jurusan);
         }
 
-        $data = $query->orderBy('created_at', 'desc')->get(['id','nama_mhs','email','no_hp','jurusan','status_verifikasi','created_at','sumber_pendaftaran']);
+        $data = $query->orderBy('created_at', 'desc')->get(['id','nama_mhs','email','nipd','no_hp','jurusan','status_verifikasi','created_at']);
         return response()->json(['success' => true, 'data' => $data]);
     }
 
     public function create()
     {
-        $jurusans = Mahasiswa::select('jurusan')->distinct()->pluck('jurusan')->filter()->values();
+        $jurusans = Mahasiswa::select('jurusan')->whereNotNull('jurusan')->where('jurusan','<>','OAA')->distinct()->pluck('jurusan')->filter()->values();
 
         // registration image
         $registrationImage = null;
@@ -127,9 +129,9 @@ class MarketingPendaftarController extends Controller
             'email' => 'nullable|email|max:255',
             'no_hp' => 'nullable|string|max:50',
             'jurusan' => 'nullable|string|max:255',
-            'sumber_pendaftaran' => 'nullable|string|in:online,offline'
+            'jenis_kelas' => 'nullable|string|max:50',
+            'asal_sekolah' => 'nullable|string|max:255'
         ]);
-        $v['sumber_pendaftaran'] = $v['sumber_pendaftaran'] ?? 'offline';
         $v['status_verifikasi'] = $v['status_verifikasi'] ?? 'pending';
 
         // Prevent accidental duplicates when marketing adds pendaftar manually
@@ -191,6 +193,107 @@ class MarketingPendaftarController extends Controller
         return view('marketing.pendaftar.show', compact('m','registrationImageUrl'));
     }
 
+    /**
+     * Download KTP file for a given pendaftar (marketing use).
+     */
+    public function downloadKtp($id)
+    {
+        $m = Mahasiswa::findOrFail($id);
+        if (empty($m->ktp_path)) {
+            return redirect()->back()->with('error','Dokumen KTP tidak ditemukan untuk pendaftar ini.');
+        }
+
+        // Normalize stored path to a storage/public relative path like 'ktp/filename.ext'
+        $rel = $m->ktp_path;
+        $rel = preg_replace('#^/storage/#', '', $rel);
+        $rel = preg_replace('#^public/#', '', $rel);
+        $rel = ltrim($rel, '/');
+
+        // Try public disk first (storage/app/public)
+        if (Storage::disk('public')->exists($rel)) {
+            $full = Storage::disk('public')->path($rel);
+            return response()->download($full, basename($full));
+        }
+
+        // Fall back to local disk where uploaded files may have been stored under 'public/ktp' inside private root
+        $localRel = 'public/' . ltrim($rel, '/');
+        if (Storage::disk('local')->exists($localRel)) {
+            $full = Storage::disk('local')->path($localRel);
+            return response()->download($full, basename($full));
+        }
+
+        return redirect()->back()->with('error','File KTP tidak ditemukan di server.');
+    }
+
+    /**
+     * Download Ijazah file for a given pendaftar (marketing use).
+     */
+    public function downloadIjazah($id)
+    {
+        $m = Mahasiswa::findOrFail($id);
+        if (empty($m->ijazah_path)) {
+            return redirect()->back()->with('error','Dokumen Ijazah tidak ditemukan untuk pendaftar ini.');
+        }
+        $rel = $m->ijazah_path;
+        $rel = preg_replace('#^/storage/#', '', $rel);
+        $rel = preg_replace('#^public/#', '', $rel);
+        $rel = ltrim($rel, '/');
+        if (Storage::disk('public')->exists($rel)) {
+            $full = Storage::disk('public')->path($rel);
+            return response()->download($full, basename($full));
+        }
+        $localRel = 'public/' . ltrim($rel, '/');
+        if (Storage::disk('local')->exists($localRel)) {
+            $full = Storage::disk('local')->path($localRel);
+            return response()->download($full, basename($full));
+        }
+        return redirect()->back()->with('error','File Ijazah tidak ditemukan di server.');
+    }
+
+    public function downloadAkte($id)
+    {
+        $m = Mahasiswa::findOrFail($id);
+        if (empty($m->akte_kelahiran_path)) {
+            return redirect()->back()->with('error','Dokumen Akte Kelahiran tidak ditemukan untuk pendaftar ini.');
+        }
+        $rel = $m->akte_kelahiran_path;
+        $rel = preg_replace('#^/storage/#', '', $rel);
+        $rel = preg_replace('#^public/#', '', $rel);
+        $rel = ltrim($rel, '/');
+        if (Storage::disk('public')->exists($rel)) {
+            $full = Storage::disk('public')->path($rel);
+            return response()->download($full, basename($full));
+        }
+        $localRel = 'public/' . ltrim($rel, '/');
+        if (Storage::disk('local')->exists($localRel)) {
+            $full = Storage::disk('local')->path($localRel);
+            return response()->download($full, basename($full));
+        }
+        return redirect()->back()->with('error','File Akte Kelahiran tidak ditemukan di server.');
+    }
+
+    public function downloadSuratBekerja($id)
+    {
+        $m = Mahasiswa::findOrFail($id);
+        if (empty($m->surat_sudah_bekerja_path)) {
+            return redirect()->back()->with('error','Dokumen Surat belum ditemukan untuk pendaftar ini.');
+        }
+        $rel = $m->surat_sudah_bekerja_path;
+        $rel = preg_replace('#^/storage/#', '', $rel);
+        $rel = preg_replace('#^public/#', '', $rel);
+        $rel = ltrim($rel, '/');
+        if (Storage::disk('public')->exists($rel)) {
+            $full = Storage::disk('public')->path($rel);
+            return response()->download($full, basename($full));
+        }
+        $localRel = 'public/' . ltrim($rel, '/');
+        if (Storage::disk('local')->exists($localRel)) {
+            $full = Storage::disk('local')->path($localRel);
+            return response()->download($full, basename($full));
+        }
+        return redirect()->back()->with('error','File Surat belum ditemukan di server.');
+    }
+
     public function updateNote(Request $request, $id)
     {
         $m = Mahasiswa::findOrFail($id);
@@ -218,7 +321,7 @@ class MarketingPendaftarController extends Controller
             'Content-Disposition' => "attachment; filename={$filename}"
         ];
 
-        $columns = ['id','nama_mhs','email','no_hp','jurusan','sumber_pendaftaran','status_verifikasi','payment_status','payment_amount','marketing_notes','created_at'];
+        $columns = ['id','nama_mhs','email','no_hp','jurusan','status_verifikasi','payment_status','payment_amount','marketing_notes','created_at'];
         $callback = function() use ($rows, $columns) {
             $f = fopen('php://output','w');
             fputcsv($f,$columns);
@@ -291,7 +394,7 @@ class MarketingPendaftarController extends Controller
             return redirect()->route('marketing.pendaftar.index')->with('error','Hapus semua tidak diizinkan pada lingkungan ini.');
         }
 
-        \DB::transaction(function() {
+        \Illuminate\Support\Facades\DB::transaction(function() {
             // Hard delete all records — careful!
             \App\Models\Mahasiswa::query()->delete();
         });

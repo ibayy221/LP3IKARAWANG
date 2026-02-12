@@ -13,8 +13,8 @@ class Mahasiswa extends Model
 
     protected $fillable = [
         'user_id', 'nipd', 'nama_mhs', 'email', 'no_hp', 'jurusan', 'tahun_lulus', 'alamat', 'kecamatan',
-        'tempat_lahir', 'tgl_lahir', 'jenis_kelamin', 'jenis_sekolah', 'kategori_sekolah',
-        'status_verifikasi', 'payment_status', 'payment_amount', 'asal_sekolah', 'file_path', 'desa', 'kode_pos', 'sumber_pendaftaran', 'marketing_notes'
+        'tempat_lahir', 'tgl_lahir', 'jenis_kelamin', 'jenis_sekolah', 'kategori_sekolah', 'jenis_kelas',
+        'status_verifikasi', 'payment_status', 'payment_amount', 'payment_method', 'payment_proof_path', 'payment_bank_origin', 'payment_account_name', 'payment_sender_name', 'payment_transfer_date', 'payment_expires_at', 'asal_sekolah', 'file_path', 'desa', 'kode_pos', 'marketing_notes', 'agama', 'status'
     ];
 
     public function user()
@@ -25,7 +25,12 @@ class Mahasiswa extends Model
     // Generate a NIPD for a given jurusan using config/nipd.php
     public static function generateNipd(?string $jurusan = null): string
     {
-        $branch = config('nipd.branch_code', '240781');
+        // Use branch_code but replace the leading year portion with the current year (2-digit)
+        // so NIPD reflects the actual year automatically.
+        $branchCfg = config('nipd.branch_code', '240781');
+        $currentYearTwo = date('y');
+        // if branch code is at least 2 chars, replace its first two chars with current year two-digit
+        $branch = strlen($branchCfg) >= 2 ? ($currentYearTwo . substr($branchCfg, 2)) : $branchCfg;
         $programCodes = config('nipd.program_codes', []);
         $seqDigits = (int) config('nipd.sequence_digits', 4);
         $programKey = strtoupper($jurusan ?? '');

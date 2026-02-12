@@ -6,10 +6,10 @@
   <title>Pendaftar - Smart Presenter</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root{--brand-dark:#004269;--brand-accent:#009DA5;--muted:#6b7280}
-    body{font-family:'Poppins',sans-serif;background:#f6f9fc;color:#0f172a}
+    :root{--basic:#004269;--adv:#40826D;--muted:#6b7280}
+    body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,var(--basic) 0%, rgba(0,66,105,0.10) 30%, #f6f9fc 100%);color:#0f172a}
     .wrap{max-width:1200px;margin:1.5rem auto;padding:1rem}
-    .card{background:#fff;padding:.75rem;border-radius:10px;box-shadow:0 6px 24px rgba(15,23,42,0.06)}
+    .card{background:#fff;padding:.75rem;border-radius:10px;box-shadow:0 6px 24px rgba(15,23,42,0.06);border:1px solid #e6eef6}
 
     /* Desktop/Mobile defaults: hide mobile-only on desktop, show desktop-only */
     .desktop-only{display:block}
@@ -17,18 +17,18 @@
     .mobile-actions{display:none}
 
     /* Page header (blue background like other pages) */
-    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding:.6rem 1rem;border-radius:10px;background:var(--brand-dark);color:#fff}
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding:.6rem 1rem;border-radius:10px;background:linear-gradient(90deg,var(--basic),var(--adv));color:#fff}
     .page-header h1{margin:0;font-size:1.15rem;color:#fff}
     .page-header p.subtitle{margin:4px 0 0;font-size:.95rem;color:rgba(255,255,255,0.85);font-weight:400}
     /* Compact Add button */
-    .page-header .actions a.btn{background:#fff;color:var(--brand-dark);padding:.32rem .5rem;border-radius:8px;font-size:.92rem;display:inline-flex;align-items:center;gap:.45rem}
-    .page-header .actions a.btn .plus{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--brand-dark);color:#fff;font-weight:700;line-height:18px;text-align:center;font-size:12px}
+    .page-header .actions a.btn{background:linear-gradient(90deg,var(--adv),var(--basic));color:#fff;padding:.32rem .6rem;border-radius:10px;font-size:.92rem;display:inline-flex;align-items:center;gap:.6rem;border:none;box-shadow:0 6px 18px rgba(64,130,109,0.12)}
+    .page-header .actions a.btn .plus{display:inline-block;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--basic);font-weight:700;line-height:20px;text-align:center;font-size:12px}
 
     /* Remove underlines globally for in-dashboard links/buttons */
     a, a.btn, .action-btn, .menu button{ text-decoration:none; }
 
     /* Controls: Poppins font for filter controls */
-    .controls .form-control{height:40px;padding:.5rem;border-radius:8px;border:1px solid #eef2f7;font-family:'Poppins',sans-serif;font-weight:500} 
+    .controls .form-control{height:44px;padding:.5rem;border-radius:10px;border:1.5px solid #e6eef6;background:#fff;font-family:'Poppins',sans-serif;font-weight:500;box-shadow:0 1px 0 rgba(2,6,23,0.02)} 
 
     /* Banner */
     .banner-wrap{margin-bottom:1rem}
@@ -36,10 +36,15 @@
 
     /* Controls */
     .controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.75rem}
-    .controls .form-control{height:40px;padding:.5rem;border-radius:8px;border:1px solid #eef2f7;font-family:'Poppins',sans-serif;font-weight:500}
-    .controls .btn{padding:.45rem .6rem;border-radius:8px;background:var(--brand-dark);color:#fff;border:none;font-size:0.9rem}
-    .controls .btn:hover{filter:brightness(1.05);transform:translateY(-2px)}
-    .controls .btn-small{padding:.36rem .5rem;font-size:.85rem} 
+    .controls .form-control{height:40px;padding:.6rem;border-radius:8px;border:1px solid #eef2f7;font-family:'Poppins',sans-serif;font-weight:500}
+    .controls .btn{padding:.5rem .7rem;border-radius:10px;background:linear-gradient(90deg,var(--basic),var(--adv));color:#fff;border:none;font-size:0.92rem}
+    .controls .btn:hover{filter:brightness(1.03);transform:translateY(-2px)}
+    .controls .btn-small{padding:.36rem .5rem;font-size:.85rem}
+
+    /* Unified button sizing: consistent min-width and height so buttons don't resize with text */
+    .page-header .actions a.btn, .controls .btn, .controls .btn-small { min-width:120px; height:44px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; }
+    /* Desktop action links (print/export) use same sizing and visual style */
+    a#btn-print, a#btn-export, a.btn.btn-small.desktop-only { min-width:120px; height:44px; display:inline-flex; align-items:center; justify-content:center; }
 
     /* Table */
     table{width:100%;border-collapse:collapse;font-size:0.92rem}
@@ -51,7 +56,7 @@
     .cell-email{max-width:220px}
     .cell-jurusan{max-width:120px}
     .cell-no{max-width:120px}
-    .cell-source{max-width:110px}
+    .cell-source{max-width:120px}
 
     /* Status badge */
     .badge{display:inline-flex;align-items:center;gap:.4rem;padding:.18rem .5rem;border-radius:12px;font-size:.82rem}
@@ -62,7 +67,7 @@
     /* Actions */
     .actions{display:flex;align-items:center;gap:.4rem}
     .action-btn{background:#fff;border:1px solid #e6eef6;padding:.38rem .6rem;border-radius:8px;cursor:pointer}
-    .action-primary{background:var(--brand-dark);color:#fff;border:none} 
+    .action-primary{background:linear-gradient(90deg,var(--basic),var(--adv));color:#fff;border:none;box-shadow:0 8px 20px rgba(0,66,105,0.08)} 
     .action-menu{position:relative}
     .menu{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #eef2f7;border-radius:8px;box-shadow:0 8px 24px rgba(15,23,42,0.08);display:none;min-width:160px;padding:.4rem;z-index:40}
     .menu button{width:100%;text-align:left;padding:.45rem .6rem;border:none;background:transparent;border-radius:6px}
@@ -120,11 +125,11 @@
     <div class="page-header">
       <div>
         <h1>Smart Presenter</h1>
-        <p class="subtitle">Manajemen data pendaftaran mahasiswa</p>
+        <p class="subtitle">Student data management</p>
       </div>
       <div class="actions">
-        <a class="btn" href="{{ route('marketing.pendaftar.create') }}"><span class="plus">+</span> Tambah</a>
-        <a class="btn" href="{{ route('marketing.dashboard') }}">Dashboard</a>
+        <a class="btn" href="{{ route('marketing.pendaftar.create') }}"><span class="plus">+</span> Add</a>
+        {{-- <a class="btn" href="{{ route('marketing.dashboard') }}">Dashboard</a> --}}
       </div>
     </div>
 
@@ -133,31 +138,34 @@
     </div>
 
     <div class="controls">
-      <input id="search" class="form-control" placeholder="Cari nama atau email..." />
+      <input id="search" class="form-control" placeholder="Search email or name..." />
       <select id="filter-status" class="form-control">
-        <option value="">Semua Status</option>
-        <option value="pending">Menunggu verifikasi</option>
-        <option value="verified">Sudah terverifikasi</option>
-        <option value="rejected">Ditolak</option>
+        <option value="">All status</option>
+        <option value="pending">Waiting for verification</option>
+        <option value="verified">verified</option>
+        <option value="rejected">declined</option>
       </select>
       <select id="filter-jurusan" class="form-control">
-        <option value="">Semua Jurusan</option>
+        <option value="">All study program</option>
         @foreach(($jurusans ?? []) as $j)
           <option value="{{ $j }}">{{ $j }}</option>
         @endforeach
       </select>
-      <div style="display:flex;gap:.5rem;align-items:center">
-        <button class="btn btn-small" id="btn-search">Cari</button>
-        <a class="btn btn-small desktop-only" id="btn-print" href="#">Print</a>
-        <a class="btn btn-small desktop-only" id="btn-export" href="#">Export</a>
 
-        <form id="delete-all-form" method="POST" action="{{ route('marketing.pendaftar.destroyAll') }}" style="display:inline">
+      
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="btn btn-small" id="btn-search">Serch</button>
+         <form id="delete-all-form" method="POST" action="{{ route('marketing.pendaftar.destroyAll') }}" style="display:inline">
           @csrf
           @method('DELETE')
-          <button class="btn btn-small desktop-only" id="btn-delete-all" style="background:#ef4444;border:none" onclick="return confirm('Yakin ingin menghapus SEMUA pendaftar? Hanya untuk pengembangan.');">Hapus Semua</button>
+          <button class="btn btn-small desktop-only" id="btn-delete-all" style="background:#ef4444;border:none" onclick="return confirm('Yakin ingin menghapus SEMUA pendaftar? Hanya untuk pengembangan.');">Delet All</button>
         </form>
-        <a class="btn btn-small desktop-only" href="{{ route('marketing.pendaftar.trash') }}" style="background:#fff;color:var(--brand-dark);border:1px solid #e6eef6;margin-left:.5rem"></a>
-        <span class="desktop-only" style="font-size:.85rem;color:#b91c1c;margin-left:.4rem">(hanya pengembangan)</span>
+        <a class="btn btn-small desktop-only" id="btn-print" href="#">Print</a>
+        <a  id="btn-export" href="#"></a>
+
+       
+        {{-- <a class="btn btn-small desktop-only" href="{{ route('marketing.pendaftar.trash') }}" style="background:#fff;color:var(--brand-dark);border:1px solid #e6eef6;margin-left:.5rem"></a> --}}
+        {{-- <span class="desktop-only" style="font-size:.85rem;color:#b91c1c;margin-left:.4rem">(hanya pengembangan)</span> --}}
 
         <!-- Mobile actions dropdown -->
         <div class="mobile-actions" style="position:relative;display:none">
@@ -172,8 +180,8 @@
       </div>
     </div>
 
-    <div id="filter-info" class="filter-info" style="display:none;margin-top:.5rem;color:#586d7a;font-size:.95rem">Menampilkan pendaftar dengan filter yang dipilih</div>
-    <div id="fetch-error" style="display:none;margin-top:.5rem;color:#b91c1c;font-size:.95rem"></div>
+    <div id="filter-info" class="filter-info" style="display:none;margin-top:.5rem;color:#586d7a;font-size:.95rem">showing applicant with selected filter</div>
+    <div id="fetch-error" style="display:none;margin-top:.5rem;color:#b91c1c;font-size:.95rem"></div> 
 
     <div class="card">
       <div id="pendaftar-cards" class="mobile-only"></div>
@@ -183,9 +191,9 @@
           <tr>
             <th>Nama</th>
             <th>Email</th>
+            <th>NIPD</th>
             <th>No HP</th>
-            <th>Jurusan</th>
-            <th>Sumber</th>
+            <th>Bidang Keahlian</th>
             <th>Tanggal Daftar</th>
             <th>Status</th>
             <th>Aksi</th>
@@ -213,7 +221,7 @@
         // show error message from server or a generic string
         document.getElementById('fetch-error').textContent = js.error || 'Gagal memuat data. Silakan periksa koneksi atau login.';
         document.getElementById('fetch-error').style.display = 'block';
-        body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#666;padding:1.5rem">Gagal memuat data.</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#666;padding:1.5rem">Gagal memuat data.</td></tr>';
         if (cardsDiv) { cardsDiv.innerHTML = '<div style="text-align:center;color:#666;padding:1rem">Gagal memuat data.</div>'; cardsDiv.style.display = 'none'; }
         document.getElementById('filter-info').style.display = 'none';
         return;
@@ -262,24 +270,24 @@
         tr.innerHTML = `
           <td><div class="cell" title="${safe(item.nama_mhs)}">${safe(item.nama_mhs)}</div></td>
           <td><div class="cell cell-email" title="${safe(item.email)}">${safe(item.email)}</div></td>
+          <td><div class="cell" title="${safe(item.nipd)}">${safe(item.nipd)}</div></td>
           <td><div class="cell cell-no" title="${safe(item.no_hp)}">${safe(item.no_hp)}</div></td>
           <td><div class="cell cell-jurusan" title="${safe(item.jurusan)}">${jurusanShort || '-'}</div></td>
-          <td><div class="cell cell-source" title="${safe(item.sumber_pendaftaran)}">${safe(item.sumber_pendaftaran)}</div></td>
           <td><div class="cell" title="${date || '-'}">${date || '-'}</div></td>
           <td><span class="badge ${statusKey}">${statusLabel}</span></td>
           <td>
-            <div class="actions">
-              <a class="action-btn action-primary" href="{{ url('/marketing/pendaftar') }}/${item.id}">Detail</a>
-              <div class="action-menu">
-                <button class="action-btn" onclick="toggleMenu(this)">•••</button>
-                <div class="menu">
-                  <button onclick="changeStatus(${item.id}, 'verified')">Verifikasi</button>
-                  <button onclick="changeStatus(${item.id}, 'rejected')">Tolak</button>
-                  <button onclick="markPaid(${item.id})">Tandai Bayar</button>
+              <div class="actions">
+                <a class="action-btn action-primary" href="{{ url('/marketing/pendaftar') }}/${item.id}">Detail</a>
+                <div class="action-menu">
+                  <button class="action-btn" onclick="toggleMenu(this)">•••</button>
+                  <div class="menu">
+                    <button onclick="changeStatus(${item.id}, 'verified')">Verifikasi</button>
+                    <button onclick="changeStatus(${item.id}, 'rejected')">Tolak</button>
+                    <div style="height:1px;background:#eef2f7;margin:.4rem 0"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
         `; 
         body.appendChild(tr);
 
@@ -303,13 +311,18 @@
           detail.innerHTML = `
             <div style="padding-top:.5rem;font-size:.95rem;color:#334155">
               <div><strong>Email:</strong> ${safe(item.email)}</div>
+              <div><strong>NIPD:</strong> ${safe(item.nipd)}</div>
               <div><strong>No HP:</strong> ${safe(item.no_hp)}</div>
               <div><strong>Tanggal:</strong> ${date || '-'}</div>
-              <div><strong>Sumber:</strong> ${safe(item.sumber_pendaftaran)}</div>
+              
               <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
                 <button class="action-btn" onclick="changeStatus(${item.id}, 'verified')">Verifikasi</button>
                 <button class="action-btn" onclick="changeStatus(${item.id}, 'rejected')">Tolak</button>
                 <button class="action-btn" onclick="markPaid(${item.id})">Tandai Bayar</button>
+                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/ktp" class="action-btn">Download KTP</a>
+                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/ijazah" class="action-btn">Download Ijazah</a>
+                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/akte" class="action-btn">Download Akte</a>
+                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/surat-bekerja" class="action-btn">Download Surat</a>
               </div>
             </div>
           `;

@@ -5,14 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dashboard Pendaftar</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{--basic:#004269;--adv:#40826D}
+    .btn-basic{background:linear-gradient(90deg,var(--basic),var(--adv));box-shadow:0 6px 12px rgba(0,0,0,0.08)}
+    .accent-color{color:var(--basic)}
+    .card-accent{border-left:4px solid var(--adv)}
+    /* Caret/button animation */
+    #akunCaret{transition:transform .2s ease;transform-origin:center}
+    .caret-rotated{transform:rotate(180deg)}
+    .btn-basic{transition:transform .18s ease,box-shadow .18s ease}
+    .btn-basic:hover{transform:translateY(-3px);box-shadow:0 12px 20px rgba(0,0,0,0.12)}
+  </style>
 </head>
-<body class="bg-gray-50 text-slate-800">
+<body class="text-slate-800" style="background:var(--basic);">
+  @include('partials.header')
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <!-- Sidebar -->
       <aside class="bg-white rounded-xl border p-5 shadow-sm sticky top-6">
         <div class="flex items-center gap-3 mb-4">
-          <svg class="w-8 h-8 text-[#004269]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM3 21a9 9 0 0118 0"/></svg>
+          <svg class="w-8 h-8 accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM3 21a9 9 0 0118 0"/></svg>
           <div>
             <div class="text-sm text-slate-400">Halo</div>
             <div class="font-semibold">{{ Auth::user()->name ?? 'Pendaftar' }}</div>
@@ -23,51 +35,45 @@
           <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-50" href="{{ route('pendaftar.dashboard') }}">
             <span class="text-slate-600">Dashboard</span>
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-50" href="{{ route('pendaftar.payment.show') }}">
-            <span class="text-slate-600">Pembayaran</span>
+          <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-50" href="{{ route('pendaftar.biodata.show') }}">
+            <span class="text-slate-600">Biodata</span>
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-50" href="#">
-            <span class="text-slate-600">Dokumen</span>
-          </a>
+          <div class="relative">
+            <button id="akunToggle" class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 flex items-center gap-2">
+              <svg class="w-4 h-4 text-[#004269]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM4 20c0-2.761 3.582-5 8-5s8 2.239 8 5v1H4v-1z"/></svg>
+              <span class="font-medium">Akun Saya</span>
+              <svg id="akunCaret" class="w-3 h-3 ml-auto text-slate-400 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>
+            </button>
+            <div id="akunMenu" class="mt-2 bg-white border rounded shadow-sm" style="display:none;">
+              <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50" href="{{ route('pendaftar.akun.email') }}">✉️ Ubah Email</a>
+              <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50" href="{{ route('pendaftar.akun.password') }}">🔒 Ubah Password</a>
+              <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50" href="{{ route('pendaftar.akun.phone') }}">📱 Ubah Nomor Telepon</a>
+              <a class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50" href="{{ route('pendaftar.akun.whatsapp') }}">💬 Ubah WhatsApp</a>
+            </div>
+          </div>
         </nav>
 
-        <div class="mt-4 pt-4 border-t text-xs text-slate-500">
+        {{-- <div class="mt-4 pt-4 border-t text-xs text-slate-500">
           Butuh bantuan? <br>
           <a class="text-[#004269] hover:underline" href="mailto:admissions@lp3i.ac.id">admissions@lp3i.ac.id</a>
-        </div>
+        </div> --}}
       </aside>
 
       <!-- Main -->
       <main class="space-y-6">
-        {{-- STATUS HEADER --}}
-        <div class="bg-white rounded-xl border p-5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h1 class="text-lg md:text-xl font-semibold text-slate-800">Status Pendaftaran</h1>
-            <div class="text-sm text-slate-500 mt-1">Nomor Pendaftaran: <span class="font-medium">{{ $calon->nipd ?? ($calon->id ?? '-') }}</span></div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="text-sm text-slate-500 hidden sm:inline">Tanggal: <span class="font-medium text-slate-800">{{ $calon->created_at ? $calon->created_at->format('d M Y') : now()->format('d M Y') }}</span></div>
-            @if(($payment ?? 'unpaid') === 'unpaid')
-              <a href="{{ route('pendaftar.payment.show') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-[#004269] to-[#009DA5] hover:from-[#003352] text-white text-sm font-semibold px-4 py-2 rounded-full shadow-md">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                Bayar Pendaftaran
-              </a>
-            @else
-              <span class="inline-flex items-center gap-2 text-sm text-slate-600 px-3 py-2 rounded-full bg-slate-50 border">Pembayaran: <strong class="ml-1 text-slate-800">{{ ucfirst($payment) }}</strong></span>
-            @endif
-          </div>
-        </div>
+        {{-- Status header removed per request --}}
 
         {{-- PROGRESS TRACKER --}}
         <div class="bg-white rounded-xl border p-5 shadow-sm">
           <div class="mb-4 text-sm text-slate-600">Progres pendaftaran</div>
           <div class="flex items-center gap-4">
             @php
+              // Order: Pendaftaran -> Pembayaran -> Verifikasi -> Selesai
+              // Map to computed step variables: $step1 (Pendaftaran), $step2 (Pembayaran), $step3 (Verifikasi), $step4 (Selesai)
               $steps = [
                 ['label'=>'Pendaftaran','status'=> $step1 ?? 'completed'],
-                ['label'=>'Verifikasi','status'=> $step2 ?? 'inactive'],
-                ['label'=>'Pembayaran','status'=> $step3 ?? 'inactive'],
+                ['label'=>'Pembayaran','status'=> $step2 ?? 'inactive'],
+                ['label'=>'Menunggu Verifikasi','status'=> $step3 ?? 'inactive'],
                 ['label'=>'Selesai','status'=> $step4 ?? 'inactive'],
               ];
             @endphp
@@ -109,15 +115,7 @@
           </div>
 
           <div class="mt-4 text-sm text-slate-500">
-            @if(($payment ?? 'unpaid') === 'unpaid')
-              <div>Biaya: <strong>Rp {{ number_format($amount ?? 350000,0,',','.') }}</strong></div>
-            @elseif(($verif ?? 'pending') === 'pending')
-              <div>Menunggu verifikasi admin. Anda akan diberitahu melalui email setelah diverifikasi.</div>
-            @elseif(($verif ?? '') === 'rejected')
-              <div class="text-red-600">Pendaftaran ditolak. Silakan hubungi admin: <a class="underline" href="mailto:admissions@lp3i.ac.id">admissions@lp3i.ac.id</a></div>
-            @else
-              <div class="text-green-600">Pendaftaran lengkap. Terima kasih!</div>
-            @endif
+            <div>Progres pendaftaran akan diperbarui oleh Staff LP3I karawang.</div>
           </div>
         </div>
 
@@ -126,26 +124,25 @@
           <div class="lg:col-span-2 bg-white rounded-xl border p-5 shadow-sm">
             <h3 class="text-sm font-semibold mb-3">Detail Pendaftar</h3>
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nomor Pendaftaran</dt><dd class="font-medium mt-1">{{ $calon->nipd ?? ($calon->id ?? '-') }}</dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nomor NIPD</dt><dd class="font-medium mt-1">{{ $calon->nipd ?? ($calon->id ?? '-') }}</dd></div>
               <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nama</dt><dd class="font-medium mt-1">{{ $calon->nama_mhs ?? '-' }}</dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Jurusan</dt><dd class="font-medium mt-1">{{ $calon->jurusan ?? '-' }}</dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Sumber</dt><dd class="font-medium mt-1">{{ $calon->sumber_pendaftaran ?? '-' }}</dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Metode Pembayaran</dt><dd class="font-medium mt-1">{{ $calon->payment_method ?? '-' }}</dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Tanggal Daftar</dt><dd class="font-medium mt-1">{{ $calon->created_at ? $calon->created_at->format('d M Y') : '-' }}</dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Bidang Keahlian</dt><dd class="font-medium mt-1">{{ \App\Helpers\JurusanHelper::getFormat($calon->jurusan ?? null) }}</dd></div>
+              {{-- Payment method and created date removed per request --}}
             </dl>
           </div>
 
           <aside class="bg-white rounded-xl border p-5 shadow-sm">
-            <h3 class="text-sm font-semibold mb-3">Aksi Cepat</h3>
+            <h3 class="text-sm font-semibold mb-3">Aksi</h3>
             <div class="space-y-3">
               @if(($payment ?? 'unpaid') === 'unpaid')
-                <a href="{{ route('pendaftar.payment.show') }}" class="block text-center w-full bg-gradient-to-r from-[#004269] to-[#009DA5] hover:from-[#003352] text-white px-4 py-2 rounded-md font-semibold">Bayar Sekarang</a>
+                <a href="{{ route('pendaftar.payment.show') }}" class="block text-center w-full btn-basic text-white px-4 py-2 rounded-md font-semibold">Bayar Sekarang</a>
               @else
-                <a href="#" class="block text-center w-full border border-slate-200 px-4 py-2 rounded-md text-sm">Cetak Bukti</a>
+                <a href="{{ route('pendaftar.receipt') }}" class="block text-center w-full btn-basic text-white px-4 py-2 rounded-md font-semibold" target="_blank">Download Kuitansi</a>
               @endif
-
-              <a href="#" class="block w-full text-center px-4 py-2 rounded-md bg-slate-100 text-sm">Lihat Detail Pendaftaran</a>
-              <a href="mailto:admissions@lp3i.ac.id" class="block w-full text-center px-4 py-2 rounded-md bg-slate-100 text-sm">Hubungi Admin</a>
+              <a href="{{ url('/') }}" class="block text-center w-full bg-slate-400 hover:bg-slate-500 text-white px-4 py-2 rounded-md font-semibold transition" style="display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1v-10"/><path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 21v-6a1 1 0 011-1h4a1 1 0 011 1v6"/></svg>
+                Kembali ke Home
+              </a>
             </div>
           </aside>
         </div>
@@ -153,4 +150,17 @@
     </div>
   </div>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const t = document.getElementById('akunToggle');
+    const m = document.getElementById('akunMenu');
+    if (t && m) {
+      t.addEventListener('click', function(){
+        const isHidden = m.style.display === 'none' || m.style.display === '' ? true : (m.style.display === 'none');
+        m.style.display = isHidden ? 'block' : 'none';
+        const caret = document.getElementById('akunCaret'); if (caret) caret.classList.toggle('caret-rotated');
+      });
+    }
+  });
+</script>
 </html>

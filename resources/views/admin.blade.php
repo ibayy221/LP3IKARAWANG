@@ -7,6 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Panel - LP3I Karawang</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -163,6 +164,21 @@
         .news-excerpt { color: #546b75; display:block; margin-top:0.35rem; font-size:0.9rem }
         .news-actions { display:flex; gap:0.5rem }
         .news-actions .btn { padding:0.4rem 0.7rem; border-radius:6px; font-size:0.9rem }
+
+        @media (max-width: 1024px) {
+            .admin-content { grid-template-columns: 1fr; }
+            .sidebar { width: 100%; }
+            .main-content { padding: 1.5rem; }
+            .news-list-container { overflow-x: auto; }
+            .news-table { min-width: 720px; }
+        }
+
+        @media (max-width: 640px) {
+            .main-content { padding: 1rem; }
+            .carousel-list { grid-template-columns: 1fr; }
+            .carousel-item { flex-direction: column; align-items: flex-start; }
+            .news-actions { flex-wrap: wrap; }
+        }
 
         .news-item-info h4 {
             margin: 0 0 0.5rem 0;
@@ -495,9 +511,17 @@
                         <i class="fas fa-newspaper"></i> Kelola Berita
                     </a></li>
 
-                    <li><a href="#" class="menu-link" data-section="settings">
-                        <i class="fas fa-cog"></i> Pengaturan
+                    <li><a href="#" class="menu-link" data-section="penempatan">
+                        <i class="fas fa-briefcase"></i> Kelola Penempatan
                     </a></li>
+
+                    <li><a href="#" class="menu-link" data-section="struktur-organisasi">
+                        <i class="fas fa-sitemap"></i> Kelola Struktur Organisasi
+                    </a></li>
+
+                    {{-- <li><a href="#" class="menu-link" data-section="settings">
+                        <i class="fas fa-cog"></i> Pengaturan
+                    </a></li> --}}
                     <li><a href="/" class="menu-link">
                         <i class="fas fa-home"></i> Kembali ke Website
                     </a></li>
@@ -582,6 +606,22 @@
                     </div>
                 </div>
 
+                <!-- Penempatan Management Section -->
+                <div class="content-section" id="penempatan-section">
+                    <h2 class="section-title">Kelola Penempatan</h2>
+                    <button class="btn btn-success" onclick="openPenempatanModal()"><i class="fas fa-plus"></i> Tambah Penempatan</button>
+                    <div id="penempatan-list" style="margin-top:1rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem"></div>
+                </div>
+
+                <!-- Struktur Organisasi Section -->
+                <div class="content-section" id="struktur-organisasi-section">
+                    <h2 class="section-title">Kelola Struktur Organisasi</h2>
+                    <a href="{{ route('struktur-organisasi.index') }}" class="btn btn-success">
+                        <i class=""></i> View Data
+                    </a>
+                    <div id="struktur-list" style="margin-top:1rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem"></div>
+                </div>
+
                 <!-- Settings Section -->
                 <div class="content-section" id="settings-section">
                     <h2 class="section-title">Pengaturan</h2>
@@ -603,6 +643,40 @@
                         </div>
                     </div>
                 </div>
+
+                        <!-- Add/Edit Penempatan Modal -->
+                        <div class="modal" id="penempatan-modal">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 id="penempatan-modal-title">Tambah Penempatan</h3>
+                                    <button class="close-modal" onclick="closePenempatanModal()">&times;</button>
+                                </div>
+                                <form id="penempatan-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handlePenempatanSubmit(event)">
+                                    <input type="hidden" id="penempatan-id" name="id">
+                                    <div class="form-group">
+                                        <label>Judul</label>
+                                        <input type="text" id="penempatan-title" name="title" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Deskripsi</label>
+                                        <textarea id="penempatan-description" name="description" class="form-control" rows="4"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>URL Sumber (opsional)</label>
+                                        <input type="text" id="penempatan-source" name="source_url" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Gambar (jpg,png max 2MB)</label>
+                                        <input type="file" id="penempatan-image" name="image" accept="image/*" onchange="previewPenempatanImage(this)">
+                                        <div id="penempatan-image-preview" class="image-preview"></div>
+                                    </div>
+                                    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+                                        <button type="button" class="btn btn-danger" onclick="closePenempatanModal()">Batal</button>
+                                        <button type="submit" class="btn btn-success">Simpan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
             </div>
         </div>
     </div>
@@ -1263,6 +1337,76 @@
 
         /* deleteNews duplicate removed; using deleteNewsItem(id) implementation above */
 
+        // Fetch Struktur Organisasi
+        async function fetchStrukturOrganisasi() {
+            try {
+                const response = await fetch('/api/struktur-organisasi');
+                const data = await response.json();
+                
+                const container = document.getElementById('struktur-list');
+                container.innerHTML = '';
+                
+                if (!data.length) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">Belum ada data struktur organisasi</p>';
+                    return;
+                }
+                
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: #f8f9fa; border-radius: 10px; padding: 1.5rem; border-left: 4px solid #4a90e2; display: flex; flex-direction: column; gap: 1rem;';
+                    
+                    const fotoHtml = item.foto ? `<img src="/storage/${item.foto}" alt="${item.nama}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">` : '<div style="width: 100%; height: 200px; background: #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">Tidak ada foto</div>';
+                    
+                    card.innerHTML = `
+                        ${fotoHtml}
+                        <h4 style="color: #1e3c72; margin: 0;">${item.nama}</h4>
+                        <p style="color: #666; margin: 0; font-size: 0.9rem;"><strong>${item.role}</strong></p>
+                        <p style="color: #999; margin: 0; font-size: 0.85rem;">Posisi: ${item.posisi} | Urutan: ${item.urutan}</p>
+                        <p style="color: #999; margin: 0; font-size: 0.85rem;">Status: ${item.is_active ? '<span style="background: #28a745; color: white; padding: 0.2rem 0.6rem; border-radius: 3px;">Aktif</span>' : '<span style="background: #dc3545; color: white; padding: 0.2rem 0.6rem; border-radius: 3px;">Tidak Aktif</span>'}</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <a href="/admin/struktur-organisasi/${item.id}/edit" class="btn btn-primary" style="flex: 1; text-align: center;">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <button class="btn btn-danger" style="flex: 1;" onclick="hapusStrukturOrganisasi(${item.id}, '${item.nama}')">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error fetching struktur organisasi:', error);
+                document.getElementById('struktur-list').innerHTML = '<p style="color: red;">Gagal memuat data</p>';
+            }
+        }
+
+        // Hapus Struktur Organisasi
+        async function hapusStrukturOrganisasi(id, nama) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus "${nama}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/admin/struktur-organisasi/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('Data berhasil dihapus');
+                    fetchStrukturOrganisasi();
+                } else {
+                    alert('Gagal menghapus data');
+                }
+            } catch (error) {
+                console.error('Error deleting struktur organisasi:', error);
+                alert('Terjadi kesalahan');
+            }
+        }
+
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             fetchCarouselData();
@@ -1292,6 +1436,8 @@
                             fetchNewsData();
                         } else if (section === 'settings') {
                             fetchRegistrationImage();
+                        } else if (section === 'struktur-organisasi') {
+                            fetchStrukturOrganisasi();
                         }
                     }
                 });
@@ -1307,6 +1453,128 @@
             if (e.target === newsModal) {
                 closeNewsModal();
             }
+            const penempatanModal = document.getElementById('penempatan-modal');
+            if (e.target === penempatanModal) closePenempatanModal();
+        });
+
+        // --- Penempatan admin integration ---
+        const PENEMPATAN_LIST_URL = '/admin/penempatan/json';
+        const PENEMPATAN_CREATE_URL = '/admin/penempatan/ajax';
+        const CSRF_TOKEN = '{{ csrf_token() }}';
+        const DEFAULT_HEADERS = { 'X-CSRF-TOKEN': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' };
+
+        async function fetchPenempatan() {
+            try {
+                const res = await fetch(PENEMPATAN_LIST_URL, { headers: { 'X-Requested-With':'XMLHttpRequest' } });
+                const j = await res.json();
+                if (j.success) renderPenempatanList(j.data || []);
+            } catch (e) { console.error('fetchPenempatan', e); }
+        }
+
+        function renderPenempatanList(items) {
+            const list = document.getElementById('penempatan-list');
+            list.innerHTML = '';
+            if (!items || items.length === 0) {
+                list.innerHTML = '<div style="color:#666;padding:1rem">Belum ada item penempatan.</div>';
+                return;
+            }
+            items.forEach(it => {
+                const div = document.createElement('div');
+                div.style.background = '#fff'; div.style.padding = '0.75rem'; div.style.borderRadius = '8px';
+                div.innerHTML = `
+                    <div style="min-height:140px;display:flex;flex-direction:column;">
+                        <div style="flex:1;display:flex;gap:0.75rem;align-items:center">
+                            <div style="flex:1">
+                                <h4 style="margin:0;color:#1e3c72">${escapeHtml(it.title || '')}</h4>
+                                <div style="color:#556;margin-top:.5rem">${escapeHtml((it.description||'').slice(0,150))}</div>
+                            </div>
+                            <div style="width:120px">
+                                ${it.image_path ? `<img src="${(it.image_path||'').replace(/^storage\//,'/storage/')}" style="width:100%;height:auto;border-radius:6px;object-fit:cover">` : '<div style="height:80px;background:#f0f3f5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999">No image</div>'}
+                            </div>
+                        </div>
+                        <div style="margin-top:.6rem;display:flex;gap:.5rem;justify-content:flex-end">
+                            <button class="btn" onclick="openPenempatanModal(${it.id})">Edit</button>
+                            <button class="btn btn-danger" onclick="deletePenempatan(${it.id})">Hapus</button>
+                        </div>
+                    </div>`;
+                list.appendChild(div);
+            });
+        }
+
+        function openPenempatanModal(id = null) {
+            document.getElementById('penempatan-form').reset();
+            document.getElementById('penempatan-image-preview').innerHTML = '';
+            document.getElementById('penempatan-id').value = '';
+            document.getElementById('penempatan-modal').style.display = 'block';
+            document.getElementById('penempatan-modal-title').textContent = id ? 'Edit Penempatan' : 'Tambah Penempatan';
+            if (id) {
+                // load item
+                fetch('/admin/penempatan/json', { headers:{'X-Requested-With':'XMLHttpRequest'} }).then(r=>r.json()).then(j=>{
+                    if (j.success) {
+                        const it = (j.data || []).find(x=>x.id==id);
+                        if (it) {
+                            document.getElementById('penempatan-id').value = it.id;
+                            document.getElementById('penempatan-title').value = it.title || '';
+                            document.getElementById('penempatan-description').value = it.description || '';
+                            document.getElementById('penempatan-source').value = it.source_url || '';
+                            if (it.image_path) document.getElementById('penempatan-image-preview').innerHTML = `<img src="${it.image_path.replace(/^storage\//,'/storage/')}" style="max-width:200px;max-height:150px;border-radius:8px">`;
+                        }
+                    }
+                }).catch(e=>console.error(e));
+            }
+        }
+
+        function closePenempatanModal() { document.getElementById('penempatan-modal').style.display = 'none'; }
+
+        function previewPenempatanImage(input) {
+            const preview = document.getElementById('penempatan-image-preview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { preview.innerHTML = `<img src="${e.target.result}" style="max-width:200px;max-height:150px;border-radius:8px">`; };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function handlePenempatanSubmit(e) {
+            e.preventDefault();
+            const form = document.getElementById('penempatan-form');
+            const fd = new FormData(form);
+            const id = document.getElementById('penempatan-id').value;
+            const url = id ? `/admin/penempatan/${id}/ajax` : PENEMPATAN_CREATE_URL;
+            try {
+                const res = await fetch(url, { method: 'POST', headers: DEFAULT_HEADERS, body: fd });
+                const ct = res.headers.get('content-type') || '';
+                if (ct.indexOf('application/json') !== -1) {
+                    const j = await res.json();
+                    if (j.success) { closePenempatanModal(); fetchPenempatan(); }
+                    else alert('Error saving: ' + (j.error||JSON.stringify(j)));
+                } else {
+                    const txt = await res.text();
+                    console.error('Non-JSON response saving penempatan:', txt);
+                    alert('Server error (non-JSON). See console for details.');
+                }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+        }
+
+        async function deletePenempatan(id) {
+            if (!confirm('Hapus item ini?')) return;
+            try {
+                const res = await fetch(`/admin/penempatan/${id}/ajax`, { method: 'DELETE', headers: DEFAULT_HEADERS });
+                const ct = res.headers.get('content-type') || '';
+                if (ct.indexOf('application/json') !== -1) {
+                    const j = await res.json();
+                    if (j.success) fetchPenempatan(); else alert('Gagal menghapus');
+                } else {
+                    const txt = await res.text(); console.error('Non-JSON delete response:', txt); alert('Server error (non-JSON). See console.');
+                }
+            } catch (e) { console.error(e); alert('Error deleting: ' + e.message); }
+        }
+
+        function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"})[c]); }
+
+        // When penempatan menu clicked, load data
+        document.querySelectorAll('.menu-link[data-section="penempatan"]').forEach(link=>{
+            link.addEventListener('click', function(e){ e.preventDefault(); document.querySelectorAll('.menu-link').forEach(l=>l.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active')); document.getElementById('penempatan-section').classList.add('active'); fetchPenempatan(); });
         });
     </script>
 </body>
