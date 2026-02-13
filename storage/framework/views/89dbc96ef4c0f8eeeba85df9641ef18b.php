@@ -165,6 +165,21 @@
         .news-actions { display:flex; gap:0.5rem }
         .news-actions .btn { padding:0.4rem 0.7rem; border-radius:6px; font-size:0.9rem }
 
+        @media (max-width: 1024px) {
+            .admin-content { grid-template-columns: 1fr; }
+            .sidebar { width: 100%; }
+            .main-content { padding: 1.5rem; }
+            .news-list-container { overflow-x: auto; }
+            .news-table { min-width: 720px; }
+        }
+
+        @media (max-width: 640px) {
+            .main-content { padding: 1rem; }
+            .carousel-list { grid-template-columns: 1fr; }
+            .carousel-item { flex-direction: column; align-items: flex-start; }
+            .news-actions { flex-wrap: wrap; }
+        }
+
         .news-item-info h4 {
             margin: 0 0 0.5rem 0;
             color: #1e3c72;

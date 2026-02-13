@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Edit Email</title>
+  <title>Ubah Password</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{--basic:#004269;--adv:#40826D}
@@ -16,6 +16,7 @@
   </style>
 </head>
 <body class="text-slate-800">
+  <?php echo $__env->make('partials.header_pendaftar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <aside class="bg-white rounded-xl border p-5 shadow-sm sticky top-6" >
@@ -45,22 +46,27 @@
       <main>
         <div class="bg-white rounded-xl card-adv p-6">
           <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-2xl font-bold text-[#004269]">Ubah Email</h2>
-                <p class="text-sm text-slate-500">Perbarui alamat email akun Anda.</p>
-              </div>
+            <div>
+              <h2 class="text-2xl font-bold text-[#004269]">Ubah Password</h2>
+              <p class="text-sm text-slate-500">Atur ulang password akun Anda.</p>
+            </div>
           </div>
 
           <?php if(session('success')): ?>
             <div class="p-3 mt-4 rounded bg-green-50 text-green-700"><?php echo e(session('success')); ?></div>
           <?php endif; ?>
 
-          <form action="<?php echo e(route('pendaftar.akun.email.update')); ?>" method="POST" class="mt-5">
+          <form action="<?php echo e(route('pendaftar.akun.password.update')); ?>" method="POST" class="mt-5">
             <?php echo csrf_field(); ?>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2 field-box p-4 rounded">
-                <label class="block text-sm mb-1">Email Baru</label>
-                <input type="email" name="email" class="w-full border rounded px-3 py-2" value="<?php echo e(old('email', Auth::user()->email ?? '')); ?>">
+                <label class="block text-sm mb-1">Password Baru</label>
+                <input type="password" name="password" class="w-full border rounded px-3 py-2">
+              </div>
+
+              <div class="md:col-span-2 field-box p-4 rounded">
+                <label class="block text-sm mb-1">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="w-full border rounded px-3 py-2">
               </div>
             </div>
 
@@ -74,4 +80,4 @@
     </div>
   </div>
 </body>
-</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/pendaftar/account/email.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/pendaftar/account/password.blade.php ENDPATH**/ ?>
