@@ -13,9 +13,8 @@ class MahasiswaController extends Controller
     {
         $kecamatans = Kecamatan::orderBy('name')->get();
         // load desas grouped by kecamatan id for cascading dropdown
-        $desas = \App\Models\Desa::orderBy('name')->get()->groupBy('kecamatan_id')->map(function($items) {
-            return $items->map(function($it) { return ['id' => $it->id, 'name' => $it->name, 'kode_pos' => $it->kode_pos]; })->values();
-        });
+        // Note: Desa model/table doesn't exist, using empty collection
+        $desas = collect([]);
 
         // Read optional registration image setting from public/data/settings.csv
         $registrationImage = null;

@@ -17,7 +17,7 @@ class TestPendaftarSeeder extends Seeder
 
         $u = User::firstOrCreate(
             ['email' => 'pendaftar_test@example.com'],
-            ['name' => 'Auto Test', 'password' => Hash::make('secret123'), 'is_applicant' => true]
+            ['name' => 'Auto Test', 'password' => Hash::make('secret123')]
         );
 
         $m = Mahasiswa::firstOrCreate(

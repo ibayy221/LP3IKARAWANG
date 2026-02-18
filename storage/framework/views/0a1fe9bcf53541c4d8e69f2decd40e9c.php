@@ -217,6 +217,7 @@
                 <a href="<?php echo e(route('student')); ?>">E | Student</a>
                 <a href="<?php echo e(route('akademik')); ?>">E | Akademik</a>
                 <a href="<?php echo e(route('lecture')); ?>">E | Lecture</a>
+                <a href="<?php echo e(route('lecture')); ?>">E | Caribhab</a>
             </div>
         </div>
     </div>

@@ -333,15 +333,15 @@
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">No. HP *</label>
-                    <input type="text" name="no_hp" value="{{ old('no_hp') }}" class="form-control" required>
+                    <input type="text" name="no_tlp" value="{{ old('no_tlp') }}" class="form-control" required>
                   </div>
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Bidang Keahlian</label>
-                    <select name="jurusan" class="form-control">
+                    <select name="program_studi" class="form-control">
                       <option value="">--Pilih--</option>
-                      <option value="AIS" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>Accounting Information System</option>
-                      <option value="ASE" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
-                      <option value="OAA" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
+                      <option value="1" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>Accounting Information System</option>
+                      <option value="2" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
+                      <option value="3" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
                     </select>
                   </div>
                 </div>

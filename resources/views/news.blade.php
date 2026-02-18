@@ -437,5 +437,6 @@ $showDetail = $currentNews !== null;
         // ESC key to close
         document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
     </script>
+    @include('layouts.footer')
 </body>
 </html>

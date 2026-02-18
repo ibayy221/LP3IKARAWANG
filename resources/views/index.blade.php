@@ -291,6 +291,24 @@
             .news-grid { grid-template-columns: 1fr; }
             .hero-content h1 { font-size: 2rem; }
         }
+
+        /* Footer */
+        .site-footer { background: #1e3c72; color: #ffffff; padding: 2.5rem 2rem 1rem; }
+        .site-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .site-footer .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start; }
+        .site-footer .footer-title { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.2px; margin-bottom: 0.75rem; }
+        .site-footer .footer-text { color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.7; }
+        .site-footer .footer-contact { display: grid; gap: 0.5rem; }
+        .site-footer .footer-contact a,
+        .site-footer .footer-contact .footer-item { color: rgba(255,255,255,0.92); text-decoration: none; display: inline-flex; align-items: flex-start; gap: 0.6rem; font-size: 0.95rem; line-height: 1.5; }
+        .site-footer .footer-contact a:hover { color: #ffffff; text-decoration: underline; }
+        .site-footer .footer-contact i { margin-top: 2px; width: 18px; text-align: center; opacity: 0.95; }
+        .site-footer .footer-bottom { border-top: 1px solid rgba(255,255,255,0.16); margin-top: 1.75rem; padding-top: 1rem; display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; font-size: 0.9rem; color: rgba(255,255,255,0.85); }
+        @media (max-width: 768px) {
+            .site-footer { padding: 2.25rem 1.25rem 1rem; }
+            .site-footer .container { padding: 0 1rem; }
+            .site-footer .footer-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -403,6 +421,9 @@
         </div>
     </div>
 </section>
+
+    @include('layouts.footer')
+
 <script>
     // Animasi Scroll Header
     window.addEventListener('scroll', function() {

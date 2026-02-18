@@ -49,6 +49,9 @@ Route::get('/pedoman/download', function () {
 })->name('pedoman.download');
 
 // Mahasiswa registration
+Route::get('/mahasiswa', function () {
+    return redirect()->route('mahasiswa.create');
+})->name('mahasiswa');
 Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
 Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
 

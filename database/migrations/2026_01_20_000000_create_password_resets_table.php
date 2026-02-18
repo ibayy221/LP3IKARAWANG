@@ -19,8 +19,6 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->boolean('used')->default(false);
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

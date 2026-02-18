@@ -14,11 +14,7 @@ class EnsureApplicant
             return redirect()->guest(route('pendaftar.login'));
         }
 
-        $user = Auth::user();
-        if (!$user->is_applicant) {
-            abort(403, 'Forbidden: Applicants only');
-        }
-
+        // Allow all authenticated users (is_applicant check removed)
         return $next($request);
     }
 }

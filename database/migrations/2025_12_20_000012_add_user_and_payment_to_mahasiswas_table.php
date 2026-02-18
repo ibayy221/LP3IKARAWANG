@@ -11,9 +11,12 @@ return new class extends Migration
         Schema::table('mahasiswas', function (Blueprint $table) {
             if (!Schema::hasColumn('mahasiswas', 'user_id')) {
                 $table->unsignedBigInteger('user_id')->nullable()->after('id');
+            }
+            if (!Schema::hasColumn('mahasiswas', 'payment_status')) {
                 $table->enum('payment_status', ['unpaid','paid'])->default('unpaid')->after('status_verifikasi');
+            }
+            if (!Schema::hasColumn('mahasiswas', 'payment_amount')) {
                 $table->integer('payment_amount')->default(350000)->after('payment_status');
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             }
         });
     }
@@ -22,8 +25,13 @@ return new class extends Migration
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
             if (Schema::hasColumn('mahasiswas', 'user_id')) {
-                $table->dropForeign(['user_id']);
-                $table->dropColumn(['user_id','payment_status','payment_amount']);
+                $table->dropColumn('user_id');
+            }
+            if (Schema::hasColumn('mahasiswas', 'payment_status')) {
+                $table->dropColumn('payment_status');
+            }
+            if (Schema::hasColumn('mahasiswas', 'payment_amount')) {
+                $table->dropColumn('payment_amount');
             }
         });
     }

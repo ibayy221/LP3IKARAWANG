@@ -441,6 +441,7 @@
         window.addEventListener('load', drawOrgLines);
         window.addEventListener('resize', function(){ setTimeout(drawOrgLines, 120); });
     </script>
+    <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 </body>
 </html>
 <?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/struktur.blade.php ENDPATH**/ ?>

@@ -168,6 +168,7 @@
             </p>
         </article>
     </main>
+    @include('layouts.footer')
     <script>
         // Animasi Scroll Header
         window.addEventListener('scroll', function() {

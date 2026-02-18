@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'is_applicant')) {
-                $table->boolean('is_applicant')->default(false)->after('is_marketing');
+                $table->boolean('is_applicant')->default(false);
             }
         });
     }

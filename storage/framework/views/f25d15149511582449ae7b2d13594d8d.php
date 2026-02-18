@@ -141,6 +141,7 @@
 		</div>
 	</div>
 </body>
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 </html>
 
 <?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/ais.blade.php ENDPATH**/ ?>

@@ -441,5 +441,6 @@
         window.addEventListener('load', drawOrgLines);
         window.addEventListener('resize', function(){ setTimeout(drawOrgLines, 120); });
     </script>
+    @include('layouts.footer')
 </body>
 </html>
