@@ -128,13 +128,13 @@
         <p class="subtitle">Student data management</p>
       </div>
       <div class="actions">
-        <a class="btn" href="{{ route('marketing.pendaftar.create') }}"><span class="plus">+</span> Add</a>
-        {{-- <a class="btn" href="{{ route('marketing.dashboard') }}">Dashboard</a> --}}
+        <a class="btn" href="<?php echo e(route('marketing.pendaftar.create')); ?>"><span class="plus">+</span> Add</a>
+        
       </div>
     </div>
 
     <div class="banner-wrap">
-      <div class="bg-hero" style="background-image:url('{{ !empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl,'/')) : asset('storage/illustrations/registration-illustration.svg') }}')"></div>
+      <div class="bg-hero" style="background-image:url('<?php echo e(!empty($registrationImageUrl) ? asset(ltrim($registrationImageUrl,'/')) : asset('storage/illustrations/registration-illustration.svg')); ?>')"></div>
     </div>
 
     <div class="controls">
@@ -147,25 +147,25 @@
       </select>
       <select id="filter-jurusan" class="form-control">
         <option value="">All study program</option>
-        @foreach(($jurusans ?? []) as $j)
-          <option value="{{ $j }}">{{ \App\Helpers\JurusanHelper::getFormat($j) }}</option>
-        @endforeach
+        <?php $__currentLoopData = ($jurusans ?? []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+          <option value="<?php echo e($j); ?>"><?php echo e(\App\Helpers\JurusanHelper::getFormat($j)); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
       </select>
 
       
       <div style="display:flex;gap:.5rem;align-items:center">
         <button class="btn btn-small" id="btn-search">Serch</button>
-         <form id="delete-all-form" method="POST" action="{{ route('marketing.pendaftar.destroyAll') }}" style="display:inline">
-          @csrf
-          @method('DELETE')
+         <form id="delete-all-form" method="POST" action="<?php echo e(route('marketing.pendaftar.destroyAll')); ?>" style="display:inline">
+          <?php echo csrf_field(); ?>
+          <?php echo method_field('DELETE'); ?>
           <button class="btn btn-small desktop-only" id="btn-delete-all" style="background:#ef4444;border:none" onclick="return confirm('Yakin ingin menghapus SEMUA pendaftar? Hanya untuk pengembangan.');">Delet All</button>
         </form>
         <a class="btn btn-small desktop-only" id="btn-print" href="#">Print</a>
         <a  id="btn-export" href="#"></a>
 
        
-        {{-- <a class="btn btn-small desktop-only" href="{{ route('marketing.pendaftar.trash') }}" style="background:#fff;color:var(--brand-dark);border:1px solid #e6eef6;margin-left:.5rem"></a> --}}
-        {{-- <span class="desktop-only" style="font-size:.85rem;color:#b91c1c;margin-left:.4rem">(hanya pengembangan)</span> --}}
+        
+        
 
         <!-- Mobile actions dropdown -->
         <div class="mobile-actions" style="position:relative;display:none">
@@ -174,7 +174,7 @@
             <button id="mobile-print" style="display:block;padding:.45rem .6rem;border:none;background:transparent;text-align:left">Print</button>
             <button id="mobile-export" style="display:block;padding:.45rem .6rem;border:none;background:transparent;text-align:left">Export</button>
             <button id="mobile-delete-all" style="display:block;padding:.45rem .6rem;border:none;background:transparent;text-align:left;color:#b91c1c">Hapus Semua (dev)</button>
-            <form id="delete-all-form-mobile" method="POST" action="{{ route('marketing.pendaftar.destroyAll') }}" style="display:none">@csrf @method('DELETE')</form>
+            <form id="delete-all-form-mobile" method="POST" action="<?php echo e(route('marketing.pendaftar.destroyAll')); ?>" style="display:none"><?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?></form>
           </div>
         </div>
       </div>
@@ -213,7 +213,7 @@
       fd.append('q', document.getElementById('search').value || '');
       fd.append('status', document.getElementById('filter-status').value || '');
       fd.append('jurusan', document.getElementById('filter-jurusan').value || '');
-      const res = await fetch('{{ route('marketing.pendaftar.list') }}', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
+      const res = await fetch('<?php echo e(route('marketing.pendaftar.list')); ?>', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' } });
       const js = await res.json();
       const body = document.getElementById('pendaftar-body');
       const cardsDiv = document.getElementById('pendaftar-cards');
@@ -277,7 +277,7 @@
           <td><span class="badge ${statusKey}">${statusLabel}</span></td>
           <td>
               <div class="actions">
-                <a class="action-btn action-primary" href="{{ url('/marketing/pendaftar') }}/${item.id}">Detail</a>
+                <a class="action-btn action-primary" href="<?php echo e(url('/marketing/pendaftar')); ?>/${item.id}">Detail</a>
                 <div class="action-menu">
                   <button class="action-btn" onclick="toggleMenu(this)">•••</button>
                   <div class="menu">
@@ -319,10 +319,10 @@
                 <button class="action-btn" onclick="changeStatus(${item.id}, 'verified')">Verifikasi</button>
                 <button class="action-btn" onclick="changeStatus(${item.id}, 'rejected')">Tolak</button>
                 <button class="action-btn" onclick="markPaid(${item.id})">Tandai Bayar</button>
-                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/ktp" class="action-btn">Download KTP</a>
-                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/ijazah" class="action-btn">Download Ijazah</a>
-                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/akte" class="action-btn">Download Akte</a>
-                <a href="{{ url('/marketing/pendaftar') }}/${item.id}/surat-bekerja" class="action-btn">Download Surat</a>
+                <a href="<?php echo e(url('/marketing/pendaftar')); ?>/${item.id}/ktp" class="action-btn">Download KTP</a>
+                <a href="<?php echo e(url('/marketing/pendaftar')); ?>/${item.id}/ijazah" class="action-btn">Download Ijazah</a>
+                <a href="<?php echo e(url('/marketing/pendaftar')); ?>/${item.id}/akte" class="action-btn">Download Akte</a>
+                <a href="<?php echo e(url('/marketing/pendaftar')); ?>/${item.id}/surat-bekerja" class="action-btn">Download Surat</a>
               </div>
             </div>
           `;
@@ -371,8 +371,8 @@
 
     // Mobile actions dropdown handlers
     document.getElementById('mobile-actions-btn').addEventListener('click', function(e){ e.stopPropagation(); const m = document.getElementById('mobile-actions-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; });
-    document.getElementById('mobile-print').addEventListener('click', function(){ const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('{{ route('marketing.pendaftar.print') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
-    document.getElementById('mobile-export').addEventListener('click', function(){ const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '{{ route('marketing.pendaftar.export') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
+    document.getElementById('mobile-print').addEventListener('click', function(){ const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('<?php echo e(route('marketing.pendaftar.print')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
+    document.getElementById('mobile-export').addEventListener('click', function(){ const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '<?php echo e(route('marketing.pendaftar.export')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
     document.getElementById('mobile-delete-all').addEventListener('click', function(){ if(!confirm('Yakin ingin menghapus SEMUA pendaftar? Hanya untuk pengembangan.')) return; document.getElementById('delete-all-form-mobile').submit(); });
 
     async function changeStatus(id, status) {
@@ -380,20 +380,20 @@
       const label = labels[status] || status;
       if (!confirm('Ubah status pendaftar ini menjadi "' + label + '"?')) return;
       const fd = new FormData(); fd.append('id', id); fd.append('status', status);
-      const res = await fetch('{{ route('marketing.pendaftar.update') }}', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
+      const res = await fetch('<?php echo e(route('marketing.pendaftar.update')); ?>', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' } });
       const js = await res.json();
       if (js.success) { alert('Status berhasil diperbarui'); fetchPendaftar(); } else { alert('Error: ' + (js.error || 'server error')); }
     }
 
     // Search & controls
     document.getElementById('btn-search').addEventListener('click', function(e){ e.preventDefault(); fetchPendaftar(); });
-    document.getElementById('btn-export').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '{{ route('marketing.pendaftar.export') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
-    document.getElementById('btn-print').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('{{ route('marketing.pendaftar.print') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
+    document.getElementById('btn-export').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '<?php echo e(route('marketing.pendaftar.export')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
+    document.getElementById('btn-print').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('<?php echo e(route('marketing.pendaftar.print')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
 
     async function markPaid(id){
       if (!confirm('Tandai pendaftar ini sudah membayar?')) return;
       const fd = new FormData(); fd.append('payment','paid');
-      const res = await fetch('{{ url('/marketing/pendaftar') }}/'+id+'/payment', { method:'POST', body: fd, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
+      const res = await fetch('<?php echo e(url('/marketing/pendaftar')); ?>/'+id+'/payment', { method:'POST', body: fd, headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' } });
       const js = await res.json();
       if (js.success) { alert('Status pembayaran diperbarui'); fetchPendaftar(); } else { alert('Error: '+(js.error||'server error')); }
     }
@@ -411,10 +411,10 @@
     document.getElementById('search').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); fetchPendaftar(); } });
 
     document.getElementById('btn-search').addEventListener('click', function(e){ e.preventDefault(); fetchPendaftar(); });
-    document.getElementById('btn-export').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '{{ route('marketing.pendaftar.export') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
-    document.getElementById('btn-print').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('{{ route('marketing.pendaftar.print') }}?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
+    document.getElementById('btn-export').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.location = '<?php echo e(route('marketing.pendaftar.export')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j); });
+    document.getElementById('btn-print').addEventListener('click', function(e){ e.preventDefault(); const q=document.getElementById('search').value||''; const s=document.getElementById('filter-status').value||''; const j=document.getElementById('filter-jurusan').value||''; window.open('<?php echo e(route('marketing.pendaftar.print')); ?>?q='+encodeURIComponent(q)+'&status='+encodeURIComponent(s)+'&jurusan='+encodeURIComponent(j),'_blank'); });
 
     document.addEventListener('DOMContentLoaded', function(){ try { fetchPendaftar(); } catch (e) { document.getElementById('fetch-error').textContent = 'Gagal memuat daftar pendaftar. Silakan muat ulang atau periksa koneksi.'; document.getElementById('fetch-error').style.display = 'block'; } });
   </script>
 </body>
-</html>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/marketing/pendaftar/index.blade.php ENDPATH**/ ?>

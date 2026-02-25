@@ -8,17 +8,26 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            // Unique composite to reduce accidental duplicates: email + jurusan + no_hp
-            // This will prevent identical submissions that contain the same values.
-            $table->unique(['email','jurusan','no_hp'], 'mahasiswas_unique_email_jurusan_nohp');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (
+                Schema::hasColumn('mahasiswa', 'email')
+                && Schema::hasColumn('mahasiswa', 'id_program_studi')
+                && Schema::hasColumn('mahasiswa', 'no_tlp')
+            ) {
+                // Unique composite to reduce accidental duplicates.
+                $table->unique(['email', 'id_program_studi', 'no_tlp'], 'mahasiswa_unique_email_program_notlp');
+            }
         });
     }
 
     public function down()
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->dropUnique('mahasiswas_unique_email_jurusan_nohp');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            try {
+                $table->dropUnique('mahasiswa_unique_email_program_notlp');
+            } catch (\Throwable $e) {
+                // Ignore if index does not exist
+            }
         });
     }
 };

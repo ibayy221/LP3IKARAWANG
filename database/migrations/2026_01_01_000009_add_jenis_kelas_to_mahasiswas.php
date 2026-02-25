@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            if (!Schema::hasColumn('mahasiswas', 'jenis_kelas')) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswa', 'jenis_kelas')) {
                 $table->string('jenis_kelas')->nullable()->after('jenis_kelamin');
             }
         });
@@ -23,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            if (Schema::hasColumn('mahasiswas', 'jenis_kelas')) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (Schema::hasColumn('mahasiswa', 'jenis_kelas')) {
                 $table->dropColumn('jenis_kelas');
             }
         });

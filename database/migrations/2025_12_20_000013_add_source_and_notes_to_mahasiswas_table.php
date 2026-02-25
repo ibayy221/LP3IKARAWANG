@@ -8,16 +8,29 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->string('sumber_pendaftaran')->nullable()->after('jurusan');
-            $table->text('marketing_notes')->nullable()->after('sumber_pendaftaran');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswa', 'sumber_pendaftaran')) {
+                $table->string('sumber_pendaftaran')->nullable();
+            }
+            if (!Schema::hasColumn('mahasiswa', 'marketing_notes')) {
+                $table->text('marketing_notes')->nullable();
+            }
         });
     }
 
     public function down()
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->dropColumn(['sumber_pendaftaran','marketing_notes']);
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            $toDrop = [];
+            foreach (['sumber_pendaftaran', 'marketing_notes'] as $col) {
+                if (Schema::hasColumn('mahasiswa', $col)) {
+                    $toDrop[] = $col;
+                }
+            }
+
+            if (!empty($toDrop)) {
+                $table->dropColumn($toDrop);
+            }
         });
     }
 };

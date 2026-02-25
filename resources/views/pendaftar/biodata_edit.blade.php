@@ -1,4 +1,3 @@
-@include('layouts.footer')
 <!doctype html>
 <html lang="id">
 <head>
@@ -131,11 +130,12 @@
 
               <div>
                 <label class="block text-sm text-slate-600 mb-1">Program Studi</label>
-                <select name="jurusan" class="w-full border rounded px-3 py-2">
+                <select name="id_program_studi" class="w-full border rounded px-3 py-2">
                   <option value="">-- Pilih --</option>
-                  <option value="AIS" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'AIS') ? 'selected' : '' }}>Accounting Information System</option>
-                  <option value="ASE" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'ASE') ? 'selected' : '' }}>Application Software Engineering</option>
-                  <option value="OAA" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'OAA') ? 'selected' : '' }}>Office Administration Automatization</option>
+                  @php $selectedProdi = old('id_program_studi', $pendaftar->id_program_studi ?? ($pendaftar->id_program_study ?? '')); @endphp
+                  <option value="2" {{ ((string)$selectedProdi === '2') ? 'selected' : '' }}>Accounting Information System</option>
+                  <option value="1" {{ ((string)$selectedProdi === '1') ? 'selected' : '' }}>Application Software Engineering</option>
+                  <option value="3" {{ ((string)$selectedProdi === '3') ? 'selected' : '' }}>Office Administration Automatization</option>
                 </select>
               </div>
 
@@ -266,5 +266,6 @@
       </main>
     </div>
   </div>
+  @include('layouts.footer')
 </body>
 </html>

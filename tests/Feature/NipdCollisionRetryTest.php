@@ -16,7 +16,7 @@ class NipdCollisionRetryTest extends TestCase
         $existing = Mahasiswa::create([
             'nama_mhs' => 'Existing',
             'email' => 'exist@example.com',
-            'jurusan' => 'OAA',
+            'id_program_studi' => 3,
             'nipd' => '2407810070003'
         ]);
 
@@ -24,13 +24,13 @@ class NipdCollisionRetryTest extends TestCase
         $attrs = [
             'nama_mhs' => 'New Student',
             'email' => 'new@example.com',
-            'jurusan' => 'OAA',
+            'id_program_studi' => 3,
             'nipd' => '2407810070003'
         ];
 
         $new = Mahasiswa::createWithUniqueNipd($attrs);
 
-        $this->assertDatabaseHas('mahasiswas', ['id' => $new->id]);
+        $this->assertDatabaseHas('mahasiswa', ['id_mahasiswa' => $new->id_mahasiswa]);
         $this->assertNotEquals('2407810070003', $new->nipd);
     }
 }

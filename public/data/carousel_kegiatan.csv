@@ -1,0 +1,5 @@
+id,title,image_path,status,created_at,updated_at
+
+1,Demo Kegiatan 1,storage/image/landingPage1.png,active,2026-02-21,2026-02-21
+2,Demo Kegiatan 2,storage/image/landingPage2.png,active,2026-02-21,2026-02-21
+3,Demo Kegiatan 3,storage/image/landingPage3.png,active,2026-02-21,2026-02-21

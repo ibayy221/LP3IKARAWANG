@@ -217,7 +217,7 @@
                 <a href="{{ route('student') }}">E | Student</a>
                 <a href="{{ route('akademik') }}">E | Akademik</a>
                 <a href="{{ route('lecture') }}">E | Lecture</a>
-                <a href="{{ route('lecture') }}">E | Caribhab</a>
+                <a href="">E | Carrier Hub</a>
             </div>
         </div>
     </div>

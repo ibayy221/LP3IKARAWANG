@@ -18,7 +18,9 @@
   </style>
 </head>
 <body class="text-slate-800" style="background:var(--basic);">
+  
   <?php echo $__env->make('partials.header_pendaftar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <!-- Sidebar -->
@@ -121,9 +123,9 @@
           <div class="lg:col-span-2 bg-white rounded-xl border p-5 shadow-sm">
             <h3 class="text-sm font-semibold mb-3">Detail Pendaftar</h3>
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nomor NIPD</dt><dd class="font-medium mt-1"><?php echo e($calon->nipd ?? ($calon->id ?? '-')); ?></dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nama</dt><dd class="font-medium mt-1"><?php echo e($calon->nama_mhs ?? '-'); ?></dd></div>
-              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Bidang Keahlian</dt><dd class="font-medium mt-1"><?php echo e(\App\Helpers\JurusanHelper::getFormat($calon->jurusan ?? null)); ?></dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nomor NIPD</dt><dd class="font-medium mt-1"><?php echo e($calon?->nipd ?? ($calon?->id_mahasiswa ?? '-')); ?></dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Nama</dt><dd class="font-medium mt-1"><?php echo e($calon?->nama_mhs ?? (Auth::user()->name ?? '-')); ?></dd></div>
+              <div class="p-3 bg-slate-50 rounded"><dt class="text-xs text-slate-400">Bidang Keahlian</dt><dd class="font-medium mt-1"><?php echo e(\App\Helpers\JurusanHelper::getFormat($calon?->id_program_studi ?? ($calon?->id_program_study ?? null))); ?></dd></div>
               
             </dl>
           </div>

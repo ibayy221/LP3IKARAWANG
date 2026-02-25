@@ -336,18 +336,19 @@
         <div class="reasons-grid">
             <div class="reason-card">
                 <i class="fas fa-rocket"></i>
-                <h4>Kuliah Cepat Kerja</h4>
+                <h4>Kuliah Bisa Cepat Kerja</h4>
                 <p>Pembelajaran praktis yang mempersiapkan karier.</p>
             </div>
             <div class="reason-card">
                 <i class="fas fa-award"></i>
-                <h4>Program Terakreditasi</h4>
-                <p>Program studi dengan akreditasi dan kurikulum relevan.</p>
+                <h4>Sertifikasi Kompetensi</h4>
+                <p>Mahasiswa Politeknik LP3I memiliki 4 sertifikasi kompetensi dari Badan Nasional Sertifikasi Profesi (BNSP) dan International Test Center</p>
             </div>
             <div class="reason-card">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <h4>Dosen Profesional</h4>
-                <p>Tenaga pengajar berpengalaman dari industri.</p>
+                <p>Dosen Politeknik LP3I memiliki sertifikasi dosen dari 
+                    Kemendikbud dan Dosen praktisi yang berpengalaman di bidang industri.</p>
             </div>
             <div class="reason-card">
                 <i class="fas fa-briefcase"></i>
@@ -357,6 +358,139 @@
         </div>
     
         <div class="video-block">
+            <!-- Modern Portrait Carousel Card (3 images, auto-slide, modern style) -->
+            <div class="modern-carousel-container" id="modern-carousel-hook">
+                <div class="modern-carousel-track">
+                    <div class="modern-carousel-card active">
+                        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Hook 1" style="aspect-ratio:3/4;object-fit:cover;" />
+                        <div class="carousel-caption">Aktivitas Mahasiswa</div>
+                    </div>
+                    <div class="modern-carousel-card">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="Hook 2" style="aspect-ratio:3/4;object-fit:cover;" />
+                        <div class="carousel-caption">Kegiatan Kampus</div>
+                    </div>
+                    <div class="modern-carousel-card">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f2f1b?auto=format&fit=crop&w=400&q=80" alt="Hook 3" style="aspect-ratio:3/4;object-fit:cover;" />
+                        <div class="carousel-caption">Prestasi LP3I</div>
+                    </div>
+                    <div class="modern-carousel-card">
+                        <img src="https://images.unsplash.com/photo-1506744034316-4dcda3c0a98f?auto=format&fit=crop&w=400&q=80" alt="Hook 4" style="aspect-ratio:3/4;object-fit:cover;" />
+                        <div class="carousel-caption">Suasana Kelas</div>
+                    </div>
+                    <div class="modern-carousel-card">
+                        <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80" alt="Hook 5" style="aspect-ratio:3/4;object-fit:cover;" />
+                        <div class="carousel-caption">Kegiatan Outdoor</div>
+                    </div>
+                </div>
+                <div class="modern-carousel-indicators">
+                    <span class="indicator active"></span>
+                    <span class="indicator"></span>
+                    <span class="indicator"></span>
+                    <span class="indicator"></span>
+                    <span class="indicator"></span>
+                </div>
+            </div>
+            <style>
+                #modern-carousel-hook .modern-carousel-track {
+                    display: flex;
+                    gap: 18px;
+                    justify-content: center;
+                    align-items: stretch;
+                }
+                #modern-carousel-hook .modern-carousel-card {
+                    width: 180px;
+                    min-width: 180px;
+                    height: 320px;
+                    background: #f6f8fb;
+                    border-radius: 18px;
+                    box-shadow: 0 4px 18px rgba(30,60,114,0.10);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: flex-end;
+                    opacity: 0.7;
+                    transition: opacity 0.7s, transform 0.7s;
+                    position: relative;
+                }
+                #modern-carousel-hook .modern-carousel-card.active {
+                    opacity: 1;
+                    transform: scale(1.05);
+                    z-index: 2;
+                }
+                #modern-carousel-hook .modern-carousel-card img {
+                    width: 100%;
+                    height: 240px;
+                    border-radius: 18px 18px 0 0;
+                    object-fit: cover;
+                    aspect-ratio: 3/4;
+                }
+                #modern-carousel-hook .carousel-caption {
+                    background: rgba(30,60,114,0.85);
+                    color: #fff;
+                    font-size: 1.05rem;
+                    font-weight: 600;
+                    padding: 0.6rem 1rem;
+                    border-radius: 0 0 18px 18px;
+                    width: 100%;
+                    text-align: center;
+                    letter-spacing: 0.5px;
+                }
+                #modern-carousel-hook .modern-carousel-indicators {
+                    display: flex;
+                    justify-content: center;
+                    gap: 10px;
+                    margin: 0.7rem 0 0.2rem 0;
+                }
+                #modern-carousel-hook .indicator {
+                    width: 13px;
+                    height: 13px;
+                    border-radius: 50%;
+                    background: #d1d5db;
+                    transition: background 0.3s;
+                    cursor: pointer;
+                }
+                #modern-carousel-hook .indicator.active {
+                    background: #1e3c72;
+                }
+                @media (max-width: 768px) {
+                    #modern-carousel-hook .modern-carousel-card {
+                        width: 110px;
+                        min-width: 110px;
+                        height: 170px;
+                    }
+                    #modern-carousel-hook .modern-carousel-card img {
+                        height: 110px;
+                    }
+                }
+            </style>
+            <script>
+                // Modern Portrait Carousel Card Logic
+                (function() {
+                    const cards = document.querySelectorAll('#modern-carousel-hook .modern-carousel-card');
+                    const indicators = document.querySelectorAll('#modern-carousel-hook .indicator');
+                    let idx = 0;
+                    function showCard(i) {
+                        cards.forEach((c, j) => {
+                            c.classList.toggle('active', j === i);
+                            indicators[j].classList.toggle('active', j === i);
+                        });
+                    }
+                    function nextCard() {
+                        idx = (idx + 1) % cards.length;
+                        showCard(idx);
+                    }
+                    let interval = setInterval(nextCard, 3500);
+                    indicators.forEach((ind, i) => {
+                        ind.addEventListener('click', () => {
+                            idx = i;
+                            showCard(idx);
+                            clearInterval(interval);
+                            interval = setInterval(nextCard, 3500);
+                        });
+                    });
+                })();
+            </script>
+            <!-- END Modern Portrait Carousel Card -->
             <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/2dmy9PbQpz0" title="Video profil LP3I Karawang" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>

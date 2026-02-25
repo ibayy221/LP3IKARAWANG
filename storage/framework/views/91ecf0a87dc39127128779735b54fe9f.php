@@ -37,34 +37,34 @@
 </head>
 <body>
 
-  @include('partials.header_pendaftar')
+  <?php echo $__env->make('partials.header_pendaftar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
   
   <div class="container">
     <div class="heading">
       <div>
         <h2 style="margin:0">Pembayaran Pendaftaran</h2>
-        <div style="color:#ffffff;font-size:.95rem">Untuk: <strong>{{ $calon->nama_mhs }}</strong></div>
+        <div style="color:#ffffff;font-size:.95rem">Untuk: <strong><?php echo e($calon->nama_mhs); ?></strong></div>
       </div>
-      <div><a class="btn-plain back-btn" href="{{ route('pendaftar.dashboard') }}">Kembali</a></div>
+      <div><a class="btn-plain back-btn" href="<?php echo e(route('pendaftar.dashboard')); ?>">Kembali</a></div>
     </div>
 
     <div class="card">
       <div class="meta-info">Silakan pilih metode pembayaran</div>
-      <div class="meta-info" style="font-weight:700">Nominal: <strong>Rp {{ number_format($calon->payment_amount ?? 350000,0,',','.') }}</strong></div>
+      <div class="meta-info" style="font-weight:700">Nominal: <strong>Rp <?php echo e(number_format($calon->payment_amount ?? 350000,0,',','.')); ?></strong></div>
 
       <!-- Bank info box -->
       <div class="bank-info">
         <div style="font-weight:800;color:var(--basic);font-size:1rem">Bank BNI</div>
         <div style="color:#334155;margin-top:6px">No Rekening: <strong>5051 2000 05</strong></div>
         <div style="color:#334155">Atas Nama: <strong>LP3I Karawang</strong></div>
-        <div style="color:#334155;margin-top:6px">Nominal: <strong>Rp {{ number_format($calon->payment_amount ?? 350000,0,',','.') }}</strong></div>
+        <div style="color:#334155;margin-top:6px">Nominal: <strong>Rp <?php echo e(number_format($calon->payment_amount ?? 350000,0,',','.')); ?></strong></div>
       </div>
 
-      @php
+      <?php
         $now = \Carbon\Carbon::now();
         $expired = false;
         if (!empty($expiresAt) && $now->greaterThan($expiresAt)) $expired = true;
-      @endphp
+      ?>
 
       <!-- Success modal (hidden by default) -->
       <div id="successModal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:1200">
@@ -75,29 +75,29 @@
         </div>
       </div>
 
-      @if($expired)
+      <?php if($expired): ?>
         <div style="padding:1rem;border-radius:10px;border:1px solid rgba(255,0,0,0.08);background:#fff6f6;color:#9b1c1c;margin-bottom:1rem">Masa pembayaran telah berakhir. Silakan hubungi admin untuk bantuan.</div>
-      @else
+      <?php else: ?>
         <div id="uploadMessage" role="status" aria-live="polite" style="display:none;margin-bottom:.8rem;padding:.6rem;border-radius:8px"></div>
-        <form id="uploadForm" method="POST" action="{{ route('pendaftar.payment.upload') }}" enctype="multipart/form-data">
-          @csrf
+        <form id="uploadForm" method="POST" action="<?php echo e(route('pendaftar.payment.upload')); ?>" enctype="multipart/form-data">
+          <?php echo csrf_field(); ?>
           <input type="hidden" name="method" value="BNI">
-          <input type="hidden" name="transfer_date" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+          <input type="hidden" name="transfer_date" value="<?php echo e(\Carbon\Carbon::now()->toDateString()); ?>">
           <div class="form-grid">
             <label style="font-size:.95rem;color:#334155">Nama Lengkap Pendaftar
-              <input type="text" name="sender_name" required class="form-input" value="{{ old('sender_name', $calon->nama_mhs) }}" />
+              <input type="text" name="sender_name" required class="form-input" value="<?php echo e(old('sender_name', $calon->nama_mhs)); ?>" />
             </label>
 
             <label style="font-size:.95rem;color:#334155">Bank Asal Pengirim
-              <input type="text" name="bank_origin" required class="form-input" placeholder="Contoh: BCA, Mandiri, BNI" value="{{ old('bank_origin') }}" />
+              <input type="text" name="bank_origin" required class="form-input" placeholder="Contoh: BCA, Mandiri, BNI" value="<?php echo e(old('bank_origin')); ?>" />
             </label>
 
             <label style="font-size:.95rem;color:#334155">Nama Pemilik Rekening di Struk
-              <input type="text" name="account_name" required class="form-input" value="{{ old('account_name') }}" />
+              <input type="text" name="account_name" required class="form-input" value="<?php echo e(old('account_name')); ?>" />
             </label>
 
             <label style="font-size:.95rem;color:#334155">Tanggal Transfer
-              <div id="transferDateDisplay" style="width:100%;padding:.6rem;border-radius:10px;border:1px solid #e6eef6;margin-top:.3rem;background:#fff;color:#0f172a">{{ \Carbon\Carbon::now()->format('d M Y') }}</div>
+              <div id="transferDateDisplay" style="width:100%;padding:.6rem;border-radius:10px;border:1px solid #e6eef6;margin-top:.3rem;background:#fff;color:#0f172a"><?php echo e(\Carbon\Carbon::now()->format('d M Y')); ?></div>
             </label>
 
             <label style="font-size:.95rem;color:#334155">Upload Bukti Transfer (jpg, jpeg, png, max 2MB)
@@ -107,10 +107,10 @@
 
           <div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-top:.6rem">
             <button id="uploadBtn" class="btn-primary" type="button">Kirim</button>
-            <a class="btn-plain" href="{{ route('pendaftar.dashboard') }}">Batal</a>
+            <a class="btn-plain" href="<?php echo e(route('pendaftar.dashboard')); ?>">Batal</a>
           </div>
         </form>
-      @endif
+      <?php endif; ?>
 
   
       <script>
@@ -134,8 +134,8 @@
           const form = document.getElementById('uploadForm');
           const btn = document.getElementById('uploadBtn');
           if (!form || !btn) return;
-          const calonName = {!! json_encode($calon->nama_mhs ?? '') !!};
-          const amount = {!! json_encode($calon->payment_amount ?? 350000) !!};
+          const calonName = <?php echo json_encode($calon->nama_mhs ?? ''); ?>;
+          const amount = <?php echo json_encode($calon->payment_amount ?? 350000); ?>;
           btn.addEventListener('click', async function(){
             const sender = form.querySelector('[name=sender_name]').value.trim();
             const bank = form.querySelector('[name=bank_origin]').value.trim();
@@ -171,7 +171,7 @@
             });
             if (res.ok) {
               const data = await res.json().catch(()=>null);
-              const redirect = data && data.redirect ? data.redirect : '{{ route('pendaftar.dashboard') }}';
+              const redirect = data && data.redirect ? data.redirect : '<?php echo e(route('pendaftar.dashboard')); ?>';
               // show success modal then redirect
               showSuccessModal(() => { window.location.href = redirect; });
             } else if (res.status === 422) {
@@ -231,4 +231,4 @@
   </div>
 
 </body>
-</html>
+</html><?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/pendaftar/payment.blade.php ENDPATH**/ ?>

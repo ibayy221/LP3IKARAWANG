@@ -26,8 +26,8 @@
         <tr>
           <td>{{ $r->nama_mhs }}</td>
           <td>{{ $r->email }}</td>
-          <td>{{ $r->no_hp }}</td>
-          <td>{{ $r->jurusan }}</td>
+          <td>{{ $r->no_tlp }}</td>
+          <td>{{ \App\Helpers\JurusanHelper::getFormat($r->id_program_studi ?? null) }}</td>
           <td>{{ $r->sumber_pendaftaran }}</td>
           <td>{{ $r->status_verifikasi }}</td>
           <td>{{ $r->created_at->format('d M Y') }}</td>

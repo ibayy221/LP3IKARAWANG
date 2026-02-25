@@ -337,11 +337,11 @@
                   </div>
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Bidang Keahlian</label>
-                    <select name="program_studi" class="form-control">
+                    <select name="id_program_studi" class="form-control">
                       <option value="">--Pilih--</option>
-                      <option value="1" {{ old('jurusan') == 'AIS' ? 'selected' : '' }}>Accounting Information System</option>
-                      <option value="2" {{ old('jurusan') == 'ASE' ? 'selected' : '' }}>Application Software Engineering</option>
-                      <option value="3" {{ old('jurusan') == 'OAA' ? 'selected' : '' }}>Office Administration Automatization</option>
+                      <option value="2" {{ (string) old('id_program_studi') === '2' ? 'selected' : '' }}>Accounting Information System</option>
+                      <option value="1" {{ (string) old('id_program_studi') === '1' ? 'selected' : '' }}>Application Software Engineering</option>
+                      <option value="3" {{ (string) old('id_program_studi') === '3' ? 'selected' : '' }}>Office Administration Automatization</option>
                     </select>
                   </div>
                 </div>
@@ -356,10 +356,23 @@
                   </div>
                 </div> --}}
 
+
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label">Asal Sekolah</label>
                     <input type="text" name="asal_sekolah" value="{{ old('asal_sekolah') }}" class="form-control">
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Alamat Lengkap</label>
+                    <input type="text" name="alamat" value="{{ old('alamat') }}" class="form-control" required>
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Domisili</label>
+                    <input type="text" name="domisili" value="{{ old('domisili') }}" class="form-control" required>
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label">Tanggal Lahir</label>
+                    <input type="date" name="tgl_lahir" value="{{ old('tgl_lahir') }}" class="form-control" required>
                   </div>
                 </div>
 

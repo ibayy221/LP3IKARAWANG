@@ -11,10 +11,48 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PendaftarDashboardController extends Controller
 {
+    private function getMahasiswaForUser($user)
+    {
+        if (!$user) return null;
+        $userId = $user->getKey();
+        if ($userId === null) return null;
+
+        $existing = \App\Models\Mahasiswa::where('id_user', $userId)
+            ->orderByDesc('id_mahasiswa')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        // Legacy safety: some old records were created with NULL id_user due to mismatched User PK.
+        // If we can uniquely match by email, auto-link it to the current user.
+        $email = $user->email ?? null;
+        if (!empty($email)) {
+            $candidates = \App\Models\Mahasiswa::whereNull('id_user')
+                ->where('email', $email)
+                ->orderByDesc('id_mahasiswa')
+                ->limit(2)
+                ->get();
+
+            if ($candidates->count() === 1) {
+                $m = $candidates->first();
+                $m->id_user = $userId;
+                $m->save();
+                return $m;
+            }
+        }
+
+        return null;
+    }
+
     public function dashboard(Request $request)
     {
         $user = Auth::user();
-        $calon = $user->mahasiswa ?? $user->mahasiswas ?? \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $calon = $user?->mahasiswa;
+        if (!$calon) {
+            $calon = $this->getMahasiswaForUser($user);
+        }
 
         // If there's no calon, just render the view — the Blade template shows a friendly message for missing data
         if (!$calon) {
@@ -83,7 +121,7 @@ class PendaftarDashboardController extends Controller
     public function markPaid(Request $request)
     {
         $user = Auth::user();
-        $calon = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $calon = $this->getMahasiswaForUser($user);
         if (!$calon) return back()->with('error','Data pendaftar tidak ditemukan.');
         $calon->payment_status = 'paid';
         // save selected payment method if provided
@@ -98,7 +136,7 @@ class PendaftarDashboardController extends Controller
     public function payment()
     {
         $user = Auth::user();
-        $calon = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $calon = $this->getMahasiswaForUser($user);
         if (!$calon) return redirect()->route('pendaftar.dashboard')->with('error','Data pendaftar tidak ditemukan.');
         // compute expiry: 3 weeks from initial registration
         $expiresAt = null;
@@ -118,7 +156,7 @@ class PendaftarDashboardController extends Controller
     public function uploadPaymentProof(Request $request)
     {
         $user = Auth::user();
-        $calon = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $calon = $this->getMahasiswaForUser($user);
         if (!$calon) return redirect()->route('pendaftar.dashboard')->with('error','Data pendaftar tidak ditemukan.');
 
         $v = $request->validate([
@@ -159,7 +197,7 @@ class PendaftarDashboardController extends Controller
             $calon->save();
         } catch (\Illuminate\Database\QueryException $e) {
             // handle enum/column truncation errors (e.g., trying to write 'pending_verification' into an enum)
-            Log::warning('Save failed, retrying with safe payment_status: '.$e->getMessage(), ['userId' => $user->id]);
+            Log::warning('Save failed, retrying with safe payment_status: '.$e->getMessage(), ['userId' => $user->getKey()]);
             try {
                 $calon->payment_status = 'unpaid';
                 $calon->save();
@@ -190,7 +228,7 @@ class PendaftarDashboardController extends Controller
     public function showBiodata()
     {
         $user = Auth::user();
-        $pendaftar = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $pendaftar = $this->getMahasiswaForUser($user);
         return view('pendaftar.biodata', compact('pendaftar'));
     }
 
@@ -200,7 +238,7 @@ class PendaftarDashboardController extends Controller
     public function downloadReceipt()
     {
         $user = Auth::user();
-        $calon = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $calon = $this->getMahasiswaForUser($user);
         if (!$calon) return redirect()->route('pendaftar.dashboard')->with('error', 'Data pendaftar tidak ditemukan.');
 
         // Only allow after marketing verification
@@ -225,7 +263,7 @@ class PendaftarDashboardController extends Controller
     public function editBiodata()
     {
         $user = Auth::user();
-        $pendaftar = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $pendaftar = $this->getMahasiswaForUser($user);
         return view('pendaftar.biodata_edit', compact('pendaftar'));
     }
 
@@ -235,7 +273,7 @@ class PendaftarDashboardController extends Controller
     public function updateBiodata(Request $request)
     {
         $user = Auth::user();
-        $pendaftar = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+        $pendaftar = $this->getMahasiswaForUser($user);
         if (!$pendaftar) return redirect()->route('pendaftar.dashboard')->with('error','Data pendaftar tidak ditemukan.');
 
         $v = $request->validate([
@@ -245,7 +283,9 @@ class PendaftarDashboardController extends Controller
             'no_hp' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'jenis_kelas' => 'nullable|string|max:50',
-            'jurusan' => 'nullable|string|max:255',
+            'id_program_studi' => 'nullable|integer|in:1,2,3',
+            // some DBs use this legacy spelling
+            'id_program_study' => 'nullable|integer|in:1,2,3',
             'asal_sekolah' => 'nullable|string|max:255',
             'alamat' => 'nullable|string|max:1000',
             'kecamatan' => 'nullable|string|max:255',
@@ -264,14 +304,34 @@ class PendaftarDashboardController extends Controller
         ]);
 
         // assign allowed fields, but only if the corresponding DB column exists
-        $fields = ['nama_mhs','no_hp','email','jenis_kelas','jurusan','asal_sekolah','alamat','kecamatan','desa','kode_pos','jenis_kelamin','agama','tahun_lulus','instagram','nama_wali','telp_wali','pekerjaan_wali'];
+        $fields = ['nama_mhs','no_hp','email','jenis_kelas','id_program_studi','id_program_study','asal_sekolah','alamat','kecamatan','desa','kode_pos','jenis_kelamin','agama','tahun_lulus','instagram','nama_wali','telp_wali','pekerjaan_wali'];
         foreach ($fields as $f) {
             if (array_key_exists($f, $v)) {
-                if (Schema::hasColumn('mahasiswas', $f)) {
+                if (Schema::hasColumn('mahasiswa', $f)) {
                     $pendaftar->{$f} = $v[$f];
-                } else {
-                    Log::info('Skipping assignment for missing column', ['column' => $f, 'user_id' => $user->id ?? null]);
+                    continue;
                 }
+
+                if ($f === 'id_program_studi' && Schema::hasColumn('mahasiswa', 'id_program_study')) {
+                    $pendaftar->id_program_study = $v[$f];
+                    continue;
+                }
+                if ($f === 'id_program_study' && Schema::hasColumn('mahasiswa', 'id_program_studi')) {
+                    $pendaftar->id_program_studi = $v[$f];
+                    continue;
+                }
+
+                // Handle common legacy column names
+                if ($f === 'no_hp' && Schema::hasColumn('mahasiswa', 'no_tlp')) {
+                    $pendaftar->no_tlp = $v[$f];
+                    continue;
+                }
+                if ($f === 'instagram' && Schema::hasColumn('mahasiswa', 'instagram_path')) {
+                    $pendaftar->instagram_path = $v[$f];
+                    continue;
+                }
+
+                Log::info('Skipping assignment for missing column', ['column' => $f, 'user_id' => $user->id ?? null]);
             }
         }
 
@@ -374,9 +434,9 @@ class PendaftarDashboardController extends Controller
             if (!empty($p)) {
                 $publicUrl = \Illuminate\Support\Facades\Storage::url($p);
                 // assign to column if exists, else try other_documents JSON column
-                if (\Illuminate\Support\Facades\Schema::hasColumn('mahasiswas', $columnKey)) {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('mahasiswa', $columnKey)) {
                     $pendaftar->{$columnKey} = $publicUrl;
-                } elseif (\Illuminate\Support\Facades\Schema::hasColumn('mahasiswas', 'other_documents')) {
+                } elseif (\Illuminate\Support\Facades\Schema::hasColumn('mahasiswa', 'other_documents')) {
                     $cur = json_decode($pendaftar->other_documents ?? '{}', true) ?: [];
                     $cur[$columnKey] = $publicUrl;
                     $pendaftar->other_documents = json_encode($cur);

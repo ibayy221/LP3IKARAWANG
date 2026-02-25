@@ -15,26 +15,30 @@ class NipdGenerationTest extends TestCase
         // Simulate form post
         $response = $this->post('/mahasiswa', [
             'nama_mhs' => 'Test User',
-            'no_hp' => '081234567890',
-            'jurusan' => 'ASE'
+            'no_tlp' => '081234567890',
+            'domisili' => 'Karawang',
+            'id_program_studi' => 1,
         ]);
 
         $response->assertSessionHas('success');
 
-        // Find the latest Mahasiswa with jurusan ASE and check nipd
-        $m = Mahasiswa::where('jurusan','ASE')->orderByDesc('id')->first();
+        // Find the latest Mahasiswa with program ASE (id=1) and check nipd
+        $m = Mahasiswa::where('id_program_studi', 1)->orderByDesc('id_mahasiswa')->first();
         $this->assertNotNull($m);
         $this->assertNotNull($m->nipd);
-        $this->assertStringStartsWith(config('nipd.branch_code') . config('nipd.program_codes.ASE'), $m->nipd);
+        $branchCfg = config('nipd.branch_code');
+        $branch = strlen($branchCfg) >= 2 ? (date('y') . substr($branchCfg, 2)) : $branchCfg;
+        $this->assertStringStartsWith($branch . config('nipd.program_codes.ASE'), $m->nipd);
 
         // Now create another and ensure sequence increments relative to previous max
         $this->post('/mahasiswa', [
             'nama_mhs' => 'Second User',
-            'no_hp' => '081234567891',
-            'jurusan' => 'ASE'
+            'no_tlp' => '081234567891',
+            'domisili' => 'Karawang',
+            'id_program_studi' => 1,
         ]);
 
-        $latest = Mahasiswa::where('jurusan','ASE')->orderByDesc('id')->take(2)->get();
+        $latest = Mahasiswa::where('id_program_studi', 1)->orderByDesc('id_mahasiswa')->take(2)->get();
         $this->assertCount(2, $latest);
         $firstSeq = (int) substr($latest[1]->nipd, -config('nipd.sequence_digits'));
         $secondSeq = (int) substr($latest[0]->nipd, -config('nipd.sequence_digits'));

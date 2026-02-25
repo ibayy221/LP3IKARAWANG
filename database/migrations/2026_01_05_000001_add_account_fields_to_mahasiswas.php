@@ -8,33 +8,33 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            if (!Schema::hasColumn('mahasiswas', 'ktp_path')) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswa', 'ktp_path')) {
                 $table->string('ktp_path')->nullable()->after('file_path');
             }
-            if (!Schema::hasColumn('mahasiswas', 'instagram')) {
-                $table->string('instagram')->nullable()->after('ktp_path');
+            if (!Schema::hasColumn('mahasiswa', 'instagram_path')) {
+                $table->string('instagram_path')->nullable()->after('ktp_path');
             }
-            if (!Schema::hasColumn('mahasiswas', 'nama_wali')) {
-                $table->string('nama_wali')->nullable()->after('instagram');
+            if (!Schema::hasColumn('mahasiswa', 'nama_wali')) {
+                $table->string('nama_wali')->nullable()->after('instagram_path');
             }
-            if (!Schema::hasColumn('mahasiswas', 'telp_wali')) {
+            if (!Schema::hasColumn('mahasiswa', 'telp_wali')) {
                 $table->string('telp_wali')->nullable()->after('nama_wali');
             }
-            if (!Schema::hasColumn('mahasiswas', 'pekerjaan_wali')) {
+            if (!Schema::hasColumn('mahasiswa', 'pekerjaan_wali')) {
                 $table->string('pekerjaan_wali')->nullable()->after('telp_wali');
             }
-            if (!Schema::hasColumn('mahasiswas', 'whatsapp')) {
-                $table->string('whatsapp')->nullable()->after('pekerjaan_wali');
+            if (!Schema::hasColumn('mahasiswa', 'whatsapp_wali')) {
+                $table->string('whatsapp_wali')->nullable()->after('pekerjaan_wali');
             }
         });
     }
 
     public function down(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            foreach (['ktp_path','instagram','nama_wali','telp_wali','pekerjaan_wali','whatsapp'] as $col) {
-                if (Schema::hasColumn('mahasiswas', $col)) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            foreach (['ktp_path','instagram_path','nama_wali','telp_wali','pekerjaan_wali','whatsapp_wali'] as $col) {
+                if (Schema::hasColumn('mahasiswa', $col)) {
                     $table->dropColumn($col);
                 }
             }

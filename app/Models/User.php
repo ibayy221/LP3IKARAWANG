@@ -9,6 +9,19 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    protected $primaryKey = 'id_user';
+    protected $keyType = 'int';
+    public $incrementing = true;
+
+    public function getIdAttribute()
+    {
+        return $this->getAttribute($this->primaryKey);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->hasOne(\App\Models\Mahasiswa::class, 'id_user', 'id_user');
+    }
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -23,6 +36,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'is_marketing',
     ];
 
     /**

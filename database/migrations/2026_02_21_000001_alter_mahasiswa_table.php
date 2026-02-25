@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mahasiswa', function (Blueprint $table) {
-            if (!Schema::hasColumn('mahasiswa', 'payment_method')) {
-                $table->string('payment_method')->nullable()->after('payment_status');
-            }
+            // Contoh: tambahkan kolom baru jika belum ada
+            // $table->string('contoh_field', 255)->nullable();
+            // Tambahkan/ubah kolom sesuai kebutuhan dari struktur DB utama
+            // Kolom sudah sesuai, jadi ini hanya template
         });
     }
 
@@ -24,9 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('mahasiswa', function (Blueprint $table) {
-            if (Schema::hasColumn('mahasiswa', 'payment_method')) {
-                $table->dropColumn('payment_method');
-            }
+            // Contoh: drop kolom jika perlu
+            // $table->dropColumn('contoh_field');
         });
     }
 };

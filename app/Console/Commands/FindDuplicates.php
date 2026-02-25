@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\DB;
 class FindDuplicates extends Command
 {
     protected $signature = 'db:find-duplicates {--field=email}';
-    protected $description = 'Find duplicate Mahasiswa rows by a given field (email, nama_mhs, no_hp)';
+    protected $description = 'Find duplicate Mahasiswa rows by a given field (email, nama_mhs, no_tlp)';
 
     public function handle()
     {
         $field = $this->option('field') ?: 'email';
-        if (!in_array($field, ['email', 'nama_mhs', 'no_hp'])) {
-            $this->error('Unsupported field. Use email, nama_mhs or no_hp');
+        if (!in_array($field, ['email', 'nama_mhs', 'no_tlp'])) {
+            $this->error('Unsupported field. Use email, nama_mhs or no_tlp');
             return 1;
         }
 
@@ -34,8 +34,8 @@ class FindDuplicates extends Command
 
         foreach ($dupes as $d) {
             $this->line("{$field} = {$d->{$field}} ({$d->cnt})");
-            $rows = Mahasiswa::where($field, $d->{$field})->get(['id','nama_mhs','email','no_hp','jurusan','created_at']);
-            $this->table(['id','nama_mhs','email','no_hp','jurusan','created_at'],$rows->toArray());
+            $rows = Mahasiswa::where($field, $d->{$field})->get(['id_mahasiswa','nama_mhs','email','no_tlp','id_program_studi','created_at']);
+            $this->table(['id_mahasiswa','nama_mhs','email','no_tlp','id_program_studi','created_at'],$rows->toArray());
         }
 
         return 0;

@@ -10,20 +10,33 @@ class Mahasiswa extends Model
     use HasFactory;
 
     protected $table = 'mahasiswa';
+    protected $primaryKey = 'id_mahasiswa';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
-        'user_id', 'nipd', 'nama_mhs', 'email', 'no_hp', 'jurusan', 'tahun_lulus', 'alamat', 'kecamatan',
-        'tempat_lahir', 'tgl_lahir', 'jenis_kelamin', 'jenis_sekolah', 'kategori_sekolah', 'jenis_kelas',
-        'status_verifikasi', 'payment_status', 'payment_amount', 'payment_method', 'payment_proof_path', 'payment_bank_origin', 'payment_account_name', 'payment_sender_name', 'payment_transfer_date', 'payment_expires_at', 'asal_sekolah', 'file_path', 'desa', 'kode_pos', 'marketing_notes', 'agama', 'status'
+        'id_mahasiswa', 'nipd', 'nama_mhs', 'alamat', 'domisili', 'tempat_lahir', 'tgl_lahir', 'angkatan', 'periode',
+        'email', 'agama', 'no_tlp', 'tahun_lulus', 'kecamatan', 'desa', 'kode_pos', 'jenis_kelamin', 'jenis_kelas',
+        'status_verifikasi', 'payment_status', 'payment_method', 'payment_proof_path', 'payment_bank_origin',
+        'payment_account_name', 'payment_sender_name', 'payment_transfer_date', 'payment_expires_at', 'payment_amount',
+        'asal_sekolah', 'file_path', 'ktp_path', 'akte_kelahiran_path', 'ijazah_path', 'surat_sudah_bekerja_path',
+        'instagram_path', 'nama_wali', 'telp_wali', 'pekerjaan_wali', 'whatsapp_wali', 'foto', 'status',
+        'id_user', 'id_program_studi', 'id_kelas'
     ];
+
+    // Compatibility alias so older code can use $mahasiswa->id
+    public function getIdAttribute()
+    {
+        return $this->getKey();
+    }
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(\App\Models\User::class, 'id_user', 'id_user');
     }
 
-    // Generate a NIPD for a given jurusan using config/nipd.php
-    public static function generateNipd(?string $jurusan = null): string
+    // Generate a NIPD for a given program (numeric program id or legacy code) using config/nipd.php
+    public static function generateNipd(string|int|null $program = null): string
     {
         // Use branch_code but replace the leading year portion with the current year (2-digit)
         // so NIPD reflects the actual year automatically.
@@ -33,7 +46,29 @@ class Mahasiswa extends Model
         $branch = strlen($branchCfg) >= 2 ? ($currentYearTwo . substr($branchCfg, 2)) : $branchCfg;
         $programCodes = config('nipd.program_codes', []);
         $seqDigits = (int) config('nipd.sequence_digits', 4);
-        $programKey = strtoupper($jurusan ?? '');
+        // Normalize program key: accept numeric IDs (1/2/3) or legacy codes (ASE/AIS/OAA)
+        $programKey = '';
+        if (is_int($program)) {
+            $programKey = match ($program) {
+                1 => 'ASE',
+                2 => 'AIS',
+                3 => 'OAA',
+                default => '',
+            };
+        } else {
+            $trim = trim((string) ($program ?? ''));
+            if (ctype_digit($trim)) {
+                $n = (int) $trim;
+                $programKey = match ($n) {
+                    1 => 'ASE',
+                    2 => 'AIS',
+                    3 => 'OAA',
+                    default => '',
+                };
+            } else {
+                $programKey = strtoupper($trim);
+            }
+        }
         $deptCode = $programCodes[$programKey] ?? '000';
         $prefix = $branch . $deptCode;
 
@@ -49,7 +84,7 @@ class Mahasiswa extends Model
     }
 
     /**
-     * Try to find a recent duplicate based on email or phone and same jurusan within a short window.
+        * Try to find a recent duplicate based on email or phone within a short window.
      * Returns the Mahasiswa model if found, otherwise null.
      */
     public static function findRecentDuplicate(array $attrs, ?int $minutes = 10)
@@ -66,24 +101,24 @@ class Mahasiswa extends Model
             if (!empty($attrs['email'])) {
                 $q->orWhere('email', $attrs['email']);
             }
-            if (!empty($attrs['no_hp'])) {
-                $q->orWhere('no_hp', $attrs['no_hp']);
+            if (!empty($attrs['no_tlp'])) {
+                $q->orWhere('no_tlp', $attrs['no_tlp']);
             }
         });
 
-        if (!empty($attrs['jurusan'])) {
-            $query->where('jurusan', $attrs['jurusan']);
-        }
+        // Jika ingin lebih spesifik, tambahkan pengecekan lain di sini
 
-        return $query->orderByDesc('id')->first();
+        return $query->orderByDesc('id_mahasiswa')->first();
     }
 
     protected static function booted()
     {
         static::creating(function ($model) {
             if (empty($model->nipd)) {
-                // attempt to set nipd using generateNipd
-                $model->nipd = self::generateNipd($model->jurusan ?? null);
+                // attempt to set nipd using program id
+                $model->nipd = self::generateNipd(
+                    $model->id_program_studi ?? ($model->id_program_study ?? null)
+                );
             }
         });
     }
@@ -104,10 +139,14 @@ class Mahasiswa extends Model
             $attempt++;
             // Ensure NIPD is present for this attempt. Leave it empty to let booted() hook generate it if desired.
             if (empty($attrs['nipd'])) {
-                $attrs['nipd'] = self::generateNipd($attrs['jurusan'] ?? null);
+                $attrs['nipd'] = self::generateNipd($attrs['id_program_studi'] ?? ($attrs['id_program_study'] ?? null));
             }
 
             try {
+                // Pastikan domisili selalu ada
+                if (!array_key_exists('domisili', $attrs)) {
+                    $attrs['domisili'] = '';
+                }
                 return self::create($attrs);
             } catch (\Illuminate\Database\QueryException $e) {
                 $msg = strtolower($e->getMessage());

@@ -23,7 +23,7 @@
         <li><a href="{{ route('student') }}">E | Student</a></li>
         <li><a href="{{ route('akademik') }}">E | Akademik</a></li>
         <li><a href="{{ route('lecture') }}">E | Lecture</a></li>
-        <li><a href="{{ route('lecture') }}">E | Caribhab</a></li>
+        <li><a href="{{ route('lecture') }}">E | Carrier Hub</a></li>
       </ul>
     </div>
     <div class="lp3i-footer-col address-col">

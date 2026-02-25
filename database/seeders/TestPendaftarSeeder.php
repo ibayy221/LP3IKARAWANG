@@ -22,7 +22,7 @@ class TestPendaftarSeeder extends Seeder
 
         $m = Mahasiswa::firstOrCreate(
             ['email' => 'pendaftar_test@example.com'],
-            ['nama_mhs' => 'Auto Test', 'user_id' => $u->id, 'payment_status' => 'unpaid', 'payment_amount' => 350000]
+            ['nama_mhs' => 'Auto Test', 'id_user' => $u->id, 'payment_status' => 'unpaid', 'payment_amount' => 350000]
         );
 
         $this->command->info("Created user {$u->id} and mahasiswa {$m->id}");
