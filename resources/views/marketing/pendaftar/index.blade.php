@@ -28,7 +28,7 @@
     a, a.btn, .action-btn, .menu button{ text-decoration:none; }
 
     /* Controls: Poppins font for filter controls */
-    .controls .form-control{height:44px;padding:.5rem;border-radius:10px;border:1.5px solid #e6eef6;background:#fff;font-family:'Poppins',sans-serif;font-weight:500;box-shadow:0 1px 0 rgba(2,6,23,0.02)} 
+    .controls .form-control{height:44px;padding:.5rem;border-radius:10px;border:1.5px solid #e6eef6;background:#fff;font-family:'Poppins',sans-serif;font-weight:500;box-shadow:0 1px 0 rgba(2,6,23,0.02);box-sizing:border-box;width:260px} 
 
     /* Banner */
     .banner-wrap{margin-bottom:1rem}
@@ -36,7 +36,7 @@
 
     /* Controls */
     .controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.75rem}
-    .controls .form-control{height:40px;padding:.6rem;border-radius:8px;border:1px solid #eef2f7;font-family:'Poppins',sans-serif;font-weight:500}
+    .controls .form-control{height:44px;padding:.5rem;border-radius:10px;border:1.5px solid #e6eef6;background:#fff;font-family:'Poppins',sans-serif;font-weight:500;box-sizing:border-box;width:260px}
     .controls .btn{padding:.5rem .7rem;border-radius:10px;background:linear-gradient(90deg,var(--basic),var(--adv));color:#fff;border:none;font-size:0.92rem}
     .controls .btn:hover{filter:brightness(1.03);transform:translateY(-2px)}
     .controls .btn-small{padding:.36rem .5rem;font-size:.85rem}
@@ -148,7 +148,7 @@
       <select id="filter-jurusan" class="form-control">
         <option value="">All study program</option>
         @foreach(($jurusans ?? []) as $j)
-          <option value="{{ $j }}">{{ \App\Helpers\JurusanHelper::getFormat($j) }}</option>
+          <option value="{{ $j }}">{{ \App\Helpers\JurusanHelper::getNamaLengkap($j) }}</option>
         @endforeach
       </select>
 
@@ -252,18 +252,9 @@
         const statusKey = (item.status_verifikasi||'pending').toLowerCase();
         const statusClass = 'status-' + statusKey;
         const statusLabel = translateStatus(statusKey);
-        // compute short badge and jurusan abbreviation
+        // compute badge text
         function badgeText(key){ if(!key) return 'Pending'; key = key.toLowerCase(); if(key==='verified') return 'Verified'; if(key==='rejected') return 'Rejected'; return 'Pending'; }
-        function abbrev(s){
-          if(!s) return '';
-          const words = s.trim().split(/\s+/);
-          const initials = words.map(w => (w[0] || '')).join('').toUpperCase();
-          if (initials.length >= 3) return initials.slice(0,3);
-          const compact = s.replace(/\s+/g,'').toUpperCase();
-          if (compact.length >= 3) return compact.slice(0,3);
-          return compact; // fallback when shorter than 3
-        }
-        const jurusanShort = item.jurusan ? abbrev(item.jurusan) : '';
+        const jurusanLabel = item.jurusan_label || item.jurusan || '';
         const badge = badgeText(statusKey);
 
         const safe = v => (v ? v : '-');
@@ -272,7 +263,7 @@
           <td><div class="cell cell-email" title="${safe(item.email)}">${safe(item.email)}</div></td>
           <td><div class="cell" title="${safe(item.nipd)}">${safe(item.nipd)}</div></td>
           <td><div class="cell cell-no" title="${safe(item.no_hp)}">${safe(item.no_hp)}</div></td>
-          <td><div class="cell cell-jurusan" title="${safe(item.jurusan)}">${jurusanShort || '-'}</div></td>
+          <td><div class="cell cell-jurusan" title="${safe(jurusanLabel)}">${safe(jurusanLabel)}</div></td>
           <td><div class="cell" title="${date || '-'}">${date || '-'}</div></td>
           <td><span class="badge ${statusKey}">${statusLabel}</span></td>
           <td>
@@ -296,7 +287,7 @@
           const card = document.createElement('div'); card.className = 'mobile-card';
           const left = document.createElement('div'); left.className = 'left';
           const name = document.createElement('div'); name.className = 'name'; name.textContent = safe(item.nama_mhs);
-          const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = (jurusanShort || '-') + ' • ' + statusLabel;
+          const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = safe(jurusanLabel) + ' • ' + statusLabel;
           left.appendChild(name); left.appendChild(meta);
 
           const right = document.createElement('div'); right.className = 'right';

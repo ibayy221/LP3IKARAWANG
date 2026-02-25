@@ -157,10 +157,7 @@ class MahasiswaController extends Controller
         $userId = $user ? $user->id : null;
         $validated['id_user'] = $userId;
 
-        // Generate NIPD jika belum ada
-        if (empty($validated['nipd'])) {
-            $validated['nipd'] = \App\Models\Mahasiswa::generateNipd($validated['id_program_studi'] ?? null);
-        }
+        // NIPD dibuat saat verifikasi (status_verifikasi = verified), bukan saat pendaftaran.
 
         // Pastikan semua field DB ada di $validated (isi default jika tidak ada input)
         // Hapus id_mahasiswa jika kosong/null agar tidak error insert
@@ -222,6 +219,11 @@ class MahasiswaController extends Controller
 
         // Simpan data ke tabel mahasiswa
         $dataToInsert = array_intersect_key($validated, array_flip($dbFields));
+
+        // Default status verifikasi untuk pendaftar baru
+        if (empty($dataToInsert['status_verifikasi'])) {
+            $dataToInsert['status_verifikasi'] = 'pending';
+        }
 
         // Prevent quick duplicate submissions (same email/phone within a short window)
         try {

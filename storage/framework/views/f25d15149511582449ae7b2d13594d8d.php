@@ -3,42 +3,41 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>D3 Office Administration automatization</title>
+	<title>D3 Accounting Information System</title>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-	<style>
-		:root{--brand-dark:#004269;--brand-accent:#0b7280}
-		*{box-sizing:border-box}
-		body{margin:0;background:transparent}
-		.wrap{max-width:1100px;margin:0 auto;padding:1.5rem}
-		.card{background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:16px;padding:2.25rem;box-shadow:0 18px 50px rgba(15,23,42,0.08);border:1px solid rgba(2,6,23,0.04)}
-		.article{column-count:2;column-gap:2.5rem;column-rule:1px solid rgba(2,6,23,0.06)}
-		.article > *{break-inside:avoid}
-		h1{margin:0 0 0.8rem 0;color:var(--brand-dark);font-size:1.8rem}
-		h1{column-span:all}
+    <style>
+        :root{--brand-dark:#004269;--brand-accent:#0b7280}
+        *{box-sizing:border-box}
+        body{margin:0;background:transparent}
+        .wrap{max-width:1100px;margin:0 auto;padding:1.5rem}
+        .card{background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:16px;padding:2.25rem;box-shadow:0 18px 50px rgba(15,23,42,0.08);border:1px solid rgba(2,6,23,0.04)}
+        .article{column-count:2;column-gap:2.5rem;column-rule:1px solid rgba(2,6,23,0.06)}
+        .article > *{break-inside:avoid}
+        h1{margin:0 0 0.8rem 0;color:var(--brand-dark);font-size:1.8rem}
+        h1{column-span:all}
 		h2{color:var(--brand-dark);font-size:1.15rem;margin:1.25rem 0 0.6rem}
 		h3{color:var(--brand-dark);font-size:1rem;margin:1rem 0 0.4rem}
-		p{margin:0 0 0.8rem 0;color:#16383a}
-		p{line-height:1.7;text-align:justify}
-		ul{margin:0 0 0.8rem 1.1rem;color:#16383a}
-		.prospects li{margin:0.45rem 0}
-		figure{margin:0 0 1.2rem 0}
-		figure .article-img{width:100%;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,0.08);object-fit:cover;display:block}
-		figure figcaption{margin-top:0.5rem;font-size:0.85rem;color:#445;opacity:0.85}
-		@media (max-width:900px){
-			.card{padding:1.5rem}
-			.article{column-count:1;column-rule:none}
-			p{text-align:left}
-		}
-	</style>
+        p{margin:0 0 0.8rem 0;color:#16383a}
+        p{line-height:1.7;text-align:justify}
+        ul{margin:0 0 0.8rem 1.1rem;color:#16383a}
+        .prospects li{margin:0.45rem 0}
+        figure{margin:0 0 1.2rem 0}
+        figure .article-img{width:100%;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,0.08);object-fit:cover;display:block}
+        figure figcaption{margin-top:0.5rem;font-size:0.85rem;color:#445;opacity:0.85}
+        @media (max-width:900px){
+            .card{padding:1.5rem}
+            .article{column-count:1;column-rule:none}
+            p{text-align:left}
+        }
+    </style>
 </head>
 <body>
-	@include('partials.header')
-
+	<?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 	<div class="wrap">
 		<div class="card">
 			<div class="article">
-				<h1>D3 Office Administration automatization</h1>
+				<h1>D3 Accounting Information System</h1>
 
 				<h2>Peminatan</h2>
 				<p>Digital Marketing, Marketing Administration</p>
@@ -47,8 +46,8 @@
 				<p>Menjadi tenaga Madya Profesional yang memiliki kemampuan di bidang manajemen pemasaran serta mampu menerapkan ilmu pemasaran produk baik barang maupun jasa serta mewujudkan lulusan pemasaran digital yang unggul dan berdaya saing pada tahun 2031.</p>
 
 				<figure>
-					<img class="article-img" src="{{ asset('storage/image/OAA.jpg') }}" alt="Program Manajemen Pemasaran" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
-					<figcaption>Suasana perkuliahan dan praktik pemasaran.</figcaption>
+					<img class="article-img" src="<?php echo e(asset('storage/image/AIS.jpg')); ?>" alt="Program AIS" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
+					<figcaption>Suasana perkuliahan dan praktik sistem informasi.</figcaption>
 				</figure>
 
 				<h2>Kompetensi</h2>
@@ -61,8 +60,8 @@
 				</ul>
 
 				<figure>
-					<img class="article-img" src="{{ asset('storage/image/OAA2.jpg') }}" alt="Kegiatan akademik OAA" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
-					<figcaption>Kolaborasi mahasiswa dalam proyek administrasi modern.</figcaption>
+					<img class="article-img" src="<?php echo e(asset('storage/image/AIS2.jpg')); ?>" alt="Kegiatan akademik AIS" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
+					<figcaption>Kolaborasi mahasiswa dalam proyek dan studi kasus.</figcaption>
 				</figure>
 
 				<h2>Capaian Pembelajaran Lulusan (CPL)</h2>
@@ -101,7 +100,7 @@
 				</ul>
 
 				<figure>
-					<img class="article-img" src="{{ asset('storage/image/OAA3.jpg') }}" alt="Aktivitas mahasiswa OAA" onerror="this.onerror=null;this.src='{{ asset('storage/image/OAA.png') }}'">
+					<img class="article-img" src="<?php echo e(asset('storage/image/AIS3.jpg')); ?>" alt="Aktivitas mahasiswa AIS" onerror="this.onerror=null;this.src='<?php echo e(asset('storage/image/AIS.png')); ?>'">
 					<figcaption>Praktik komunikasi bisnis dan layanan pelanggan.</figcaption>
 				</figure>
 
@@ -142,8 +141,8 @@
 			</div>
 		</div>
 	</div>
-
-	 @include('layouts.footer')
 </body>
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 </html>
 
+<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/ais.blade.php ENDPATH**/ ?>

@@ -59,7 +59,7 @@
               <h2 class="text-2xl font-bold text-[#004269]">Ubah Biodata</h2>
               <p class="text-sm text-slate-500">Perbarui informasi Anda dan unggah foto profil yang jelas.</p>
             </div>
-            <div class="text-sm text-slate-500">Nomor: <strong class="text-slate-700">{{ $pendaftar->nipd ?? ($pendaftar->id ?? '-') }}</strong></div>
+            <div class="text-sm text-slate-500">Nomor NIPD: <strong class="text-slate-700">{{ $pendaftar->nipd ?? '-' }}</strong></div>
           </div>
 
           @if(session('success'))
@@ -266,6 +266,5 @@
       </main>
     </div>
   </div>
-  @include('layouts.footer')
 </body>
 </html>

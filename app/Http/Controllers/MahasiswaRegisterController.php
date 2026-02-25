@@ -10,7 +10,8 @@ class MahasiswaRegisterController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'nipd' => 'required|string|max:255',
+            // NIPD dibuat saat verifikasi (status_verifikasi = verified)
+            'nipd' => 'nullable|string|max:255',
             'nama_mhs' => 'required|string|max:255',
             'alamat' => 'nullable|string',
             'domisili' => 'nullable|string',
@@ -54,6 +55,16 @@ class MahasiswaRegisterController extends Controller
             'id_program_studi' => 'nullable|integer',
             'id_kelas' => 'nullable|integer',
         ]);
+
+        if (empty($validated['status_verifikasi'])) {
+            $validated['status_verifikasi'] = 'pending';
+        }
+
+        if (empty($validated['nipd']) && trim(strtolower((string) $validated['status_verifikasi'])) === 'verified') {
+            // This controller uses DB::table (no model hooks), so generate here when verified.
+            $validated['nipd'] = \App\Models\Mahasiswa::generateNipd($validated['id_program_studi'] ?? null);
+        }
+
         $validated['created_at'] = now();
         $validated['updated_at'] = now();
         DB::table('mahasiswa')->insert($validated);

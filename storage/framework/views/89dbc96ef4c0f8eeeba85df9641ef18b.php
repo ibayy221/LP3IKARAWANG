@@ -1,13 +1,13 @@
-@php
+<?php
     // Carousel data is provided by AdminController@index
     $carouselData = $carouselData ?? [];
-@endphp
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Admin Panel - LP3I Karawang</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -442,76 +442,20 @@
 </head>
 <body>
     <header>
-        {{-- <nav>
-            <div class="logo">
-                <a href="/">
-                    <img src="{{ asset('storage/image/LOGO_LP3I.png') }}" alt="LP3I Karawang Logo" />
-                </a>
-            </div>
-            <button class="mobile-menu-toggle">☰</button>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li class="dropdown">
-                    <a href="#profil">Profil</a>
-                    <div class="dropdown-content">
-                        <a href="/sambutan">Sambutan</a>
-                        <a href="/sejarah">Sejarah</a>
-                        <a href="#prestasi">Prestasi</a>
-                        <a href="/struktur">Struktur Organisasi</a>
-                    </div>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#programs">Program Studi</a>
-                    <div class="dropdown-content">
-                        <a href="#teknik-informatika">Teknik Informatika</a>
-                        <a href="#manajemen-bisnis">Manajemen Bisnis</a>
-                        <a href="#akuntansi">Akuntansi</a>
-                        <a href="#marketing-digital">Marketing Digital</a>
-                    </div>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#akademik">Akademik</a>
-                    <div class="dropdown-content">
-                        <a href="#kalender-akademik">Kalender Akademik</a>
-                        <a href="#kurikulum">Kurikulum</a>
-                        <a href="#sistem-pembelajaran">Sistem Pembelajaran</a>
-                        <a href="#evaluasi">Evaluasi</a>
-                    </div>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#pusat-karir">Pusat Karir</a>
-                    <div class="dropdown-content">
-                        <a href="#lowongan-kerja">Lowongan Kerja</a>
-                        <a href="#magang">Program Magang</a>
-                        <a href="#alumni">Alumni</a>
-                        <a href="#kerjasama-industri">Kerjasama Industri</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="admin-container">
-        <div class="admin-header">
-            <h1><i class="fas fa-cogs"></i> Admin Panel</h1>
-            <p>Kelola Carousel & Konten Website LP3I Karawang</p>
-        </div> --}}
+        
 
         <div class="admin-content">
             <div class="sidebar">
                 <h3>Menu Admin</h3>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="{{ (isset($active) && $active === 'carousel') ? 'menu-link active' : 'menu-link' }}" data-section="carousel">
+                    <li><a href="#" class="<?php echo e((isset($active) && $active === 'carousel') ? 'menu-link active' : 'menu-link'); ?>" data-section="carousel">
                         <i class="fas fa-images"></i> Kelola Carousel (Home)
                     </a></li>
-                    <li><a href="#" class="{{ (isset($active) && $active === 'news') ? 'menu-link active' : 'menu-link' }}" data-section="news">
+                    <li><a href="#" class="<?php echo e((isset($active) && $active === 'news') ? 'menu-link active' : 'menu-link'); ?>" data-section="news">
                         <i class="fas fa-newspaper"></i> Kelola Berita
                     </a></li>
 
-                    <li><a href="#" class="{{ (isset($active) && $active === 'carousel_kegiatan') ? 'menu-link active' : 'menu-link' }}" data-section="carousel-kegiatan">
+                    <li><a href="#" class="<?php echo e((isset($active) && $active === 'carousel_kegiatan') ? 'menu-link active' : 'menu-link'); ?>" data-section="carousel-kegiatan">
                         <i class="fas fa-images"></i> Kelola Carousel (Kegiatan)
                     </a></li>
 
@@ -531,7 +475,7 @@
                     </a></li>
                     <li style="margin-top:1rem">
                         <form method="POST" action="/admin/logout">
-                            @csrf
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="btn btn-danger" style="width:100%">Logout Admin</button>
                         </form>
                     </li>
@@ -540,7 +484,7 @@
 
             <div class="main-content">
                 <!-- Carousel Management Section -->
-                <div class="content-section {{ (isset($active) && $active === 'carousel') ? 'active' : '' }}" id="carousel-section">
+                <div class="content-section <?php echo e((isset($active) && $active === 'carousel') ? 'active' : ''); ?>" id="carousel-section">
                     <h2 class="section-title">Kelola Carousel</h2>
                     
                     <button class="btn btn-success" onclick="openAddModal()">
@@ -611,7 +555,7 @@
                 </div>
 
                 <!-- Carousel Kegiatan Management Section -->
-                <div class="content-section{{ (isset($active) && $active === 'carousel_kegiatan') ? ' active' : '' }}" id="carousel-kegiatan-section">
+                <div class="content-section<?php echo e((isset($active) && $active === 'carousel_kegiatan') ? ' active' : ''); ?>" id="carousel-kegiatan-section">
                     <h2 class="section-title">Kelola Carousel (Kegiatan)</h2>
                     <button class="btn btn-success" onclick="openKegiatanModal()">
                         <i class="fas fa-plus"></i> Tambah Slide Kegiatan
@@ -662,7 +606,7 @@
                 <!-- Struktur Organisasi Section -->
                 <div class="content-section" id="struktur-organisasi-section">
                     <h2 class="section-title">Kelola Struktur Organisasi</h2>
-                    <a href="{{ route('struktur-organisasi.index') }}" class="btn btn-success">
+                    <a href="<?php echo e(route('struktur-organisasi.index')); ?>" class="btn btn-success">
                         <i class=""></i> View Data
                     </a>
                     <div id="struktur-list" style="margin-top:1rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem"></div>
@@ -1676,7 +1620,7 @@
         // --- Penempatan admin integration ---
         const PENEMPATAN_LIST_URL = '/admin/penempatan/json';
         const PENEMPATAN_CREATE_URL = '/admin/penempatan/ajax';
-        const CSRF_TOKEN = '{{ csrf_token() }}';
+        const CSRF_TOKEN = '<?php echo e(csrf_token()); ?>';
         const DEFAULT_HEADERS = { 'X-CSRF-TOKEN': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' };
 
         async function fetchPenempatan() {
@@ -1795,3 +1739,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/admin.blade.php ENDPATH**/ ?>

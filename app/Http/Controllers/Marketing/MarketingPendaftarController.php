@@ -131,6 +131,7 @@ class MarketingPendaftarController extends Controller
                 'created_at',
             ])
             ->map(function ($r) {
+                $programId = $r->id_program_studi ? (int) $r->id_program_studi : null;
                 return [
                     'id' => $r->id_mahasiswa,
                     'nama_mhs' => $r->nama_mhs,
@@ -139,7 +140,9 @@ class MarketingPendaftarController extends Controller
                     'no_hp' => $r->no_tlp,
                     'id_program_studi' => $r->id_program_studi,
                     // keep legacy key used by frontend
-                    'jurusan' => $this->programCodeFromId($r->id_program_studi ? (int) $r->id_program_studi : null),
+                    'jurusan' => $this->programCodeFromId($programId),
+                    // preferred label for display (no abbreviation)
+                    'jurusan_label' => JurusanHelper::getNamaLengkap($programId),
                     'status_verifikasi' => $r->status_verifikasi,
                     'created_at' => $r->created_at,
                 ];
@@ -216,7 +219,8 @@ class MarketingPendaftarController extends Controller
         }
 
         try {
-            $m = Mahasiswa::createWithUniqueNipd($v);
+            // NIPD dibuat saat verifikasi (status_verifikasi=verified)
+            $m = Mahasiswa::create($v);
         } catch (\Illuminate\Database\QueryException $e) {
             if (strpos(strtolower($e->getMessage()), 'duplicate') !== false || $e->getCode() === '23000') {
                 $existing = Mahasiswa::findRecentDuplicate($v, null);
@@ -493,8 +497,26 @@ class MarketingPendaftarController extends Controller
         }
         $m = Mahasiswa::find($id);
         if (!$m) return response()->json(['success' => false, 'error' => 'Pendaftar tidak ditemukan']);
+
+        // If moving to verified, assign NIPD now (with simple retry on rare collisions)
         $m->status_verifikasi = $status;
-        $m->save();
+        $attempts = 0;
+        $normalized = trim(strtolower((string) $status));
+        while (true) {
+            $attempts++;
+            try {
+                $m->save();
+                break;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $msg = strtolower($e->getMessage());
+                if ($normalized === 'verified' && (str_contains($msg, 'nipd') || $e->getCode() === '23000') && $attempts < 5) {
+                    // Force regenerate next attempt
+                    $m->nipd = null;
+                    continue;
+                }
+                throw $e;
+            }
+        }
 
         // Send notification email to applicant if email exists
         try {

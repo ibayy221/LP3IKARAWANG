@@ -97,7 +97,7 @@
                   <h2 class="text-2xl font-bold text-[#004269]">Biodata Pendaftar</h2>
                   <p class="text-sm text-slate-500">Perbarui informasi pribadi Anda di halaman ini.</p>
                 </div>
-                <div class="text-sm text-slate-500">Nomor: <span class="font-medium text-slate-700">{{ $pendaftar->nipd ?? ($pendaftar->id ?? '-') }}</span></div>
+                <div class="text-sm text-slate-500">Nomor NIPD: <span class="font-medium text-slate-700">{{ $pendaftar->nipd ?? '-' }}</span></div>
               </div>
 
               <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">

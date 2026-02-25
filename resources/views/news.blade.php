@@ -71,44 +71,9 @@ $showDetail = $currentNews !== null;
             background-color: var(--bg-body);
             color: var(--text-dark);
             line-height: 1.7;
-            padding-top: 80px;
-        }        
-        header {
-            background: #043158;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 0;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .logo { display: flex; align-items: center; gap: 10px; }
-        .logo img { height: 40px; width: auto; }
-        
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            opacity: 0.85;
-            transition: 0.3s;
-        }
-        .nav-links a:hover { opacity: 1; color: var(--accent); }
-
-        .container {
+        .news-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
@@ -314,24 +279,17 @@ $showDetail = $currentNews !== null;
             .news-hero-image { height: 300px; }
             .news-detail-body { padding: 1.5rem; }
             .news-title-detail { font-size: 1.8rem; }
-            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
+@include('partials.header')
 
-        @include('partials.header')
-
-    <div class="container">
+    <div class="news-container">
         <?php if ($showDetail): ?>
-            <div class="breadcrumb">
-                <a href="/">Home</a> / <a href="/news">Berita</a> / Detail
-            </div>
+           
 
-            <a href="/news" class="back-button">
-                <i class="fas fa-arrow-left"></i> Kembali
-            </a>
-
+            
             <article class="news-detail-wrapper">
                 <?php 
                     $newsImagePath = !empty($currentNews['image_path']) && file_exists(public_path($currentNews['image_path'])) 
@@ -437,6 +395,7 @@ $showDetail = $currentNews !== null;
         // ESC key to close
         document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeModal(); });
     </script>
+
     @include('layouts.footer')
 </body>
 </html>

@@ -183,9 +183,6 @@ Route::middleware([EnsureAdmin::class])->group(function () {
     Route::post('/admin/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'store']);
     Route::post('/admin/carousel-kegiatan/{id}', [\App\Http\Controllers\CarouselKegiatanController::class, 'update']);
     Route::delete('/admin/carousel-kegiatan/{id}', [\App\Http\Controllers\CarouselKegiatanController::class, 'destroy']);
-    // (hapus Route::get('/carousel-kegiatan', ...) dari group ini)
-    // Public API untuk ambil data carousel kegiatan (modern bawah video)
-    Route::get('/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'list']);
     
     // Struktur Organisasi management
     Route::get('/admin/struktur-organisasi', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
@@ -208,6 +205,9 @@ Route::middleware([EnsureAdmin::class])->group(function () {
     Route::post('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxUpdate'])->name('admin.penempatan.ajax.update');
     Route::delete('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxDestroy'])->name('admin.penempatan.ajax.destroy');
 });
+
+// Public API untuk ambil data carousel kegiatan (modern bawah video)
+Route::get('/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'list']);
 
 // Marketing (Smart Presenter) - separate from Admin CMS
 use App\Http\Controllers\Marketing\MarketingAuthController as MarketingAuthController;

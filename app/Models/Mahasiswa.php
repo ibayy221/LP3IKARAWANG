@@ -114,8 +114,21 @@ class Mahasiswa extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            if (empty($model->nipd)) {
-                // attempt to set nipd using program id
+            $status = trim(strtolower((string) ($model->status_verifikasi ?? '')));
+            if ($status === 'verified' && empty($model->nipd)) {
+                $model->nipd = self::generateNipd(
+                    $model->id_program_studi ?? ($model->id_program_study ?? null)
+                );
+            }
+        });
+
+        static::updating(function ($model) {
+            if (!$model->isDirty('status_verifikasi')) {
+                return;
+            }
+
+            $status = trim(strtolower((string) ($model->status_verifikasi ?? '')));
+            if ($status === 'verified' && empty($model->nipd)) {
                 $model->nipd = self::generateNipd(
                     $model->id_program_studi ?? ($model->id_program_study ?? null)
                 );
