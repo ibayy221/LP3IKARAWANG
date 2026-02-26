@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use App\Models\Kecamatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class MahasiswaController extends Controller
 {
@@ -13,9 +14,8 @@ class MahasiswaController extends Controller
     {
         $kecamatans = Kecamatan::orderBy('name')->get();
         // load desas grouped by kecamatan id for cascading dropdown
-        $desas = \App\Models\Desa::orderBy('name')->get()->groupBy('kecamatan_id')->map(function($items) {
-            return $items->map(function($it) { return ['id' => $it->id, 'name' => $it->name, 'kode_pos' => $it->kode_pos]; })->values();
-        });
+        // Note: Desa model/table doesn't exist, using empty collection
+        $desas = collect([]);
 
         // Read optional registration image setting from public/data/settings.csv
         $registrationImage = null;
@@ -49,28 +49,57 @@ class MahasiswaController extends Controller
 
     public function store(Request $request)
     {
+        // Pastikan id_user, id_program_studi, id_kelas valid
+        // (Letakkan setelah $validated didapat dari $request->validate)
         // If account fields are present, require them
         $rules = [
             'nama_mhs' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'no_hp' => 'nullable|string|max:50',
-            'jurusan' => 'nullable|string|max:255',
-            'tahun_lulus' => 'nullable|digits:4',
+            'nipd' => 'nullable|string|max:255',
             'alamat' => 'nullable|string',
-            'kecamatan' => 'nullable|string|max:255',
-            'desa' => 'nullable|string|max:255',
-            'kode_pos' => 'nullable|string|max:10',
-            'kecamatan' => 'nullable|string|max:255',
+            'domisili' => 'required|string',
             'tempat_lahir' => 'nullable|string|max:255',
             'tgl_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|string|max:10',
-            'agama' => 'nullable|string|max:50',
-            'jenis_sekolah' => 'nullable|string|max:50',
-            'jenis_kelas' => 'nullable|string|max:50',
-            'kategori_sekolah' => 'nullable|string|max:50',
-            'sumber_pendaftaran' => 'nullable|string|in:online,offline',
-            'status_verifikasi' => 'nullable|string|max:50',
+            'angkatan' => 'nullable|string|max:255',
+            'periode' => 'nullable|string|max:255',
+            'agama' => 'nullable|string|max:255',
+            'no_tlp' => 'nullable|string|max:255',
+            // legacy name used by some older forms/tests
+            'no_hp' => 'nullable|string|max:255',
+            'tahun_lulus' => 'nullable|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'desa' => 'nullable|string|max:255',
+            'kode_pos' => 'nullable|string|max:255',
+            'jenis_kelamin' => 'nullable|string|max:255',
+            'jenis_kelas' => 'nullable|string|max:255',
+            'status_verifikasi' => 'nullable|string|max:255',
+            'payment_status' => 'nullable|string|max:255',
+            'payment_method' => 'nullable|string|max:255',
+            'payment_proof_path' => 'nullable|string|max:255',
+            'payment_bank_origin' => 'nullable|string|max:255',
+            'payment_account_name' => 'nullable|string|max:255',
+            'payment_sender_name' => 'nullable|string|max:255',
+            'payment_transfer_date' => 'nullable|string|max:255',
+            'payment_expires_at' => 'nullable|string|max:255',
+            'payment_amount' => 'nullable|string|max:255',
             'asal_sekolah' => 'nullable|string|max:255',
+            'file_path' => 'nullable|string|max:255',
+            'ktp_path' => 'nullable|string|max:255',
+            'akte_kelahiran_path' => 'nullable|string|max:255',
+            'ijazah_path' => 'nullable|string|max:255',
+            'surat_sudah_bekerja_path' => 'nullable|string|max:255',
+            'instagram_path' => 'nullable|string|max:255',
+            'nama_wali' => 'nullable|string|max:255',
+            'telp_wali' => 'nullable|string|max:255',
+            'pekerjaan_wali' => 'nullable|string|max:255',
+            'whatsapp_wali' => 'nullable|string|max:255',
+            'foto' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
+            'id_user' => 'nullable|integer',
+            'id_program_studi' => 'nullable|integer|in:1,2,3',
+            // legacy name used by older forms
+            'program_studi' => 'nullable|integer|in:1,2,3',
+            'id_kelas' => 'nullable|integer',
             'file' => 'nullable|file|max:5120'
         ];
 
@@ -81,6 +110,17 @@ class MahasiswaController extends Controller
         }
 
         $validated = $request->validate($rules);
+
+        // normalize legacy field names
+        if (empty($validated['no_tlp']) && !empty($validated['no_hp'])) {
+            $validated['no_tlp'] = $validated['no_hp'];
+        }
+        unset($validated['no_hp']);
+
+        if (empty($validated['id_program_studi']) && !empty($validated['program_studi'])) {
+            $validated['id_program_studi'] = (int) $validated['program_studi'];
+        }
+        unset($validated['program_studi']);
 
         // handle file if present
         if ($request->hasFile('file')) {
@@ -96,86 +136,131 @@ class MahasiswaController extends Controller
             }
         }
 
-        // If account is created, make a user and link
-        $userId = null;
-        if (!empty($validated['password'])) {
-            // Prefer explicit account_email (from the 'Buat Akun' section); fall back to contact email if provided
-            $email = $validated['account_email'] ?? $validated['email'] ?? null;
-            $password = $validated['password'];
-
-            // Create User
-            $u = new \App\Models\User();
-            $u->name = $validated['nama_mhs'];
-            $u->email = $email;
-            $u->password = \Illuminate\Support\Facades\Hash::make($password);
-            $u->is_applicant = true;
-            $u->save();
-            $userId = $u->id;
-        }
-
-        $validated['user_id'] = $userId;
-        // Persist contact email into mahasiswa.email: prefer account_email if provided
+        // Tidak perlu mapping, gunakan no_tlp langsung
+        // Mapping email ke account_email jika ada
         if (!empty($validated['account_email'])) {
             $validated['email'] = $validated['account_email'];
         }
-        // set default payment fields if not present
-        $validated['payment_status'] = $validated['payment_status'] ?? 'unpaid';
-        $validated['payment_amount'] = $validated['payment_amount'] ?? 350000;
-        // set default status for every pendaftar
-        $validated['status'] = $validated['status'] ?? 'aktif';
 
-        // Remove account-related fields so they are not persisted into mahasiswas table
-        unset($validated['account_email'], $validated['password'], $validated['password_confirmation']);
+        // If account is created, make a user and link
+        $userId = null;
+        $email = $validated['email'] ?? null;
+        $user = \App\Models\User::where('email', $email)->first();
+        if (!$user && !empty($validated['password'])) {
+            $user = new \App\Models\User();
+            $user->name = $validated['nama_mhs'];
+            $user->email = $email;
+            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+            $user->is_applicant = true;
+            $user->save();
+        }
+        $userId = $user ? $user->id : null;
+        $validated['id_user'] = $userId;
 
-        // Prevent accidental duplicate submissions: if a recent record exists with same email or phone and same jurusan, skip creating a new one.
-        $duplicate = null;
+        // NIPD dibuat saat verifikasi (status_verifikasi = verified), bukan saat pendaftaran.
+
+        // Pastikan semua field DB ada di $validated (isi default jika tidak ada input)
+        // Hapus id_mahasiswa jika kosong/null agar tidak error insert
+        if (array_key_exists('id_mahasiswa', $validated) && ($validated['id_mahasiswa'] === '' || $validated['id_mahasiswa'] === null)) {
+            unset($validated['id_mahasiswa']);
+        }
+
+        // Pastikan field NOT NULL tanpa default selalu terisi string kosong jika tidak ada input
+        // Otomatis isi string kosong untuk semua field di $dbFields jika tidak ada input
+        $dbFields = [
+            'id_mahasiswa', 'nipd', 'nama_mhs', 'alamat', 'domisili', 'tempat_lahir', 'tgl_lahir', 'angkatan', 'periode',
+            'email', 'agama', 'no_tlp', 'tahun_lulus', 'kecamatan', 'desa', 'kode_pos', 'jenis_kelamin', 'jenis_kelas',
+            'status_verifikasi', 'payment_status', 'payment_method', 'payment_proof_path', 'payment_bank_origin',
+            'payment_account_name', 'payment_sender_name', 'payment_transfer_date', 'payment_expires_at', 'payment_amount',
+            'asal_sekolah', 'file_path', 'ktp_path', 'akte_kelahiran_path', 'ijazah_path', 'surat_sudah_bekerja_path',
+            'instagram_path', 'nama_wali', 'telp_wali', 'pekerjaan_wali', 'whatsapp_wali', 'foto', 'status',
+            'id_user', 'id_program_studi', 'id_kelas'
+        ];
+        foreach ($dbFields as $field) {
+            // id_mahasiswa: auto-increment, jangan dikirim jika kosong/null
+            if ($field === 'id_mahasiswa') {
+                if (!isset($validated[$field]) || $validated[$field] === null || $validated[$field] === '') {
+                    unset($validated[$field]);
+                    continue;
+                }
+            }
+            // Integer fields
+            $integerFields = ['id_user', 'id_program_studi', 'id_kelas'];
+            if (in_array($field, $integerFields)) {
+                if (!isset($validated[$field]) || $validated[$field] === null || $validated[$field] === '') {
+                    $validated[$field] = null;
+                }
+                continue;
+            }
+            // Kolom NOT NULL harus diisi string kosong jika tidak ada input
+            $notNullFields = [
+                'nama_mhs', 'domisili', 'tempat_lahir', 'angkatan', 'periode', 'agama'
+            ];
+            if (in_array($field, $notNullFields)) {
+                if (!isset($validated[$field]) || $validated[$field] === null || $validated[$field] === '') {
+                    $validated[$field] = '';
+                }
+                continue;
+            }
+            // Kolom lain: null jika kosong
+            if (!isset($validated[$field]) || $validated[$field] === null || $validated[$field] === '') {
+                $validated[$field] = null;
+            }
+        }
+        $dbFields = [
+            'id_mahasiswa', 'nipd', 'nama_mhs', 'alamat', 'domisili', 'tempat_lahir', 'tgl_lahir', 'angkatan', 'periode',
+            'email', 'agama', 'no_tlp', 'tahun_lulus', 'kecamatan', 'desa', 'kode_pos', 'jenis_kelamin', 'jenis_kelas',
+            'status_verifikasi', 'payment_status', 'payment_method', 'payment_proof_path', 'payment_bank_origin',
+            'payment_account_name', 'payment_sender_name', 'payment_transfer_date', 'payment_expires_at', 'payment_amount',
+            'asal_sekolah', 'file_path', 'ktp_path', 'akte_kelahiran_path', 'ijazah_path', 'surat_sudah_bekerja_path',
+            'instagram_path', 'nama_wali', 'telp_wali', 'pekerjaan_wali', 'whatsapp_wali', 'foto', 'status',
+            'id_user', 'id_program_studi', 'id_kelas'
+        ];
+
+        // Simpan data ke tabel mahasiswa
+        $dataToInsert = array_intersect_key($validated, array_flip($dbFields));
+
+        // Default status verifikasi untuk pendaftar baru
+        if (empty($dataToInsert['status_verifikasi'])) {
+            $dataToInsert['status_verifikasi'] = 'pending';
+        }
+
+        // Prevent quick duplicate submissions (same email/phone within a short window)
         try {
-            // look for any existing record with same email/phone & jurusan
-            \Illuminate\Support\Facades\Log::info('Running duplicate check', ['email' => $validated['email'] ?? null, 'no_hp' => $validated['no_hp'] ?? null, 'jurusan' => $validated['jurusan'] ?? null]);
-            $duplicate = Mahasiswa::findRecentDuplicate($validated, null);
-            \Illuminate\Support\Facades\Log::info('Duplicate check result', ['found' => (bool)$duplicate, 'duplicate_id' => $duplicate ? $duplicate->id : null]);
+            $duplicate = Mahasiswa::findRecentDuplicate($dataToInsert, 10);
         } catch (\Exception $e) {
-            // If anything goes wrong, we fall back to creating a record rather than blocking signups
-            \Illuminate\Support\Facades\Log::warning('Duplicate check failed: '.$e->getMessage());
+            $duplicate = null;
+            Log::warning('Duplicate check failed', ['error' => $e->getMessage()]);
         }
 
         if ($duplicate) {
-            // Redirect to a friendly page (or back) indicating the record already exists
-            return redirect()->back()->with('success', 'Pendaftaran sudah diterima sebelumnya. Nomor pendaftaran: ' . ($duplicate->nipd ?? $duplicate->id));
-        }
+            // If we just created a user, try to link it to the existing record
+            if (!empty($dataToInsert['id_user']) && empty($duplicate->id_user)) {
+                $duplicate->id_user = $dataToInsert['id_user'];
+            }
+            if (!empty($dataToInsert['id_program_studi']) && empty($duplicate->id_program_studi)) {
+                $duplicate->id_program_studi = $dataToInsert['id_program_studi'];
+            }
+            $duplicate->save();
 
-        // Generate NIPD if not set using the model helper (ensures consistent format)
-        if (empty($validated['nipd'])) {
-            $validated['nipd'] = \App\Models\Mahasiswa::generateNipd($validated['jurusan'] ?? null);
-        }
-
-        // create the mahasiswa record inside a try/catch to handle unique-constraint races
-        try {
-            $mahasiswa = Mahasiswa::createWithUniqueNipd($validated);
-        } catch (\Illuminate\Database\QueryException $e) {
-            // duplicate entry (unique index on email/jurusan/no_hp) -> find existing and redirect gracefully
-            if (strpos(strtolower($e->getMessage()), 'duplicate') !== false || $e->getCode() === '23000') {
-                $existing = Mahasiswa::findRecentDuplicate($validated, null);
-                if ($existing) {
-                    return redirect()->back()->with('success', 'Pendaftaran sudah diterima sebelumnya. Nomor pendaftaran: ' . ($existing->nipd ?? $existing->id));
-                }
+            if ($user) {
+                \Illuminate\Support\Facades\Auth::login($user);
             }
 
-            // rethrow for unexpected DB errors
-            throw $e;
+            return back()->with('success', 'Pendaftaran sudah tercatat.');
         }
 
-        // If account created, redirect to pendaftar login
-        if (!empty($userId)) {
-            return redirect()->route('pendaftar.login')->with('success','Akun dibuat. Silakan login untuk melihat status pendaftaran.');
+        try {
+            $mahasiswa = \App\Models\Mahasiswa::create($dataToInsert);
+            // Login otomatis setelah pendaftaran
+            if ($user) {
+                \Illuminate\Support\Facades\Auth::login($user);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Gagal insert mahasiswa: ' . $e->getMessage(), ['data' => $dataToInsert]);
+            return back()->withInput()->withErrors(['mahasiswa' => 'Gagal menyimpan data mahasiswa: ' . $e->getMessage()]);
         }
-
-        return redirect()->back()->with('success', 'Pendaftaran mahasiswa berhasil dikirimkan.');
-        // If account created, redirect to pendaftar login
-        if (!empty($userId)) {
-            return redirect()->route('pendaftar.login')->with('success','Akun dibuat. Silakan login untuk melihat status pendaftaran.');
-        }
-
-        return redirect()->back()->with('success', 'Pendaftaran mahasiswa berhasil dikirimkan.');
+        // Redirect atau tampilkan pesan sukses
+        return redirect()->route('pendaftar.dashboard')->with('success', 'Pendaftaran berhasil!');
     }
 }

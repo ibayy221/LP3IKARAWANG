@@ -35,8 +35,8 @@
           <div style="display:grid;grid-template-columns:140px 1fr;gap:.5rem .75rem;align-items:start">
             <div class="label">Nama</div><div>{{ $m->nama_mhs }}</div>
             <div class="label">Email</div><div>{{ $m->email ?? '-' }}</div>
-            <div class="label">No HP</div><div>{{ $m->no_hp ?? '-' }}</div>
-            <div class="label">Bidang Keahlian</div><div>{{ \App\Helpers\JurusanHelper::getFormat($m->jurusan ?? null) }}</div>
+            <div class="label">No HP</div><div>{{ $m->no_tlp ?? '-' }}</div>
+            <div class="label">Bidang Keahlian</div><div>{{ \App\Helpers\JurusanHelper::getNamaLengkap($m->id_program_studi ?? null) }}</div>
             <div class="label">Jenis Kelas</div><div>{{ $m->jenis_kelas ?? '-' }}</div>
             <div class="label">Asal Sekolah</div><div>{{ $m->asal_sekolah ?? '-' }}</div>
             <div class="label">Status Verifikasi</div>
@@ -46,7 +46,7 @@
           <hr style="margin:1rem 0">
 
           <h4 style="margin:0 0 .5rem">Marketing notes</h4>
-          <form method="POST" action="{{ route('marketing.pendaftar.note', $m->id) }}">
+          <form method="POST" action="{{ route('marketing.pendaftar.note', $m->id_mahasiswa) }}">
             @csrf
             <textarea name="marketing_notes" class="notes">{{ old('marketing_notes', $m->marketing_notes) }}</textarea>
             <div style="margin-top:.75rem;text-align:right">
@@ -59,21 +59,21 @@
         <aside>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
             <div style="font-weight:700">Document</div>
-            <div style="font-size:.85rem;color:var(--muted)">ID: {{ $m->id }}</div>
+            <div style="font-size:.85rem;color:var(--muted)">ID: {{ $m->id_mahasiswa }}</div>
           </div>
 
           <div class="doc-list">
             @if(!empty($m->ktp_path))
-              <div class="doc-file"><div style="flex:1">KTP / Kartu Pelajar</div><a href="{{ route('marketing.pendaftar.ktp', $m->id) }}" class="doc-btn">Download</a></div>
+              <div class="doc-file"><div style="flex:1">KTP / Kartu Pelajar</div><a href="{{ route('marketing.pendaftar.ktp', $m->id_mahasiswa) }}" class="doc-btn">Download</a></div>
             @endif
             @if(!empty($m->ijazah_path))
-              <div class="doc-file"><div style="flex:1">Ijazah</div><a href="{{ route('marketing.pendaftar.ijazah', $m->id) }}" class="doc-btn">Download</a></div>
+              <div class="doc-file"><div style="flex:1">Ijazah</div><a href="{{ route('marketing.pendaftar.ijazah', $m->id_mahasiswa) }}" class="doc-btn">Download</a></div>
             @endif
             @if(!empty($m->akte_kelahiran_path))
-              <div class="doc-file"><div style="flex:1">Akte Kelahiran</div><a href="{{ route('marketing.pendaftar.akte', $m->id) }}" class="doc-btn">Download</a></div>
+              <div class="doc-file"><div style="flex:1">Akte Kelahiran</div><a href="{{ route('marketing.pendaftar.akte', $m->id_mahasiswa) }}" class="doc-btn">Download</a></div>
             @endif
             @if(!empty($m->surat_sudah_bekerja_path))
-              <div class="doc-file"><div style="flex:1">Surat Keterangan Bekerja</div><a href="{{ route('marketing.pendaftar.surat_bekerja', $m->id) }}" class="doc-btn">Download</a></div>
+              <div class="doc-file"><div style="flex:1">Surat Keterangan Bekerja</div><a href="{{ route('marketing.pendaftar.surat_bekerja', $m->id_mahasiswa) }}" class="doc-btn">Download</a></div>
             @endif
             @if(empty($m->ktp_path) && empty($m->ijazah_path) && empty($m->akte_kelahiran_path) && empty($m->surat_sudah_bekerja_path))
               <div style="color:#64748b">No document uploaded</div>

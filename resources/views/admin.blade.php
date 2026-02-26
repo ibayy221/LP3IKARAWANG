@@ -505,10 +505,14 @@
                 <h3>Menu Admin</h3>
                 <ul class="sidebar-menu">
                     <li><a href="#" class="{{ (isset($active) && $active === 'carousel') ? 'menu-link active' : 'menu-link' }}" data-section="carousel">
-                        <i class="fas fa-images"></i> Kelola Carousel
+                        <i class="fas fa-images"></i> Kelola Carousel (Home)
                     </a></li>
                     <li><a href="#" class="{{ (isset($active) && $active === 'news') ? 'menu-link active' : 'menu-link' }}" data-section="news">
                         <i class="fas fa-newspaper"></i> Kelola Berita
+                    </a></li>
+
+                    <li><a href="#" class="{{ (isset($active) && $active === 'carousel_kegiatan') ? 'menu-link active' : 'menu-link' }}" data-section="carousel-kegiatan">
+                        <i class="fas fa-images"></i> Kelola Carousel (Kegiatan)
                     </a></li>
 
                     <li><a href="#" class="menu-link" data-section="penempatan">
@@ -519,9 +523,9 @@
                         <i class="fas fa-sitemap"></i> Kelola Struktur Organisasi
                     </a></li>
 
-                    {{-- <li><a href="#" class="menu-link" data-section="settings">
+                    <li><a href="#" class="menu-link" data-section="settings">
                         <i class="fas fa-cog"></i> Pengaturan
-                    </a></li> --}}
+                    </a></li>
                     <li><a href="/" class="menu-link">
                         <i class="fas fa-home"></i> Kembali ke Website
                     </a></li>
@@ -603,6 +607,48 @@
                                 <!-- news rows injected here -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Carousel Kegiatan Management Section -->
+                <div class="content-section{{ (isset($active) && $active === 'carousel_kegiatan') ? ' active' : '' }}" id="carousel-kegiatan-section">
+                    <h2 class="section-title">Kelola Carousel (Kegiatan)</h2>
+                    <button class="btn btn-success" onclick="openKegiatanModal()">
+                        <i class="fas fa-plus"></i> Tambah Slide Kegiatan
+                    </button>
+                    <div class="carousel-list" id="carousel-kegiatan-list" style="margin-top:1.5rem;"></div>
+
+                    <!-- Modal Tambah/Edit Carousel Kegiatan -->
+                    <div class="modal" id="kegiatan-modal" style="display:none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="kegiatan-modal-title">Tambah Slide Kegiatan</h3>
+                                <button class="close-modal" onclick="closeKegiatanModal()">&times;</button>
+                            </div>
+                            <form id="kegiatan-form" class="elegant-form" enctype="multipart/form-data" onsubmit="handleKegiatanFormSubmit(event)">
+                                <input type="hidden" id="kegiatan-id" name="id">
+                                <div class="form-group">
+                                    <label for="kegiatan-title">Judul Slide:</label>
+                                    <input type="text" id="kegiatan-title" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kegiatan-image">Gambar Slide:</label>
+                                    <input type="file" id="kegiatan-image" name="image" accept="image/*">
+                                    <div id="kegiatan-image-preview" class="image-preview"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kegiatan-status">Status:</label>
+                                    <select id="kegiatan-status" name="status">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                                    <button type="button" class="btn btn-danger" onclick="closeKegiatanModal()">Batal</button>
+                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
@@ -810,6 +856,166 @@
     </div>
 
     <script>
+                // --- Carousel Kegiatan Management (AJAX) ---
+                let carouselKegiatanData = [];
+                async function fetchCarouselKegiatan() {
+                    try {
+                        const res = await fetch('/admin/carousel-kegiatan', {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const contentType = res.headers.get('content-type') || '';
+                        if (!contentType.includes('application/json')) {
+                            const text = await res.text();
+                            throw new Error('Server mengembalikan respons non-JSON (mungkin session admin habis / redirect login). ' + text.substring(0, 120));
+                        }
+
+                        const json = await res.json();
+                        if (json?.success) {
+                            carouselKegiatanData = json.data;
+                            loadCarouselKegiatanList();
+                        } else {
+                            throw new Error(json?.message || 'Gagal memuat data carousel kegiatan');
+                        }
+                    } catch (error) {
+                        console.error('fetchCarouselKegiatan error:', error);
+                        alert('Gagal memuat carousel kegiatan: ' + (error?.message || error));
+                    }
+                }
+                function loadCarouselKegiatanList() {
+                    const list = document.getElementById('carousel-kegiatan-list');
+                    list.innerHTML = '';
+                    if (!carouselKegiatanData || carouselKegiatanData.length === 0) {
+                        list.innerHTML = '<p style="text-align:center;color:#666;padding:2rem;">Belum ada slide kegiatan.</p>';
+                        return;
+                    }
+                    carouselKegiatanData.forEach(slide => {
+                        const item = document.createElement('div');
+                        item.className = 'carousel-item';
+                        item.innerHTML = `
+                            <div class="carousel-info">
+                                <h3>${slide.title}</h3>
+                                <span class="status ${slide.status}">${(slide.status||'').charAt(0).toUpperCase()+(slide.status||'').slice(1)}</span>
+                                ${slide.image_path ? `<div class='image-preview'><img src='/${slide.image_path}' alt='Slide' style='width:60px;height:40px;object-fit:cover;border-radius:4px;'></div>` : ''}
+                            </div>
+                            <div class="carousel-actions">
+                                <button class="btn-edit" onclick="editKegiatanSlide(${slide.id})"><i class='fas fa-edit'></i> Edit</button>
+                                <button class="btn-delete" onclick="deleteKegiatanSlide(${slide.id})"><i class='fas fa-trash'></i> Delete</button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
+                function openKegiatanModal(edit=false, slide=null) {
+                    document.getElementById('kegiatan-modal').style.display = 'block';
+                    document.getElementById('kegiatan-modal-title').innerText = edit ? 'Edit Slide Kegiatan' : 'Tambah Slide Kegiatan';
+                    document.getElementById('kegiatan-form').reset();
+                    document.getElementById('kegiatan-id').value = slide ? slide.id : '';
+                    document.getElementById('kegiatan-title').value = slide ? slide.title : '';
+                    document.getElementById('kegiatan-status').value = slide ? slide.status : 'active';
+                    document.getElementById('kegiatan-image-preview').innerHTML = slide && slide.image_path ? `<img src='/${slide.image_path}' style='width:100px;height:60px;object-fit:cover;border-radius:4px;'>` : '';
+                }
+                function closeKegiatanModal() {
+                    document.getElementById('kegiatan-modal').style.display = 'none';
+                }
+                function editKegiatanSlide(id) {
+                    const slide = carouselKegiatanData.find(s => s.id == id);
+                    if (slide) openKegiatanModal(true, slide);
+                }
+                function deleteKegiatanSlide(id) {
+                    if (!confirm('Hapus slide ini?')) return;
+                    fetch(`/admin/carousel-kegiatan/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then(async res => {
+                            const contentType = res.headers.get('content-type') || '';
+                            if (!contentType.includes('application/json')) {
+                                const text = await res.text();
+                                throw new Error('Server mengembalikan respons non-JSON. ' + text.substring(0, 120));
+                            }
+                            const json = await res.json();
+                            if (!res.ok || !json?.success) {
+                                throw new Error(json?.message || json?.error || 'Gagal menghapus slide');
+                            }
+                            return json;
+                        })
+                        .then(() => fetchCarouselKegiatan())
+                        .catch(error => {
+                            console.error('deleteKegiatanSlide error:', error);
+                            alert('Gagal menghapus slide: ' + (error?.message || error));
+                        });
+                }
+                function handleKegiatanFormSubmit(e) {
+                    e.preventDefault();
+                    const form = document.getElementById('kegiatan-form');
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    const formData = new FormData(form);
+                    const id = formData.get('id');
+                    let url = '/admin/carousel-kegiatan';
+                    const method = 'POST';
+                    if (id) url += `/${id}`;
+
+                    fetch(url, {
+                        method,
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then(async res => {
+                            const contentType = res.headers.get('content-type') || '';
+                            if (!contentType.includes('application/json')) {
+                                const text = await res.text();
+                                throw new Error('Server mengembalikan respons non-JSON (mungkin 419/redirect). ' + text.substring(0, 120));
+                            }
+                            const json = await res.json();
+                            if (!res.ok) {
+                                const firstError = json?.errors ? Object.values(json.errors)?.flat()?.[0] : null;
+                                throw new Error(firstError || json?.message || json?.error || 'Gagal menyimpan slide');
+                            }
+                            if (!json?.success) {
+                                throw new Error(json?.message || json?.error || 'Gagal menyimpan slide');
+                            }
+                            return json;
+                        })
+                        .then(() => {
+                            closeKegiatanModal();
+                            fetchCarouselKegiatan();
+                        })
+                        .catch(error => {
+                            console.error('handleKegiatanFormSubmit error:', error);
+                            alert('Gagal menyimpan slide: ' + (error?.message || error));
+                        })
+                        .finally(() => {
+                            if (submitBtn) submitBtn.disabled = false;
+                        });
+                }
+                // Preview image
+                document.getElementById('kegiatan-image')?.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        document.getElementById('kegiatan-image-preview').innerHTML = `<img src='${ev.target.result}' style='width:100px;height:60px;object-fit:cover;border-radius:4px;'>`;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                // Auto load list saat section aktif
+                document.querySelector('[data-section="carousel-kegiatan"]').addEventListener('click', fetchCarouselKegiatan);
+                // Auto-load data saat halaman admin dibuka
+                fetchCarouselKegiatan();
         // Global variables
         let carouselData = <?= json_encode($carouselData) ?>;
         let newsData = [];
@@ -1417,6 +1623,12 @@
             // Menu switching
             document.querySelectorAll('.menu-link').forEach(link => {
                 link.addEventListener('click', function(e) {
+                    const section = this.getAttribute('data-section');
+                    if (!section) {
+                        // Regular link (e.g., back to website)
+                        return;
+                    }
+
                     e.preventDefault();
                     
                     // Remove active class from all links and sections
@@ -1427,18 +1639,22 @@
                     this.classList.add('active');
                     
                     // Show corresponding section
-                    const section = this.getAttribute('data-section');
-                    if (section) {
-                        document.getElementById(section + '-section').classList.add('active');
-                        
-                        // Load data for the section
-                        if (section === 'news') {
-                            fetchNewsData();
-                        } else if (section === 'settings') {
-                            fetchRegistrationImage();
-                        } else if (section === 'struktur-organisasi') {
-                            fetchStrukturOrganisasi();
-                        }
+                    const sectionEl = document.getElementById(section + '-section');
+                    if (sectionEl) {
+                        sectionEl.classList.add('active');
+                    }
+
+                    // Load data for the section
+                    if (section === 'news') {
+                        fetchNewsData();
+                    } else if (section === 'settings') {
+                        fetchRegistrationImage();
+                    } else if (section === 'struktur-organisasi') {
+                        fetchStrukturOrganisasi();
+                    } else if (section === 'penempatan') {
+                        fetchPenempatan();
+                    } else if (section === 'carousel-kegiatan') {
+                        fetchCarouselKegiatan();
                     }
                 });
             });

@@ -1,3 +1,4 @@
+
 <?php
 	// Expecting `$images` to be passed from controller as a collection of Penempatan models.
 	// If not provided or empty, we'll render an empty state (no uploads yet).
@@ -109,6 +110,7 @@
 			<?php endif; ?>
 		</div>
 	</div>
+	<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 	<!-- Modal for image preview -->
 	<div id="imageModal" class="modal">
@@ -136,6 +138,7 @@
 			}
 		});
 	</script>
+
 </body>
 </html>
 <?php /**PATH D:\Lp3i\LP3IKARAWANG\resources\views/penempatan.blade.php ENDPATH**/ ?>

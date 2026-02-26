@@ -24,7 +24,7 @@
   </style>
 </head>
 <body class="text-slate-800">
-  @include('partials.header')
+  @include('partials.header_pendaftar')
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <!-- Sidebar (same style as dashboard) -->
@@ -97,17 +97,17 @@
                   <h2 class="text-2xl font-bold text-[#004269]">Biodata Pendaftar</h2>
                   <p class="text-sm text-slate-500">Perbarui informasi pribadi Anda di halaman ini.</p>
                 </div>
-                <div class="text-sm text-slate-500">Nomor: <span class="font-medium text-slate-700">{{ $pendaftar->nipd ?? ($pendaftar->id ?? '-') }}</span></div>
+                <div class="text-sm text-slate-500">Nomor NIPD: <span class="font-medium text-slate-700">{{ $pendaftar->nipd ?? '-' }}</span></div>
               </div>
 
               <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 @php
                   $fields = [
                     ['label'=>'Nama','value'=>$pendaftar->nama_mhs ?? '-'],
-                    ['label'=>'No. HP','value'=>$pendaftar->no_hp ?? '-'],
+                    ['label'=>'No. HP','value'=>$pendaftar->no_hp ?? ($pendaftar->no_tlp ?? '-')],
                     ['label'=>'Email','value'=>$pendaftar->email ?? '-'],
                     ['label'=>'Jenis Kelas','value'=>$pendaftar->jenis_kelas ?? '-'],
-                    ['label'=>'Program Studi','value'=>\App\Helpers\JurusanHelper::getFormat($pendaftar->jurusan ?? null)],
+                    ['label'=>'Program Studi','value'=>\App\Helpers\JurusanHelper::getFormat($pendaftar->id_program_studi ?? ($pendaftar->id_program_study ?? null))],
                     ['label'=>'Asal Sekolah','value'=>$pendaftar->asal_sekolah ?? '-'],
                     ['label'=>'Agama','value'=>$pendaftar->agama ?? '-'],
                     ['label'=>'Jenis Kelamin','value'=>$pendaftar->jenis_kelamin ?? '-'],
@@ -116,7 +116,7 @@
                     ['label'=>'Desa','value'=>$pendaftar->desa ?? '-'],
                     ['label'=>'Kode Pos','value'=>$pendaftar->kode_pos ?? '-'],
                     ['label'=>'Tahun Lulus','value'=>$pendaftar->tahun_lulus ?? '-'],
-                    ['label'=>'Instagram','value'=>$pendaftar->instagram ?? '-'],
+                    ['label'=>'Instagram','value'=>$pendaftar->instagram ?? ($pendaftar->instagram_path ?? '-')],
                     ['label'=>'Nama Orang Tua/Wali','value'=>$pendaftar->nama_wali ?? '-'],
                     ['label'=>'No. Telp Orang Tua/Wali','value'=>$pendaftar->telp_wali ?? '-'],
                     ['label'=>'Pekerjaan Orang Tua/Wali','value'=>$pendaftar->pekerjaan_wali ?? '-'],

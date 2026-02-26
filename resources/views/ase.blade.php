@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>D3 Application Software Engineering</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root{--brand-dark:#004269;--brand-accent:#0b7280}
         *{box-sizing:border-box}
@@ -141,6 +142,8 @@
             </div>
         </div>
     </div>
+
+     @include('layouts.footer')
 </body>
 </html>
 

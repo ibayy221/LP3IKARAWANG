@@ -12,11 +12,17 @@ class DuplicatePreventionTest extends TestCase
 
     public function test_prevents_quick_duplicate_submissions()
     {
-        $data = ['nama_mhs' => 'Dup Test', 'email' => 'dup@example.com', 'no_hp' => '08123456789', 'jurusan' => 'ASE'];
+        $data = [
+            'nama_mhs' => 'Dup Test',
+            'email' => 'dup@example.com',
+            'no_tlp' => '08123456789',
+            'domisili' => 'Karawang',
+            'id_program_studi' => 1,
+        ];
 
         $this->post('/mahasiswa', $data)->assertSessionHas('success');
         $this->post('/mahasiswa', $data)->assertSessionHas('success');
 
-        $this->assertDatabaseCount('mahasiswas', 1);
+        $this->assertDatabaseCount('mahasiswa', 1);
     }
 }

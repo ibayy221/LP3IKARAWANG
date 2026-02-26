@@ -12,7 +12,9 @@ class BackfillNipd extends Command
 
     public function handle()
     {
-        $missing = Mahasiswa::whereNull('nipd')->orWhere('nipd', '')->count();
+        $missing = Mahasiswa::where(function ($q) {
+            $q->whereNull('nipd')->orWhere('nipd', '');
+        })->whereRaw("LOWER(COALESCE(status_verifikasi,'')) = 'verified'")->count();
         if ($missing === 0) {
             $this->info('No missing NIPD values found.');
             return 0;
@@ -22,10 +24,14 @@ class BackfillNipd extends Command
         $bar = $this->output->createProgressBar($missing);
         $bar->start();
 
-        Mahasiswa::whereNull('nipd')->orWhere('nipd', '')->orderBy('id')->chunk(100, function ($rows) use ($bar) {
+        Mahasiswa::where(function ($q) {
+            $q->whereNull('nipd')->orWhere('nipd', '');
+        })->whereRaw("LOWER(COALESCE(status_verifikasi,'')) = 'verified'")
+            ->orderBy('id_mahasiswa')
+            ->chunk(100, function ($rows) use ($bar) {
             foreach ($rows as $r) {
                 $old = $r->nipd;
-                $r->nipd = Mahasiswa::generateNipd($r->jurusan ?? null);
+                $r->nipd = Mahasiswa::generateNipd($r->id_program_studi ?? null);
                 if (!$this->option('dry-run')) {
                     $r->save();
                 }

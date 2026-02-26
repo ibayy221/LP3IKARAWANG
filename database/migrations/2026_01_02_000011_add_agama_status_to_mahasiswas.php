@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            if (!Schema::hasColumn('mahasiswas', 'agama')) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswa', 'agama')) {
                 $table->string('agama')->nullable()->after('kategori_sekolah');
             }
-            if (!Schema::hasColumn('mahasiswas', 'status')) {
+            if (!Schema::hasColumn('mahasiswa', 'status')) {
                 $table->string('status')->default('aktif')->after('agama');
             }
         });
@@ -26,11 +26,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            if (Schema::hasColumn('mahasiswas', 'agama')) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (Schema::hasColumn('mahasiswa', 'agama')) {
                 $table->dropColumn('agama');
             }
-            if (Schema::hasColumn('mahasiswas', 'status')) {
+            if (Schema::hasColumn('mahasiswa', 'status')) {
                 $table->dropColumn('status');
             }
         });

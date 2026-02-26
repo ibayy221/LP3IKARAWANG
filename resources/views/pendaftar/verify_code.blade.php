@@ -1,3 +1,4 @@
+@include('layouts.footer')
 <!DOCTYPE html>
 <html lang="id">
 <head>

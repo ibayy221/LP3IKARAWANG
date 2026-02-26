@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $cols = ['NIK_mahasiswa','sumber_pendaftaran','tahun_lulus','tempat_lahir','tgl_lahir','jenis_sekolah','kategori_sekolah'];
-            $existing = array_intersect($cols, Schema::getColumnListing('mahasiswas'));
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            // Only drop truly legacy/unused columns to keep fresh installs consistent.
+            $cols = ['NIK_mahasiswa', 'jenis_sekolah', 'kategori_sekolah'];
+            $existing = array_intersect($cols, Schema::getColumnListing('mahasiswa'));
             if (!empty($existing)) {
                 $table->dropColumn($existing);
             }
@@ -25,28 +26,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
+        Schema::table('mahasiswa', function (Blueprint $table) {
             // Recreate columns with nullable defaults. Adjust types conservatively.
-            if (!Schema::hasColumn('mahasiswas', 'NIK_mahasiswa')) {
-                $table->string('NIK_mahasiswa')->nullable()->after('nama_mhs');
+            if (!Schema::hasColumn('mahasiswa', 'NIK_mahasiswa')) {
+                $table->string('NIK_mahasiswa')->nullable();
             }
-            if (!Schema::hasColumn('mahasiswas', 'sumber_pendaftaran')) {
-                $table->string('sumber_pendaftaran')->nullable()->after('kode_pos');
+            if (!Schema::hasColumn('mahasiswa', 'jenis_sekolah')) {
+                $table->string('jenis_sekolah')->nullable();
             }
-            if (!Schema::hasColumn('mahasiswas', 'tahun_lulus')) {
-                $table->string('tahun_lulus')->nullable()->after('jurusan');
-            }
-            if (!Schema::hasColumn('mahasiswas', 'tempat_lahir')) {
-                $table->string('tempat_lahir')->nullable()->after('alamat');
-            }
-            if (!Schema::hasColumn('mahasiswas', 'tgl_lahir')) {
-                $table->date('tgl_lahir')->nullable()->after('tempat_lahir');
-            }
-            if (!Schema::hasColumn('mahasiswas', 'jenis_sekolah')) {
-                $table->string('jenis_sekolah')->nullable()->after('jenis_kelamin');
-            }
-            if (!Schema::hasColumn('mahasiswas', 'kategori_sekolah')) {
-                $table->string('kategori_sekolah')->nullable()->after('jenis_sekolah');
+            if (!Schema::hasColumn('mahasiswa', 'kategori_sekolah')) {
+                $table->string('kategori_sekolah')->nullable();
             }
         });
     }

@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -35,7 +36,9 @@
   </style>
 </head>
 <body>
-  @include('partials.header')
+
+  @include('partials.header_pendaftar')
+  
   <div class="container">
     <div class="heading">
       <div>
@@ -223,7 +226,9 @@
         }
         })();
       </script>
+      
     </div>
   </div>
+
 </body>
 </html>

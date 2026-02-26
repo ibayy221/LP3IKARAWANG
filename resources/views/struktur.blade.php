@@ -25,9 +25,9 @@
 
         .mid-header { background: #1e3c72; padding: 15px 0; color: white; }
         .mid-header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
-        .logo { display:flex; align-items:center }
-        .logo img { height:auto; max-height:48px; width:auto; object-fit:contain }
-        .logo img.logo-global { margin-left:12px; max-height:40px }
+        header .logo { display:flex; align-items:center }
+        header .logo img { height:auto; max-height:48px; width:auto; object-fit:contain }
+        header .logo img.logo-global { margin-left:12px; max-height:40px }
         .header-contact { display: flex; gap: 30px; }
         .contact-item { display: flex; align-items: center; gap: 10px; }
         .contact-item i { font-size: 1.9rem; color: #00a8e8; }
@@ -134,10 +134,10 @@
 
         .center-card{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:20px}
         .center-card-sub{display:flex;flex-direction:column;align-items:flex-end;gap:1rem;margin-top:60px;padding-right:1rem}
-        .person-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 12px 36px rgba(2,6,23,0.06);width:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;position:relative;z-index:2}
+        .person-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 12px 36px rgba(2,6,23,0.06);width:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;position:relative;z-index:2;text-align:center}
         .person-card.subordinate{width:240px;min-height:160px;padding:14px}
         .person-card img{width:140px;height:140px;object-fit:cover;border-radius:8px;display:block;margin:0 0 12px}
-        .person-card h3{margin:0;font-size:1rem;color:var(--basic);line-height:1.2}
+        .person-card h3{margin:0;font-size:1rem;color:var(--basic);line-height:1.2;width:100%;text-align:center;white-space:normal;overflow-wrap:anywhere;word-break:break-word}
         .person-card .role{font-size:.85rem;color:var(--muted);margin-top:6px}
 
         .grid { display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:2rem }
@@ -441,5 +441,6 @@
         window.addEventListener('load', drawOrgLines);
         window.addEventListener('resize', function(){ setTimeout(drawOrgLines, 120); });
     </script>
+    @include('layouts.footer')
 </body>
 </html>

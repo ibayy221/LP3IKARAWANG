@@ -8,16 +8,29 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->string('desa')->nullable()->after('kecamatan');
-            $table->string('kode_pos')->nullable()->after('desa');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswa', 'desa')) {
+                $table->string('desa')->nullable()->after('kecamatan');
+            }
+            if (!Schema::hasColumn('mahasiswa', 'kode_pos')) {
+                $table->string('kode_pos')->nullable()->after('desa');
+            }
         });
     }
 
     public function down(): void
     {
-        Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->dropColumn(['desa', 'kode_pos']);
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            $toDrop = [];
+            foreach (['desa', 'kode_pos'] as $col) {
+                if (Schema::hasColumn('mahasiswa', $col)) {
+                    $toDrop[] = $col;
+                }
+            }
+
+            if (!empty($toDrop)) {
+                $table->dropColumn($toDrop);
+            }
         });
     }
 };

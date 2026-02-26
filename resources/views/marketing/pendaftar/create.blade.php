@@ -52,11 +52,11 @@
         </div>
         <div style="margin-top:.75rem">
           <label>Program Study</label>
-          <select class="form-control" name="jurusan">
+          <select class="form-control" name="id_program_studi">
             <option value="">-- Pilih --</option>
-            <option value="AIS">AIS — Accounting Information System</option>
-            <option value="ASE">ASE — Application Software Engineering</option>
-            <option value="OAA">OAA — Office Administration Automatization</option>
+            <option value="2">AIS — Accounting Information System</option>
+            <option value="1">ASE — Application Software Engineering</option>
+            <option value="3">OAA — Office Administration Automatization</option>
           </select>
         </div>
         <div style="margin-top:.75rem">

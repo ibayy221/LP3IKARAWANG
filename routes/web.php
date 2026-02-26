@@ -49,6 +49,9 @@ Route::get('/pedoman/download', function () {
 })->name('pedoman.download');
 
 // Mahasiswa registration
+Route::get('/mahasiswa', function () {
+    return redirect()->route('mahasiswa.create');
+})->name('mahasiswa');
 Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
 Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
 
@@ -94,12 +97,12 @@ Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
             $user = Auth::user();
             if (!$user) return redirect()->route('pendaftar.login');
             // ensure unique email
-            $exists = \App\Models\User::where('email', $r->email)->where('id','<>',$user->id)->exists();
+            $exists = \App\Models\User::where('email', $r->email)->where('id_user','<>',$user->getKey())->exists();
             if ($exists) return back()->with('error','Email sudah digunakan oleh akun lain.');
             $user->email = $r->email;
             $user->save();
             // also update mahasiswa email if exists
-            $m = Mahasiswa::where('user_id', $user->id)->first();
+            $m = Mahasiswa::where('id_user', $user->getKey())->first();
             if ($m) { $m->email = $r->email; $m->save(); }
             return back()->with('success','Email diperbarui.');
         })->middleware(\App\Http\Middleware\EnsureApplicant::class)->name('akun.email.update');
@@ -119,9 +122,13 @@ Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
             $r->validate(['phone'=>'required|string|max:50']);
             $user = Auth::user();
             if (!$user) return redirect()->route('pendaftar.login');
-            $m = Mahasiswa::where('user_id', $user->id)->first();
+            $m = Mahasiswa::where('id_user', $user->getKey())->first();
             if (!$m) return back()->with('error','Data pendaftar tidak ditemukan.');
-            $m->no_hp = $r->phone;
+            if (Schema::hasColumn('mahasiswa', 'no_hp')) {
+                $m->no_hp = $r->phone;
+            } elseif (Schema::hasColumn('mahasiswa', 'no_tlp')) {
+                $m->no_tlp = $r->phone;
+            }
             $m->save();
             return back()->with('success','Nomor telepon diperbarui.');
         })->middleware(\App\Http\Middleware\EnsureApplicant::class)->name('akun.phone.update');
@@ -131,13 +138,17 @@ Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
             $r->validate(['whatsapp'=>'required|string|max:50']);
             $user = Auth::user();
             if (!$user) return redirect()->route('pendaftar.login');
-            $m = Mahasiswa::where('user_id', $user->id)->first();
+            $m = Mahasiswa::where('id_user', $user->getKey())->first();
             if (!$m) return back()->with('error','Data pendaftar tidak ditemukan.');
-            // Save WhatsApp into `whatsapp` column if exists, else save into no_hp
-            if (Schema::hasColumn('mahasiswas','whatsapp')) {
+            // Save WhatsApp into a suitable column
+            if (Schema::hasColumn('mahasiswa', 'whatsapp')) {
                 $m->whatsapp = $r->whatsapp;
-            } else {
+            } elseif (Schema::hasColumn('mahasiswa', 'whatsapp_wali')) {
+                $m->whatsapp_wali = $r->whatsapp;
+            } elseif (Schema::hasColumn('mahasiswa', 'no_hp')) {
                 $m->no_hp = $r->whatsapp;
+            } elseif (Schema::hasColumn('mahasiswa', 'no_tlp')) {
+                $m->no_tlp = $r->whatsapp;
             }
             $m->save();
             return back()->with('success','Nomor WhatsApp diperbarui.');
@@ -167,6 +178,11 @@ Route::middleware([EnsureAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin.php', [AdminController::class, 'index']);
     Route::post('/admin/action', [AdminController::class, 'handleAction'])->name('admin.action');
+    // Carousel Kegiatan (modern bawah video)
+    Route::get('/admin/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'list']);
+    Route::post('/admin/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'store']);
+    Route::post('/admin/carousel-kegiatan/{id}', [\App\Http\Controllers\CarouselKegiatanController::class, 'update']);
+    Route::delete('/admin/carousel-kegiatan/{id}', [\App\Http\Controllers\CarouselKegiatanController::class, 'destroy']);
     
     // Struktur Organisasi management
     Route::get('/admin/struktur-organisasi', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
@@ -189,6 +205,9 @@ Route::middleware([EnsureAdmin::class])->group(function () {
     Route::post('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxUpdate'])->name('admin.penempatan.ajax.update');
     Route::delete('/admin/penempatan/{penempatan}/ajax', [PenempatanController::class, 'ajaxDestroy'])->name('admin.penempatan.ajax.destroy');
 });
+
+// Public API untuk ambil data carousel kegiatan (modern bawah video)
+Route::get('/carousel-kegiatan', [\App\Http\Controllers\CarouselKegiatanController::class, 'list']);
 
 // Marketing (Smart Presenter) - separate from Admin CMS
 use App\Http\Controllers\Marketing\MarketingAuthController as MarketingAuthController;

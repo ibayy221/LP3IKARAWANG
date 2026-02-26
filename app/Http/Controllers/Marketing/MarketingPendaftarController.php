@@ -5,24 +5,58 @@ namespace App\Http\Controllers\Marketing;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use App\Helpers\JurusanHelper;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MarketingPendaftarController extends Controller
 {
+    private function normalizeProgramId(mixed $value): ?int
+    {
+        if ($value === null || $value === '') return null;
+
+        $trim = trim((string) $value);
+        if ($trim === '') return null;
+
+        if (ctype_digit($trim)) {
+            $n = (int) $trim;
+            return in_array($n, [1, 2, 3], true) ? $n : null;
+        }
+
+        $code = strtoupper($trim);
+        return match ($code) {
+            'ASE' => 1,
+            'AIS' => 2,
+            'OAA' => 3,
+            default => null,
+        };
+    }
+
+    private function programCodeFromId(?int $id): string
+    {
+        return match ((int) $id) {
+            1 => 'ASE',
+            2 => 'AIS',
+            3 => 'OAA',
+            default => '',
+        };
+    }
+
     public function dashboard()
     {
         // Compute simple statistics for dashboard
         $total = Mahasiswa::count();
-        $jurusanTerbanyak = Mahasiswa::select('jurusan', \Illuminate\Support\Facades\DB::raw('count(*) as cnt'))
-            ->groupBy('jurusan')
+        $programTerbanyak = Mahasiswa::select('id_program_studi', DB::raw('count(*) as cnt'))
+            ->whereNotNull('id_program_studi')
+            ->groupBy('id_program_studi')
             ->orderByDesc('cnt')
-            ->pluck('jurusan')
+            ->pluck('id_program_studi')
             ->first();
         $pendaftarToday = Mahasiswa::whereDate('created_at', \Carbon\Carbon::today())->count();
 
         return view('marketing.dashboard', [
             'totalPendaftar' => $total,
-            'jurusanTerbanyak' => $jurusanTerbanyak ?: '-',
+            'jurusanTerbanyak' => $programTerbanyak ? JurusanHelper::getFormat((int) $programTerbanyak) : '-',
             'pendaftarToday' => $pendaftarToday,
         ]);
     }
@@ -54,14 +88,12 @@ class MarketingPendaftarController extends Controller
             }
         }
 
-        // Fetch distinct jurusans for the filter dropdown
-        $jurusans = Mahasiswa::select('jurusan')
-            ->whereNotNull('jurusan')
-            ->where('jurusan', '<>', '')
-            ->where('jurusan', '<>', 'OAA')
+        // Fetch distinct program IDs for the filter dropdown
+        $jurusans = Mahasiswa::select('id_program_studi')
+            ->whereNotNull('id_program_studi')
             ->distinct()
-            ->orderBy('jurusan')
-            ->pluck('jurusan')
+            ->orderBy('id_program_studi')
+            ->pluck('id_program_studi')
             ->values();
 
         return view('marketing.pendaftar.index', compact('registrationImageUrl','jurusans'));
@@ -71,7 +103,7 @@ class MarketingPendaftarController extends Controller
     {
         $q = $request->input('q');
         $status = $request->input('status');
-        $jurusan = $request->input('jurusan');
+        $jurusan = $this->normalizeProgramId($request->input('jurusan'));
 
         $query = Mahasiswa::query();
         if ($q) {
@@ -83,17 +115,44 @@ class MarketingPendaftarController extends Controller
             $query->where('status_verifikasi', $status);
         }
         if ($jurusan) {
-            $query->where('jurusan', $jurusan);
+            $query->where('id_program_studi', $jurusan);
         }
 
-        $data = $query->orderBy('created_at', 'desc')->get(['id','nama_mhs','email','nipd','no_hp','jurusan','status_verifikasi','created_at']);
+        $data = $query
+            ->orderBy('created_at', 'desc')
+            ->get([
+                'id_mahasiswa',
+                'nama_mhs',
+                'email',
+                'nipd',
+                'no_tlp',
+                'id_program_studi',
+                'status_verifikasi',
+                'created_at',
+            ])
+            ->map(function ($r) {
+                $programId = $r->id_program_studi ? (int) $r->id_program_studi : null;
+                return [
+                    'id' => $r->id_mahasiswa,
+                    'nama_mhs' => $r->nama_mhs,
+                    'email' => $r->email,
+                    'nipd' => $r->nipd,
+                    'no_hp' => $r->no_tlp,
+                    'id_program_studi' => $r->id_program_studi,
+                    // keep legacy key used by frontend
+                    'jurusan' => $this->programCodeFromId($programId),
+                    // preferred label for display (no abbreviation)
+                    'jurusan_label' => JurusanHelper::getNamaLengkap($programId),
+                    'status_verifikasi' => $r->status_verifikasi,
+                    'created_at' => $r->created_at,
+                ];
+            })
+            ->values();
         return response()->json(['success' => true, 'data' => $data]);
     }
 
     public function create()
     {
-        $jurusans = Mahasiswa::select('jurusan')->whereNotNull('jurusan')->where('jurusan','<>','OAA')->distinct()->pluck('jurusan')->filter()->values();
-
         // registration image
         $registrationImage = null;
         $settingsFile = public_path('data/settings.csv');
@@ -119,7 +178,7 @@ class MarketingPendaftarController extends Controller
             }
         }
 
-        return view('marketing.pendaftar.create', compact('jurusans','registrationImageUrl'));
+        return view('marketing.pendaftar.create', compact('registrationImageUrl'));
     }
 
     public function store(Request $request)
@@ -128,11 +187,24 @@ class MarketingPendaftarController extends Controller
             'nama_mhs' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'no_hp' => 'nullable|string|max:50',
-            'jurusan' => 'nullable|string|max:255',
+            'id_program_studi' => 'nullable|integer|in:1,2,3',
+            // legacy name used by older forms
+            'jurusan' => 'nullable',
             'jenis_kelas' => 'nullable|string|max:50',
             'asal_sekolah' => 'nullable|string|max:255'
         ]);
         $v['status_verifikasi'] = $v['status_verifikasi'] ?? 'pending';
+
+        // normalize payload to actual DB columns
+        if (!empty($v['no_hp']) && empty($v['no_tlp'])) {
+            $v['no_tlp'] = $v['no_hp'];
+        }
+        unset($v['no_hp']);
+
+        if (empty($v['id_program_studi'])) {
+            $v['id_program_studi'] = $this->normalizeProgramId($request->input('jurusan'));
+        }
+        unset($v['jurusan']);
 
         // Prevent accidental duplicates when marketing adds pendaftar manually
         $duplicate = null;
@@ -143,22 +215,23 @@ class MarketingPendaftarController extends Controller
         }
 
         if ($duplicate) {
-            return redirect()->route('marketing.pendaftar.show', $duplicate->id)->with('success','Pendaftar sudah ada — membuka data yang tersedia.');
+            return redirect()->route('marketing.pendaftar.show', $duplicate->getKey())->with('success','Pendaftar sudah ada — membuka data yang tersedia.');
         }
 
         try {
-            $m = Mahasiswa::createWithUniqueNipd($v);
+            // NIPD dibuat saat verifikasi (status_verifikasi=verified)
+            $m = Mahasiswa::create($v);
         } catch (\Illuminate\Database\QueryException $e) {
             if (strpos(strtolower($e->getMessage()), 'duplicate') !== false || $e->getCode() === '23000') {
                 $existing = Mahasiswa::findRecentDuplicate($v, null);
                 if ($existing) {
-                    return redirect()->route('marketing.pendaftar.show', $existing->id)->with('success','Pendaftar sudah ada — membuka data yang tersedia.');
+                    return redirect()->route('marketing.pendaftar.show', $existing->getKey())->with('success','Pendaftar sudah ada — membuka data yang tersedia.');
                 }
             }
             throw $e;
         }
 
-        return redirect()->route('marketing.pendaftar.show', $m->id)->with('success','Calon mahasiswa ditambahkan.');
+        return redirect()->route('marketing.pendaftar.show', $m->getKey())->with('success','Calon mahasiswa ditambahkan.');
     }
 
     public function show($id)
@@ -306,13 +379,13 @@ class MarketingPendaftarController extends Controller
     {
         $q = $request->input('q');
         $status = $request->input('status');
-        $jurusan = $request->input('jurusan');
+        $jurusan = $this->normalizeProgramId($request->input('jurusan'));
         $query = Mahasiswa::query();
         if ($q) {
             $query->where(function($qr) use ($q){ $qr->where('nama_mhs','like',"%{$q}%")->orWhere('email','like',"%{$q}%"); });
         }
         if ($status) $query->where('status_verifikasi',$status);
-        if ($jurusan) $query->where('jurusan',$jurusan);
+        if ($jurusan) $query->where('id_program_studi',$jurusan);
         $rows = $query->orderBy('created_at','desc')->get();
 
         $filename = 'pendaftar_export_'.date('Ymd_His').'.csv';
@@ -321,12 +394,25 @@ class MarketingPendaftarController extends Controller
             'Content-Disposition' => "attachment; filename={$filename}"
         ];
 
+        // keep legacy column headers that the UI expects
         $columns = ['id','nama_mhs','email','no_hp','jurusan','status_verifikasi','payment_status','payment_amount','marketing_notes','created_at'];
         $callback = function() use ($rows, $columns) {
             $f = fopen('php://output','w');
             fputcsv($f,$columns);
             foreach($rows as $r) {
-                $line = array_map(function($c) use ($r) { return $r->{$c} ?? ''; }, $columns);
+                $mapped = [
+                    'id' => $r->id_mahasiswa,
+                    'nama_mhs' => $r->nama_mhs,
+                    'email' => $r->email,
+                    'no_hp' => $r->no_tlp,
+                    'jurusan' => $this->programCodeFromId($r->id_program_studi ? (int) $r->id_program_studi : null),
+                    'status_verifikasi' => $r->status_verifikasi,
+                    'payment_status' => $r->payment_status,
+                    'payment_amount' => $r->payment_amount,
+                    'marketing_notes' => $r->marketing_notes,
+                    'created_at' => $r->created_at,
+                ];
+                $line = array_map(function($c) use ($mapped) { return $mapped[$c] ?? ''; }, $columns);
                 fputcsv($f,$line);
             }
             fclose($f);
@@ -340,13 +426,13 @@ class MarketingPendaftarController extends Controller
         // reuse list filters
         $q = $request->input('q');
         $status = $request->input('status');
-        $jurusan = $request->input('jurusan');
+        $jurusan = $this->normalizeProgramId($request->input('jurusan'));
         $query = Mahasiswa::query();
         if ($q) {
             $query->where(function($qr) use ($q){ $qr->where('nama_mhs','like',"%{$q}%")->orWhere('email','like',"%{$q}%"); });
         }
         if ($status) $query->where('status_verifikasi',$status);
-        if ($jurusan) $query->where('jurusan',$jurusan);
+        if ($jurusan) $query->where('id_program_studi',$jurusan);
         $rows = $query->orderBy('created_at','desc')->get();
         return view('marketing.pendaftar.print', compact('rows'));
     }
@@ -411,8 +497,26 @@ class MarketingPendaftarController extends Controller
         }
         $m = Mahasiswa::find($id);
         if (!$m) return response()->json(['success' => false, 'error' => 'Pendaftar tidak ditemukan']);
+
+        // If moving to verified, assign NIPD now (with simple retry on rare collisions)
         $m->status_verifikasi = $status;
-        $m->save();
+        $attempts = 0;
+        $normalized = trim(strtolower((string) $status));
+        while (true) {
+            $attempts++;
+            try {
+                $m->save();
+                break;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $msg = strtolower($e->getMessage());
+                if ($normalized === 'verified' && (str_contains($msg, 'nipd') || $e->getCode() === '23000') && $attempts < 5) {
+                    // Force regenerate next attempt
+                    $m->nipd = null;
+                    continue;
+                }
+                throw $e;
+            }
+        }
 
         // Send notification email to applicant if email exists
         try {

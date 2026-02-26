@@ -1,3 +1,4 @@
+
 @php
 	// Expecting `$images` to be passed from controller as a collection of Penempatan models.
 	// If not provided or empty, we'll render an empty state (no uploads yet).
@@ -109,6 +110,7 @@
 			@endif
 		</div>
 	</div>
+	@include('layouts.footer')
 
 	<!-- Modal for image preview -->
 	<div id="imageModal" class="modal">
@@ -136,5 +138,6 @@
 			}
 		});
 	</script>
+
 </body>
 </html>

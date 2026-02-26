@@ -17,7 +17,7 @@
   </style>
 </head>
 <body class="text-slate-800">
-  @include('partials.header')
+  @include('partials.header_pendaftar')
   <div class="max-w-6xl mx-auto p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
       <aside class="bg-white rounded-xl border p-5 shadow-sm sticky top-6" >
@@ -59,7 +59,7 @@
               <h2 class="text-2xl font-bold text-[#004269]">Ubah Biodata</h2>
               <p class="text-sm text-slate-500">Perbarui informasi Anda dan unggah foto profil yang jelas.</p>
             </div>
-            <div class="text-sm text-slate-500">Nomor: <strong class="text-slate-700">{{ $pendaftar->nipd ?? ($pendaftar->id ?? '-') }}</strong></div>
+            <div class="text-sm text-slate-500">Nomor NIPD: <strong class="text-slate-700">{{ $pendaftar->nipd ?? '-' }}</strong></div>
           </div>
 
           @if(session('success'))
@@ -130,11 +130,12 @@
 
               <div>
                 <label class="block text-sm text-slate-600 mb-1">Program Studi</label>
-                <select name="jurusan" class="w-full border rounded px-3 py-2">
+                <select name="id_program_studi" class="w-full border rounded px-3 py-2">
                   <option value="">-- Pilih --</option>
-                  <option value="AIS" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'AIS') ? 'selected' : '' }}>Accounting Information System</option>
-                  <option value="ASE" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'ASE') ? 'selected' : '' }}>Application Software Engineering</option>
-                  <option value="OAA" {{ (old('jurusan', $pendaftar->jurusan ?? '') == 'OAA') ? 'selected' : '' }}>Office Administration Automatization</option>
+                  @php $selectedProdi = old('id_program_studi', $pendaftar->id_program_studi ?? ($pendaftar->id_program_study ?? '')); @endphp
+                  <option value="2" {{ ((string)$selectedProdi === '2') ? 'selected' : '' }}>Accounting Information System</option>
+                  <option value="1" {{ ((string)$selectedProdi === '1') ? 'selected' : '' }}>Application Software Engineering</option>
+                  <option value="3" {{ ((string)$selectedProdi === '3') ? 'selected' : '' }}>Office Administration Automatization</option>
                 </select>
               </div>
 

@@ -400,7 +400,7 @@ Aceng Ajat, ST. Kepala Kampus LP3I Karawang
         </section>
 
     </main>
-    
+     <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <script>
         // Animasi Scroll Header
         window.addEventListener('scroll', function() {

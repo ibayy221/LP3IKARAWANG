@@ -17,12 +17,12 @@ class TestPendaftarSeeder extends Seeder
 
         $u = User::firstOrCreate(
             ['email' => 'pendaftar_test@example.com'],
-            ['name' => 'Auto Test', 'password' => Hash::make('secret123'), 'is_applicant' => true]
+            ['name' => 'Auto Test', 'password' => Hash::make('secret123')]
         );
 
         $m = Mahasiswa::firstOrCreate(
             ['email' => 'pendaftar_test@example.com'],
-            ['nama_mhs' => 'Auto Test', 'user_id' => $u->id, 'payment_status' => 'unpaid', 'payment_amount' => 350000]
+            ['nama_mhs' => 'Auto Test', 'id_user' => $u->id, 'payment_status' => 'unpaid', 'payment_amount' => 350000]
         );
 
         $this->command->info("Created user {$u->id} and mahasiswa {$m->id}");

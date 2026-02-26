@@ -15,6 +15,7 @@
         .hero .info p{margin:.35rem 0;color:#234}
         .frame{flex:1;background:#000;border-radius:8px;overflow:hidden;min-height:60vh;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
         .frame iframe{width:100%;height:100%;border:0}
+        .frame img{width:100%;height:100%;object-fit:cover;display:block}
         .actions{margin-top:.75rem;display:flex;gap:.5rem}
         .btn{display:inline-block;padding:.55rem .9rem;background:#004269;color:#fff;border-radius:8px;text-decoration:none;font-weight:600}
         .btn.secondary{background:#0b7280}
@@ -39,13 +40,13 @@
                 </div>
             </div>
 
-                <div class="frame" aria-hidden="false">
-                <!-- Embed Google Street View centered on LP3I Karawang (pano available) -->
-                <iframe src="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=-6.2995622,107.2856211&heading=264.26469794857564&pitch=-5.074011886356928&fov=75" title="LP3I Karawang - Street View" loading="lazy"></iframe>
+            <div class="frame" aria-hidden="false">
+                <!-- Gambar Gedung LP3I Karawang -->
+                <img src="{{ asset('storage/image/gedung.jpeg') }}" alt="Gedung LP3I Karawang">
             </div>
         </div>
 
-        <p class="note">Catatan: ini menampilkan Google Street View untuk lokasi LP3I Karawang. Jika iframe kosong karena kebijakan, klik tombol "Buka di Google Maps".</p>
+        <p class="note">Catatan: ini menampilkan foto Gedung LP3I Karawang. Klik tombol "Buka di Google Maps" untuk melihat lokasi di peta.</p>
     </div>
 </body>
 </html>

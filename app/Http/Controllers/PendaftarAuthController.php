@@ -23,10 +23,7 @@ class PendaftarAuthController extends Controller
 
         if (Auth::attempt($data)) {
             $user = Auth::user();
-            if (!$user->is_applicant) {
-                Auth::logout();
-                return back()->withErrors(['email' => 'Akun bukan pendaftar.']);
-            }
+            // All users can login (is_applicant check removed)
             $request->session()->regenerate();
             return redirect()->route('pendaftar.dashboard');
         }
